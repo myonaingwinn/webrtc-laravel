@@ -1,24 +1,22 @@
 const express = require("express");
-const socket = require("socket.io");
-const { ExpressPeerServer } = require("peer");
-const { v4: uuidv4 } = require("uuid");
-require("dotenv").config();
-
-const PORT = process.env.PORT || 5000;
-
+const http = require("http");
 const app = express();
-
-const server = app.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`);
-  console.log(`http://localhost:${PORT}`);
+const server = http.createServer(app);
+require("dotenv").config();
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
 });
 
-const peerServer = ExpressPeerServer(server, {
-  debug: true,
-});
-
-app.use("/peerjs", peerServer);
+const PORT = process.env.SERVER_PORT || 5000;
 
 app.get("/", (req, res) => {
-  res.send("Server is running successfully");
+  res.send("Server is running successfully!");
+});
+
+server.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
+  console.log(`http://localhost:${PORT}`);
 });
