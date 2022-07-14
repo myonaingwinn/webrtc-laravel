@@ -80,7 +80,7 @@ const Register = () => {
 
         <>
             <div className="site-card-wrapper">
-                <Card title="Register Form" style=
+                <Card title="Register" style=
                     {{
                         textAlign: 'center',
                         width: '800px',
@@ -113,12 +113,12 @@ const Register = () => {
                                 },
                             ]}
                         >
-                            <Input placeholder='Enter Your Name' />
+                            <Input placeholder='Enter your name' />
                         </Form.Item>
 
                         <Form.Item
                             name="email"
-                            label="E-mail"
+                            label="Email"
                             id="email"
                             value={email}
                             onChange={handleEmailChange}
@@ -133,7 +133,7 @@ const Register = () => {
                                 },
                             ]}
                         >
-                            <Input placeholder='Enter Your E-mail' />
+                            <Input placeholder='Enter your email' />
                         </Form.Item>
 
                         <Form.Item
@@ -154,7 +154,7 @@ const Register = () => {
                             ]}
                             hasFeedback
                         >
-                            <Input.Password placeholder='Enter Your Password' />
+                            <Input.Password placeholder='Enter your password' />
                         </Form.Item>
 
                         <Form.Item
