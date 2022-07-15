@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { registerNewUser } from "../utils/wssConnection/wssConnection";
 import { setUsername } from "../store/actions/dashboardActions";
 
-import "./LoginPage.css";
+import "./Login.css";
 
 const LoginPage = ({ saveUsername }) => {
   const [username, setUsername] = useState("");

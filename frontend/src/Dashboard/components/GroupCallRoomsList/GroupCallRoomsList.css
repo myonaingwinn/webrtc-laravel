@@ -9,5 +9,5 @@
 }
 
 .group_calls_list_item:hover {
-  opacity: 0.5;
+  background: #e6f7ff;
 }

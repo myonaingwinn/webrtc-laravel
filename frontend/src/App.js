@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./Dashboard/Dashboard";
-import Login from "./LoginPage/LoginPage";
+import Login from "./Login/Login";
 import { connectWithWebSocket } from "./utils/wssConnection/wssConnection";
 
 function App() {

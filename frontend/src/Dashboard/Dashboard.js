@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react';
-import ActiveUsersList from './components/ActiveUsersList/ActiveUsersList';
-import * as webRTCHandler from '../utils/webRTC/webRTCHandler';
-import * as webRTCGroupHandler from '../utils/webRTC/webRTCGroupCallHandler';
-import DirectCall from './components/DirectCall/DirectCall';
-import { connect } from 'react-redux';
-import DashboardInformation from './components/Dashboardinformation/Dashboardinformation';
-import { callStates } from '../store/actions/callActions';
-import GroupCallRoomsList from './components/GroupCallRoomsList/GroupCallRoomsList';
-import GroupCall from './components/GroupCall/GroupCall';
-import './Dashboard.css';
+import React, { useEffect } from "react";
+import ActiveUsersList from "./components/ActiveUsersList/ActiveUsersList";
+import * as webRTCHandler from "../utils/webRTC/webRTCHandler";
+import * as webRTCGroupHandler from "../utils/webRTC/webRTCGroupCallHandler";
+import DirectCall from "./components/DirectCall/DirectCall";
+import { connect } from "react-redux";
+import DashboardInformation from "./components/Dashboardinformation/Dashboardinformation";
+import { callStates } from "../store/actions/callActions";
+import GroupCallRoomsList from "./components/GroupCallRoomsList/GroupCallRoomsList";
+import GroupCall from "./components/GroupCall/GroupCall";
+import { Col, Row } from "antd";
 
 const Dashboard = ({ username, callState }) => {
   useEffect(() => {
@@ -17,29 +17,45 @@ const Dashboard = ({ username, callState }) => {
   }, []);
 
   return (
-    <div className='dashboard_container background_main_color'>
-      <div className='dashboard_left_section'>
-        <div className='dashboard_content_container'>
+    <Row style={{ width: "100vw", height: "100vh", display: "flex" }}>
+      {callState !== callStates.CALL_IN_PROGRESS && (
+        <Col
+          span={4}
+          style={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <GroupCallRoomsList />
+        </Col>
+      )}
+      <Col span={callState !== callStates.CALL_IN_PROGRESS ? 16 : 23}>
+        <Row>
           <DirectCall />
           <GroupCall />
-          {callState !== callStates.CALL_IN_PROGRESS && <DashboardInformation username={username} />}
-        </div>
-        <div className='dashboard_rooms_container background_secondary_color'>
-          <GroupCallRoomsList />
-        </div>
-      </div>
-      <div className='dashboard_right_section background_secondary_color'>
-        <div className='dashboard_active_users_list'>
-          <ActiveUsersList />
-        </div>
-      </div>
-    </div>
+          {callState !== callStates.CALL_IN_PROGRESS && (
+            <DashboardInformation username={username} />
+          )}
+        </Row>
+      </Col>
+      {callState !== callStates.CALL_IN_PROGRESS && (
+        <Col
+          span={4}
+          style={{
+            height: "100%",
+          }}
+        >
+          {callState !== callStates.CALL_IN_PROGRESS && <ActiveUsersList />}
+        </Col>
+      )}
+    </Row>
   );
 };
 
 const mapStateToProps = ({ call, dashboard }) => ({
   ...call,
-  ...dashboard
+  ...dashboard,
 });
 
 export default connect(mapStateToProps)(Dashboard);
