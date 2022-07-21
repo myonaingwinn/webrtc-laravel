@@ -43,8 +43,8 @@ const Chat = (props) => {
 
   function selectFile(e) {
     setMessage(e.target.files[0].name);
-      setFile(e.target.files[0]);
-   
+    setFile(e.target.files[0]);
+
   }
 
   // const handleUpload = (event) => {
@@ -99,7 +99,7 @@ const Chat = (props) => {
   }, [chat, rooms]);
 
   const sendMessage = async (e) => {
-    const payload = { message, room, file,socketId };
+    const payload = { message, room, file, socketId };
     socket.emit("message", payload);
 
     setMessage("");
@@ -124,11 +124,17 @@ const Chat = (props) => {
   };
 
   const joinRoom = (room) => {
-    socket.emit("join_room", room);
-    setRoom(room.id);
-    setJoinedRoom(true);
-    //
-    setChat(room.chat);
+    if (room.users.length > room.maxParticipantsAllowed) {
+      alert('This room has reached maximum limit!');
+    } else {
+      socket.emit("join_room", room);
+      setRoom(room.id);
+      setJoinedRoom(true);
+      console.log('Maximum participant allowed in this room is ', room.maxParticipantsAllowed);
+      console.log('Number of user in this room is ', room.users.length);
+      //
+      setChat(room.chat);
+    }
   };
 
   return (

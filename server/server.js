@@ -29,6 +29,7 @@ io.on("connection", (socket) => {
     console.log(users);
     socket.broadcast.emit("updateUsers", users);
     socket.disconnect();
+    console.log('Number of users left in this room is ', users.length);
   });
 
   socket.emit("getAllUsers", users);
@@ -41,6 +42,8 @@ io.on("connection", (socket) => {
       capacity: 10,
       usersJoined: [socket.id],
       chat: [],
+      users: users,
+      maxParticipantsAllowed: 3,
     };
     socket.join(room);
     socket.emit("get_room", room);
@@ -53,13 +56,14 @@ io.on("connection", (socket) => {
   socket.on("join_room", (room) => {
     socket.join(room.id);
     console.log(`user ${socket.id} joined room: ${room.id}`);
+    console.log('Number of user is ', users.length);
   });
   socket.emit("getAllRooms", rooms);
 
   socket.broadcast.emit("updateRooms", rooms);
 
   socket.on("message", (payload) => {
-    console.log(`Message from ${socket.id} : ${payload.message} : ${payload.file}` );
+    console.log(`Message from ${socket.id} : ${payload.message} : ${payload.file}`);
     rooms.map((room) => {
       if (room.id === payload.room) {
         singleChat = { message: payload.message, writer: payload.socketId, file: payload.file };
