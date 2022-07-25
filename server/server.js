@@ -22,12 +22,13 @@ app.get("/", (req, res) => {
 
 io.on("connection", (socket) => {
   // Rooms
-  socket.on("create_room", () => {
+  socket.on("create_room", name => {
     const room = {
       id: nanoid(7),
       capacity: 10,
       usersJoined: [socket.id],
       maxParticipantsAllowed: 3,
+      roomName:name,
     };
 
     // const myRoom = io.sockets.adapter.rooms.get(room) || { size: 0 };

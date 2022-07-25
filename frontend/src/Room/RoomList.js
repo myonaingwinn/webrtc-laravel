@@ -54,7 +54,7 @@ const RoomList = () => {
                             {rooms.map((room) => {
                                 return (
                                     <Col className="gutter-row" span={6} key={room.id}>
-                                        <Card size="small" title={room.id}>
+                                        <Card size="small" title={room.roomName}>
                                             <button onClick={() => joinRoom(room)}>Join Room</button>
                                         </Card>
                                     </Col>

@@ -76,7 +76,7 @@ const CreateRoom = () => {
         if (!(roomName === '')) {
             setRoomName(roomName);
             console.log('room name is ', roomName);
-            socket.emit("create_room");
+            socket.emit("create_room",roomName);
             socket.on("get_room", (room) => {
                 setRooms([...rooms, room]);
                 console.log('room id is ', room.id);
@@ -113,7 +113,7 @@ const CreateRoom = () => {
                             {rooms.map((room) => {
                                 return (
                                     <Col className="gutter-row" span={6} key={room.id}>
-                                        <Card size="small" title={room.id}>
+                                        <Card size="small" title={room.roomName}>
                                             <button onClick={() => joinRoom(room)}>Join Room</button>
                                         </Card>
                                     </Col>
