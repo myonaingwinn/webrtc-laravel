@@ -47,15 +47,20 @@ const RoomList = () => {
     }, [rooms]);
 
     const joinRoom = (room) => {
+        socket.on("usersList", (joinedList) => {
+            setJoinedList(joinedList);
+            console.log('Join Users are ', joinedList);
+            console.log('Number of user in this room is ', joinedList.length);
+            if (joinedList.length > room.maxParticipantsAllowed) {
+                alert("This Room has reached Maximum Limit!");
+                window.location.href= '/';
+            }
+        })
         socket.emit("join_room", room);
         setRoom(room.id);
         setJoinedRoom(true);
         console.log('user ', socketId, ' joined room: ', room.id);
-        socket.on("usersList", (joinedList) => {
-            setJoinedList(joinedList);
-            console.log('Join Users are ',joinedList);
-            console.log('Number of user in this room is ', joinedList.length);
-        })
+        console.log('maximum participants allowed are ', room.maxParticipantsAllowed);
         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
             setStream(stream)
             localVideo.current.srcObject = stream
@@ -90,7 +95,6 @@ const RoomList = () => {
             {joinedRoom && (
                 <>
                     <div className="video-container" style={{ marginTop: '50px' }}>
-                        <h3 style={{ textAlign: 'center' }}>Now, You are in the Room!</h3>
                         <video playsInline muted ref={localVideo} autoPlay style={{ width: "500px", marginLeft: '500px' }} />
                     </div>
                 </>

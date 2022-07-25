@@ -48,7 +48,7 @@ io.on("connection", (socket) => {
       capacity: 10,
       usersJoined: [socket.id],
       users: users,
-      maxParticipantsAllowed: 10,
+      maxParticipantsAllowed: 3,
       roomName: name,
     };
 
