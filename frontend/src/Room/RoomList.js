@@ -15,7 +15,6 @@ const RoomList = () => {
     const [joinedRoom, setJoinedRoom] = useState(false);
     const [stream, setStream] = useState();
     const [joinedList, setJoinedList] = useState([]);
-    let userLists = [];
     const [socketId, setSocketId] = useState("");
     const [users, setUsers] = useState([]);
 
@@ -51,18 +50,12 @@ const RoomList = () => {
         socket.emit("join_room", room);
         setRoom(room.id);
         setJoinedRoom(true);
-        console.log('you are in the ', room.id, 'room');
-        console.log(socketId, " join the room ", room.id);
-        console.log('maximum participant is ', room.maxParticipantsAllowed);
-        userLists.push(socketId);
-        console.log(userLists);
-        socket.on("updateUsers", (userLists) => {
-            setJoinedList(userLists);
-        });
-        // setJoinedList([...joinedList, socketId]);
-        // console.log('user lists are ', userLists);
-        console.log('Number of user in this room is ', userLists.length);
-        console.log('joined list are ', room.usersJoined.length);
+        console.log('user ', socketId, ' joined room: ', room.id);
+        socket.on("usersList", (joinedList) => {
+            setJoinedList(joinedList);
+            console.log('Join Users are ',joinedList);
+            console.log('Number of user in this room is ', joinedList.length);
+        })
         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
             setStream(stream)
             localVideo.current.srcObject = stream
@@ -98,7 +91,6 @@ const RoomList = () => {
                 <>
                     <div className="video-container" style={{ marginTop: '50px' }}>
                         <h3 style={{ textAlign: 'center' }}>Now, You are in the Room!</h3>
-                        <h4>Room Name : {room.roomName}</h4>
                         <video playsInline muted ref={localVideo} autoPlay style={{ width: "500px", marginLeft: '500px' }} />
                     </div>
                 </>

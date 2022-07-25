@@ -72,6 +72,7 @@ io.on("connection", (socket) => {
     console.log(`user ${socket.id} joined room: ${room.id}`);
     joinedUsers.push(socket.id);
     console.log('Number of user in this room is ', joinedUsers.length);
+    socket.emit("usersList", joinedUsers);
   });
   socket.emit("getAllRooms", rooms);
   console.log(rooms);
