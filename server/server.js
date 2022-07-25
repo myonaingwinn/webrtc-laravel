@@ -14,21 +14,42 @@ const io = require("socket.io")(server, {
 
 const PORT = process.env.SERVER_PORT || 5000;
 
+let users = [];
 let rooms = [];
+let joinedUsers = [];
 
 app.get("/", (req, res) => {
   res.send("Server is running successfully!");
 });
 
 io.on("connection", (socket) => {
+  console.log(`User connected: ${socket.id}`);
+
+  socket.emit("me", socket.id);
+  users.push(socket.id);
+
+  socket.broadcast.emit("updateUsers", users);
+
+  socket.on("disconnect", () => {
+    console.log(`User ${socket.id} disconnected.`);
+    users = users.filter((user) => user !== socket.id);
+    console.log(users);
+    socket.broadcast.emit("updateUsers", users);
+    socket.disconnect();
+    console.log('Number of users remain in this room is ', users.length);
+  });
+
+  socket.emit("getAllUsers", users);
+  console.log(users);
   // Rooms
   socket.on("create_room", name => {
     const room = {
       id: nanoid(7),
       capacity: 10,
       usersJoined: [socket.id],
-      maxParticipantsAllowed: 3,
-      roomName:name,
+      users: users,
+      maxParticipantsAllowed: 10,
+      roomName: name,
     };
 
     // const myRoom = io.sockets.adapter.rooms.get(room) || { size: 0 };
@@ -49,9 +70,11 @@ io.on("connection", (socket) => {
   socket.on("join_room", (room) => {
     socket.join(room.id);
     console.log(`user ${socket.id} joined room: ${room.id}`);
+    joinedUsers.push(socket.id);
+    console.log('Number of user in this room is ', joinedUsers.length);
   });
   socket.emit("getAllRooms", rooms);
-
+  console.log(rooms);
   socket.broadcast.emit("updateRooms", rooms);
 });
 

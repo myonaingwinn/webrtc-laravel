@@ -52,8 +52,27 @@ const CreateRoom = () => {
     const [display, setDisplay] = useState(true);
     const [joinedRoom, setJoinedRoom] = useState(false);
     const [stream, setStream] = useState();
+    const [socketId, setSocketId] = useState("");
+    const [users, setUsers] = useState([]);
+    const [joinedList, setJoinedList] = useState([]);
+    let userLists = [];
 
     useEffect(() => {
+        socket.on("me", (id) => {
+            setSocketId(id);
+        });
+
+        socket.on("disconnect", () => {
+            socket.disconnect();
+        });
+
+        socket.on("getAllUsers", (users) => {
+            setUsers(users);
+        });
+        // Real time
+        socket.on("updateUsers", (users) => {
+            setUsers(users);
+        });
         socket.on("getAllRooms", (rooms) => {
             setRooms(rooms);
         });
@@ -75,8 +94,9 @@ const CreateRoom = () => {
     const handleSubmit = async () => {
         if (!(roomName === '')) {
             setRoomName(roomName);
+            console.log('user id is ', socketId);
             console.log('room name is ', roomName);
-            socket.emit("create_room",roomName);
+            socket.emit("create_room", roomName);
             socket.on("get_room", (room) => {
                 setRooms([...rooms, room]);
                 console.log('room id is ', room.id);
@@ -86,15 +106,28 @@ const CreateRoom = () => {
     };
 
     const joinRoom = (room) => {
+        // if (room.joinedUsers.length > room.maxParticipantsAllowed) {
+        //     alert('This room has reached maximum limit!');
+        // } else {
+        // console.log('join users are ', joinedList);
+        // setJoinedList([...joinedList, socketId]);
         socket.emit("join_room", room);
         setRoom(room.id);
         setJoinedRoom(true);
+        console.log(socketId, " join the room ", room.id);
+        userLists.push(socketId);
+        console.log(userLists);
+        // setJoinedList([...joinedList, socketId]);
+        // console.log('user lists are ',userLists);
         console.log('you are in the ', room.id, 'room');
-        console.log('maximum participant is ', room.maxParticipantsAllowed);
+        console.log('Maximum participant allowed in this room is ', room.maxParticipantsAllowed);
+        console.log('Number of user in this room is ', userLists.length);
+        console.log('joined list are ', room.usersJoined.length);
         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
             setStream(stream)
             localVideo.current.srcObject = stream
         })
+        // }
     };
 
     return (
@@ -129,6 +162,7 @@ const CreateRoom = () => {
                 <>
                     <div className="video-container" style={{ marginTop: '50px' }}>
                         <h3 style={{ textAlign: 'center' }}>Now, You are in the Room!</h3>
+                        <h4>Room Name : {roomName}</h4>
                         <video playsInline muted ref={localVideo} autoPlay style={{ width: "500px", marginLeft: '500px' }} />
                     </div>
                 </>
