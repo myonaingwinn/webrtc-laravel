@@ -14,6 +14,8 @@ const io = require("socket.io")(server, {
 
 let users = [];
 let rooms = [];
+let deleteRooms = [];
+// let remain_room = [];
 
 io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
@@ -58,8 +60,29 @@ io.on("connection", (socket) => {
     console.log(`user ${socket.id} joined room: ${room.id}`);
     console.log('Number of user is ', users.length);
   });
-  socket.emit("getAllRooms", rooms);
 
+  socket.on("delete_room", (room) => {
+    console.log('room ', room.id, ' is deleted!');
+    let delete_room = rooms.find(item => item.id === room.id);
+    deleteRooms.push(delete_room);
+    console.log('this is deleted room');
+    console.log(deleteRooms);
+    let remain_room= rooms.splice(delete_room.id, 1);
+    io.in(delete_room).socketsLeave(delete_room);
+    socket.leave(delete_room);
+    console.log('this is remaining room');
+    console.log(remain_room);
+    
+    // socket.on("remain_data",(remain_room));
+    // socket.broadcast.emit("updateRooms", remain_room);
+    // socket.disconnect();
+    // // console.log('this is final result of room array');
+    // socket.emit("getAllRooms", remain_room);
+    // console.log(remain_room);
+  });
+
+  socket.emit("getAllRooms", rooms);
+  console.log(rooms);
   socket.broadcast.emit("updateRooms", rooms);
 
   socket.on("message", (payload) => {

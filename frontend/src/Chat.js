@@ -137,6 +137,31 @@ const Chat = (props) => {
     }
   };
 
+  const deleteRoom = (room) => {
+    // socket.leave(room);
+    // socket.in(room).socketsLeave(room);
+    /*
+    if (socket.emit("delete_room", room)) {
+      console.log('room ', room.id, ' is deleted!');
+      let delete_room = rooms.find(item => item.id === room.id);
+      console.log('this is deleted room');
+      console.log(delete_room);
+      let remain_room = rooms.splice(delete_room.id, 1);
+      console.log('this is remaining room');
+      console.log(remain_room);
+      socket.emit("updateRooms", remain_room);
+    }
+    */
+    socket.emit("delete_room", room);
+    console.log('room ', room.id, ' is deleted!');
+    // let delete_room = rooms.find(item => item.id === room.id);
+    // console.log('this is deleted room');
+    // console.log(delete_room);
+    // let remain_room = rooms.splice(delete_room.id, 1);
+    // console.log('this is remaining room');
+    // console.log(remain_room);
+  };
+
   return (
     <>
       <h1 className="main_heading">Chat App</h1>
@@ -170,9 +195,12 @@ const Chat = (props) => {
               <ul className="rooms">
                 {rooms.map((room) => {
                   return (
-                    <li key={room.id} onClick={() => joinRoom(room)}>
-                      {room.id}
-                    </li>
+                    <>
+                      <li key={room.id} onClick={() => deleteRoom(room)}>
+                        {room.id}
+                        {/* {room && room != room.id ? room.id : room} */}
+                      </li>
+                    </>
                   );
                 })}
               </ul>
