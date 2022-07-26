@@ -36,7 +36,7 @@ io.on("connection", (socket) => {
     console.log(users);
     socket.broadcast.emit("updateUsers", users);
     socket.disconnect();
-    console.log('Number of users remain in this room is ', users.length);
+    // console.log('Number of users remain in this room is ', users.length);
   });
 
   socket.emit("getAllUsers", users);
@@ -48,16 +48,9 @@ io.on("connection", (socket) => {
       capacity: 10,
       usersJoined: [socket.id],
       users: users,
-      maxParticipantsAllowed: 3,
+      maxParticipantsAllowed: 50,
       roomName: name,
     };
-
-    // const myRoom = io.sockets.adapter.rooms.get(room) || { size: 0 };
-    // const numClients = myRoom.size;
-    // console.log(room, 'has', numClients, 'clients');
-    // if (numClients === room.maxParticipantsAllowed) {
-    //   socket.emit("room_full", room);
-    // }
 
     socket.join(room);
     socket.emit("get_room", room);
@@ -74,12 +67,19 @@ io.on("connection", (socket) => {
     console.log('Number of user in this room is ', joinedUsers.length);
     socket.emit("usersList", joinedUsers);
   });
+
+  socket.on("leave_room", () => {
+    console.log(`user ${socket.id} leave from room`);
+    joinedUsers.splice(socket.id, 1);
+    socket.emit("leftUsers", joinedUsers);
+    socket.broadcast.emit("updateUsers", joinedUsers);
+    socket.disconnect();
+    console.log('Number of users remain in this room is ', joinedUsers.length);
+  })
   socket.emit("getAllRooms", rooms);
   console.log(rooms);
   socket.broadcast.emit("updateRooms", rooms);
 });
-
-
 
 server.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);

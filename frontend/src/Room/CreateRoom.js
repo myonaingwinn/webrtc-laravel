@@ -55,10 +55,12 @@ const CreateRoom = () => {
     const [socketId, setSocketId] = useState("");
     const [users, setUsers] = useState([]);
     const [joinedList, setJoinedList] = useState([]);
+    const [leftList, setLeftList] = useState([]);
 
     useEffect(() => {
         socket.on("me", (id) => {
             setSocketId(id);
+            console.log('Your id is ', id);
         });
 
         socket.on("disconnect", () => {
@@ -111,7 +113,7 @@ const CreateRoom = () => {
             console.log('Number of user in this room is ', joinedList.length);
             if (joinedList.length > room.maxParticipantsAllowed) {
                 alert("This Room has reached Maximum Limit!");
-                window.location.href= '/';
+                window.location.href = '/';
             }
         })
         socket.emit("join_room", room);
@@ -123,6 +125,18 @@ const CreateRoom = () => {
             setStream(stream)
             localVideo.current.srcObject = stream
         })
+    };
+
+    const leaveRoom = () => {
+        console.log('this is in leave room');
+        socket.emit("leave_room");
+        console.log('user ', socketId, ' leave from room');
+        socket.on("leftUsers", (leftList) => {
+            setLeftList(leftList);
+            console.log('Remain Users are ', leftList);
+            console.log('Number of user remain in this room is ', leftList.length);
+        })
+        // window.location.href = '/';
     };
 
     return (
@@ -157,6 +171,7 @@ const CreateRoom = () => {
                 <>
                     <div className="video-container" style={{ marginTop: '50px' }}>
                         <video playsInline muted ref={localVideo} autoPlay style={{ width: "500px", marginLeft: '500px' }} />
+                        <button className='btn btn-primary' onClick={() => leaveRoom()}>Leave Room</button>
                     </div>
                 </>
             )}

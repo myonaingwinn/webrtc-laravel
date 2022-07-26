@@ -53,7 +53,7 @@ const RoomList = () => {
             console.log('Number of user in this room is ', joinedList.length);
             if (joinedList.length > room.maxParticipantsAllowed) {
                 alert("This Room has reached Maximum Limit!");
-                window.location.href= '/';
+                window.location.href = '/';
             }
         })
         socket.emit("join_room", room);
@@ -65,6 +65,18 @@ const RoomList = () => {
             setStream(stream)
             localVideo.current.srcObject = stream
         })
+    };
+
+    const leaveRoom = () => {
+        console.log('this is in leave room');
+        socket.emit("leave_room");
+        console.log('user ', socketId, ' leave from room');
+        socket.on("leftUsers", (leftList) => {
+            setLeftList(leftList);
+            console.log('Remain Users are ', leftList);
+            console.log('Number of user remain in this room is ', leftList.length);
+        })
+        // window.location.href = '/';
     };
 
     return (
@@ -96,6 +108,7 @@ const RoomList = () => {
                 <>
                     <div className="video-container" style={{ marginTop: '50px' }}>
                         <video playsInline muted ref={localVideo} autoPlay style={{ width: "500px", marginLeft: '500px' }} />
+                        <button className='btn btn-primary' onClick={() => leaveRoom(room)}>Leave Room</button>
                     </div>
                 </>
             )}
