@@ -68,13 +68,22 @@ io.on("connection", (socket) => {
     socket.emit("usersList", joinedUsers);
   });
 
-  socket.on("leave_room", () => {
-    console.log(`user ${socket.id} leave from room`);
+  socket.on("leave_room", (room) => {
+    console.log('user ', socket.id, ' leave from room ', room);
     joinedUsers.splice(socket.id, 1);
     socket.emit("leftUsers", joinedUsers);
     socket.broadcast.emit("updateUsers", joinedUsers);
     socket.disconnect();
     console.log('Number of users remain in this room is ', joinedUsers.length);
+
+    if (joinedUsers.length == 0) {
+      console.log('no users in this room so this room will delete');
+      rooms.splice(room, 1);
+      io.in(rooms).socketsLeave(room);
+      socket.leave(room);
+      socket.broadcast.emit("updateRooms", rooms);
+      console.log('current rooms are ', rooms);
+    }
   })
   socket.emit("getAllRooms", rooms);
   console.log(rooms);

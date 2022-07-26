@@ -49,7 +49,7 @@ const CreateRoom = () => {
     const [room, setRoom] = useState("");
     // const [participant, setParticipant] = useState("");
     const localVideo = useRef();
-    const [display, setDisplay] = useState(true);
+    const [display, setDisplay] = useState(false);
     const [joinedRoom, setJoinedRoom] = useState(false);
     const [stream, setStream] = useState();
     const [socketId, setSocketId] = useState("");
@@ -93,6 +93,7 @@ const CreateRoom = () => {
     }, [rooms]);
 
     const handleSubmit = async () => {
+        setDisplay(false);
         if (!(roomName === '')) {
             setRoomName(roomName);
             console.log('user id is ', socketId);
@@ -103,7 +104,10 @@ const CreateRoom = () => {
                 console.log('room id is ', room.id);
             })
         }
-        setDisplay(false)
+    };
+
+    const createRoom = () => {
+        setDisplay(true);
     };
 
     const joinRoom = (room) => {
@@ -127,16 +131,17 @@ const CreateRoom = () => {
         })
     };
 
-    const leaveRoom = () => {
+
+    const leaveRoom = (room) => {
         console.log('this is in leave room');
-        socket.emit("leave_room");
-        console.log('user ', socketId, ' leave from room');
+        socket.emit("leave_room", room);
+        console.log('user ', socketId, ' leave from room ', room);
         socket.on("leftUsers", (leftList) => {
             setLeftList(leftList);
             console.log('Remain Users are ', leftList);
             console.log('Number of user remain in this room is ', leftList.length);
         })
-        // window.location.href = '/';
+        window.location.href = '/';
     };
 
     return (
@@ -144,12 +149,15 @@ const CreateRoom = () => {
             {!joinedRoom && (
                 <div className="rooms-container" style=
                     {{
-                        display: display ? 'none' : 'block',
+                        // display: display ? 'none' : 'block',
                     }}>
                     <h2 className="rooms_heading" style={{ textAlign: 'center' }}>Available Rooms:</h2>
-
+                    <Button type="primary" htmlType="submit" onClick={createRoom}>
+                        Create Room
+                    </Button>
                     {rooms.length === 0 ? (
                         <h3 className="no_rooms">No Rooms! Create a room !</h3>
+
                     ) : (
                         <Row gutter={16}>
                             {rooms.map((room) => {
@@ -171,7 +179,9 @@ const CreateRoom = () => {
                 <>
                     <div className="video-container" style={{ marginTop: '50px' }}>
                         <video playsInline muted ref={localVideo} autoPlay style={{ width: "500px", marginLeft: '500px' }} />
-                        <button className='btn btn-primary' onClick={() => leaveRoom()}>Leave Room</button>
+                    </div>
+                    <div className='leave-room'>
+                        <button className='btn btn-primary' onClick={() => leaveRoom(room)}>Leave Room</button>
                     </div>
                 </>
             )}

@@ -67,16 +67,16 @@ const RoomList = () => {
         })
     };
 
-    const leaveRoom = () => {
+    const leaveRoom = (room) => {
         console.log('this is in leave room');
-        socket.emit("leave_room");
-        console.log('user ', socketId, ' leave from room');
+        socket.emit("leave_room", room);
+        console.log('user ', socketId, ' leave from room ', room);
         socket.on("leftUsers", (leftList) => {
             setLeftList(leftList);
             console.log('Remain Users are ', leftList);
             console.log('Number of user remain in this room is ', leftList.length);
         })
-        // window.location.href = '/';
+        window.location.href = '/';
     };
 
     return (
@@ -108,6 +108,8 @@ const RoomList = () => {
                 <>
                     <div className="video-container" style={{ marginTop: '50px' }}>
                         <video playsInline muted ref={localVideo} autoPlay style={{ width: "500px", marginLeft: '500px' }} />
+                    </div>
+                    <div className='leave-room'>
                         <button className='btn btn-primary' onClick={() => leaveRoom(room)}>Leave Room</button>
                     </div>
                 </>
