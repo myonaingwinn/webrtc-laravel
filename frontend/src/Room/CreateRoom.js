@@ -144,10 +144,45 @@ const CreateRoom = () => {
         window.location.href = '/';
     };
 
+    const callUser=(user)=>{
+        console.log('you are calling ',user);
+    }
+
+    const chatUser=(user)=>{
+        console.log('your id is ',socketId);
+        console.log('you are chatting with ',user);
+    }
+
     return (
         <>
             {!joinedRoom && (
                 <div className="container">
+                    <div className="rooms-container" style=
+                        {{
+                            // display: display ? 'none' : 'block',
+                        }}>
+                        <h2 className="rooms_heading" style={{ textAlign: 'center' }}>Available Rooms:</h2>
+                        <Button type="primary" htmlType="submit" onClick={createRoom}>
+                            Create Room
+                        </Button>
+                        {rooms.length === 0 ? (
+                            <h3 className="no_rooms" style={{ textAlign: 'center' }}>No Rooms! Create a room !</h3>
+
+                        ) : (
+                            <Row gutter={16}>
+                                {rooms.map((room) => {
+                                    return (
+                                        <Col className="gutter-row" span={6} key={room.id}>
+                                            <Card size="small" title={room.roomName}>
+                                                <button onClick={() => joinRoom(room)}>Join Room</button>
+                                            </Card>
+                                        </Col>
+                                    );
+                                })}
+                            </Row>
+                        )
+                        }
+                    </div >
                     <div className="users-container">
                         <h2 className="users_heading">Online Users:</h2>
                         <Row gutter={16}>
@@ -156,7 +191,8 @@ const CreateRoom = () => {
                                     ? (
                                         <Col className="gutter-row" span={6} key={user}>
                                             <Card size="small" title={user}>
-                                                <Button>Call</Button>
+                                                <Button onClick={() => callUser(user)}>Call</Button>
+                                                <Button onClick={() => chatUser(user)}>Chat</Button>
                                             </Card>
                                         </Col>
                                     )
@@ -174,32 +210,6 @@ const CreateRoom = () => {
                             })}
                         </ul> */}
                     </div>
-                    <div className="rooms-container" style=
-                        {{
-                            // display: display ? 'none' : 'block',
-                        }}>
-                        <h2 className="rooms_heading" style={{ textAlign: 'center' }}>Available Rooms:</h2>
-                        <Button type="primary" htmlType="submit" onClick={createRoom}>
-                            Create Room
-                        </Button>
-                        {rooms.length === 0 ? (
-                            <h3 className="no_rooms">No Rooms! Create a room !</h3>
-
-                        ) : (
-                            <Row gutter={16}>
-                                {rooms.map((room) => {
-                                    return (
-                                        <Col className="gutter-row" span={6} key={room.id}>
-                                            <Card size="small" title={room.roomName}>
-                                                <button onClick={() => joinRoom(room)}>Join Room</button>
-                                            </Card>
-                                        </Col>
-                                    );
-                                })}
-                            </Row>
-                        )
-                        }
-                    </div >
                 </div>
             )}
 
