@@ -147,32 +147,60 @@ const CreateRoom = () => {
     return (
         <>
             {!joinedRoom && (
-                <div className="rooms-container" style=
-                    {{
-                        // display: display ? 'none' : 'block',
-                    }}>
-                    <h2 className="rooms_heading" style={{ textAlign: 'center' }}>Available Rooms:</h2>
-                    <Button type="primary" htmlType="submit" onClick={createRoom}>
-                        Create Room
-                    </Button>
-                    {rooms.length === 0 ? (
-                        <h3 className="no_rooms">No Rooms! Create a room !</h3>
-
-                    ) : (
+                <div className="container">
+                    <div className="users-container">
+                        <h2 className="users_heading">Online Users:</h2>
                         <Row gutter={16}>
-                            {rooms.map((room) => {
+                            {users.map((user) => (
+                                user !== socketId
+                                    ? (
+                                        <Col className="gutter-row" span={6} key={user}>
+                                            <Card size="small" title={user}>
+                                                <Button>Call</Button>
+                                            </Card>
+                                        </Col>
+                                    )
+                                    : null
+                            ))}
+                        </Row>
+
+                        {/* <ul className="users">
+                            {users.map((user) => {
                                 return (
-                                    <Col className="gutter-row" span={6} key={room.id}>
-                                        <Card size="small" title={room.roomName}>
-                                            <button onClick={() => joinRoom(room)}>Join Room</button>
-                                        </Card>
-                                    </Col>
+                                    <li className="user" key={user}>
+                                        {user && user === socketId ? `Me : ${socketId}` : user}
+                                    </li>
                                 );
                             })}
-                        </Row>
-                    )
-                    }
-                </div >
+                        </ul> */}
+                    </div>
+                    <div className="rooms-container" style=
+                        {{
+                            // display: display ? 'none' : 'block',
+                        }}>
+                        <h2 className="rooms_heading" style={{ textAlign: 'center' }}>Available Rooms:</h2>
+                        <Button type="primary" htmlType="submit" onClick={createRoom}>
+                            Create Room
+                        </Button>
+                        {rooms.length === 0 ? (
+                            <h3 className="no_rooms">No Rooms! Create a room !</h3>
+
+                        ) : (
+                            <Row gutter={16}>
+                                {rooms.map((room) => {
+                                    return (
+                                        <Col className="gutter-row" span={6} key={room.id}>
+                                            <Card size="small" title={room.roomName}>
+                                                <button onClick={() => joinRoom(room)}>Join Room</button>
+                                            </Card>
+                                        </Col>
+                                    );
+                                })}
+                            </Row>
+                        )
+                        }
+                    </div >
+                </div>
             )}
 
             {joinedRoom && (
