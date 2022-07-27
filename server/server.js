@@ -66,7 +66,12 @@ io.on("connection", (socket) => {
     joinedUsers.push(socket.id);
     console.log('Number of user in this room is ', joinedUsers.length);
     socket.emit("usersList", joinedUsers);
+    socket.broadcast.emit("updateUsers", joinedUsers);
   });
+
+  socket.emit("getAllRooms", rooms);
+  // console.log(rooms);
+  socket.broadcast.emit("updateRooms", rooms);
 
   socket.on("leave_room", (room) => {
     console.log('user ', socket.id, ' leave from room ', room);
@@ -83,11 +88,9 @@ io.on("connection", (socket) => {
       socket.leave(room);
       socket.broadcast.emit("updateRooms", rooms);
       console.log('current rooms are ', rooms);
+      socket.broadcast.emit("updateRooms", rooms);
     }
   })
-  socket.emit("getAllRooms", rooms);
-  console.log(rooms);
-  socket.broadcast.emit("updateRooms", rooms);
 });
 
 server.listen(PORT, () => {

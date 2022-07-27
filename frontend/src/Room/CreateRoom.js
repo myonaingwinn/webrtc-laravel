@@ -47,9 +47,10 @@ const CreateRoom = () => {
     const [rooms, setRooms] = useState([]);
     const [roomName, setRoomName] = useState("");
     const [room, setRoom] = useState("");
-    // const [participant, setParticipant] = useState("");
     const localVideo = useRef();
     const [display, setDisplay] = useState(false);
+    const [normal, setNormal] = useState(true);
+    const [testDiv, setTestDiv] = useState(false);
     const [joinedRoom, setJoinedRoom] = useState(false);
     const [stream, setStream] = useState();
     const [socketId, setSocketId] = useState("");
@@ -82,11 +83,6 @@ const CreateRoom = () => {
             setRooms(rooms);
         });
 
-        // socket.on("room_full", (room) => {
-        //     setParticipant(room.maxParticipantsAllowed);
-        //     alert("This Room has reached Maximum Number.You cannot Join!");
-        // });
-
         if (joinedRoom === true) {
             console.log('you are in the room!')
         }
@@ -108,6 +104,7 @@ const CreateRoom = () => {
 
     const createRoom = () => {
         setDisplay(true);
+        setNormal(false);
     };
 
     const joinRoom = (room) => {
@@ -144,26 +141,28 @@ const CreateRoom = () => {
         window.location.href = '/';
     };
 
-    const callUser=(user)=>{
-        console.log('you are calling ',user);
+    const callUser = (user) => {
+        console.log('you are calling ', user);
     }
 
-    const chatUser=(user)=>{
-        console.log('your id is ',socketId);
-        console.log('you are chatting with ',user);
+    const chatUser = (user) => {
+        console.log('you are chatting with ', user);
     }
 
     return (
         <>
-            {!joinedRoom && (
-                <div className="container">
-                    <div className="rooms-container" style=
-                        {{
-                            // display: display ? 'none' : 'block',
-                        }}>
+            {normal && (
+                <div className="container" style=
+                    {{
+                        display: normal ? 'block' : 'none',
+                    }}>
+                    <div className="rooms-container">
                         <h2 className="rooms_heading" style={{ textAlign: 'center' }}>Available Rooms:</h2>
                         <Button type="primary" htmlType="submit" onClick={createRoom}>
                             Create Room
+                        </Button>
+                        <Button type="primary" htmlType="submit" onClick={test}>
+                            Test
                         </Button>
                         {rooms.length === 0 ? (
                             <h3 className="no_rooms" style={{ textAlign: 'center' }}>No Rooms! Create a room !</h3>
@@ -184,7 +183,7 @@ const CreateRoom = () => {
                         }
                     </div >
                     <div className="users-container">
-                        <h2 className="users_heading">Online Users:</h2>
+                        <h2 className="users_heading" style={{ textAlign: 'center' }}>Online Users:</h2>
                         <Row gutter={16}>
                             {users.map((user) => (
                                 user !== socketId
@@ -199,16 +198,6 @@ const CreateRoom = () => {
                                     : null
                             ))}
                         </Row>
-
-                        {/* <ul className="users">
-                            {users.map((user) => {
-                                return (
-                                    <li className="user" key={user}>
-                                        {user && user === socketId ? `Me : ${socketId}` : user}
-                                    </li>
-                                );
-                            })}
-                        </ul> */}
                     </div>
                 </div>
             )}
@@ -224,57 +213,58 @@ const CreateRoom = () => {
                 </>
             )}
 
-            <div className="site-card-wrapper" style=
-                {{
+            {display && (
+                <div className="site-card-wrapper" style={{
                     display: display ? 'block' : 'none',
                 }}>
-                <Card title="Room Creation" style=
-                    {{
-                        textAlign: 'center',
-                        width: '800px',
-                        margin: '0 auto',
-                        marginTop: '80px'
-                    }}
-                >
-                    <Form
-                        {...formItemLayout}
-                        form={form}
-                        name="room"
-                        style=
+                    <Card title="Room Creation" style=
                         {{
-                            marginTop: '30px',
-                            marginRight: '200px'
+                            textAlign: 'center',
+                            width: '800px',
+                            margin: '0 auto',
+                            marginTop: '80px'
                         }}
-                        colon={false}
-                        requiredMark={false}
                     >
-                        <Form.Item
-                            name="roomName"
-                            label="Room Name"
-                            id="name"
-                            value={roomName}
-                            onChange={(e) => setRoomName(e.target.value)}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input room name!',
-                                },
-                            ]}
+                        <Form
+                            {...formItemLayout}
+                            form={form}
+                            name="room"
+                            style=
+                            {{
+                                marginTop: '30px',
+                                marginRight: '200px'
+                            }}
+                            colon={false}
+                            requiredMark={false}
                         >
-                            <Input placeholder='Enter room name' />
-                        </Form.Item>
+                            <Form.Item
+                                name="roomName"
+                                label="Room Name"
+                                id="name"
+                                value={roomName}
+                                onChange={(e) => setRoomName(e.target.value)}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input room name!',
+                                    },
+                                ]}
+                            >
+                                <Input placeholder='Enter room name' />
+                            </Form.Item>
 
-                        <Form.Item
-                            {...tailFormItemLayout}
-                        >
-                            <Button type="primary" htmlType="submit" onClick={handleSubmit}>
-                                Create
-                            </Button>
-                        </Form.Item>
+                            <Form.Item
+                                {...tailFormItemLayout}
+                            >
+                                <Button type="primary" htmlType="submit" onClick={handleSubmit}>
+                                    Create
+                                </Button>
+                            </Form.Item>
 
-                    </Form>
-                </Card>
-            </div>
+                        </Form>
+                    </Card>
+                </div>
+            )}
         </>
     );
 };
