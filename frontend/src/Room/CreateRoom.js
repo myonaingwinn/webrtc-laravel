@@ -87,10 +87,11 @@ const CreateRoom = () => {
         }
     }, [rooms]);
 
-    const handleSubmit = async () => {
+    const handleSubmit = async() => {
         setDisplay(false);
         if (!(roomName === '')) {
             setRoomName(roomName);
+            form.resetFields();
             console.log('user id is ', socketId);
             console.log('room name is ', roomName);
             socket.emit("create_room", roomName);
