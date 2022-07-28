@@ -50,7 +50,6 @@ const CreateRoom = () => {
     const localVideo = useRef();
     const [display, setDisplay] = useState(false);
     const [normal, setNormal] = useState(true);
-    const [testDiv, setTestDiv] = useState(false);
     const [joinedRoom, setJoinedRoom] = useState(false);
     const [stream, setStream] = useState();
     const [socketId, setSocketId] = useState("");
@@ -100,6 +99,7 @@ const CreateRoom = () => {
                 console.log('room id is ', room.id);
             })
         }
+        setNormal(true);
     };
 
     const createRoom = () => {
@@ -108,6 +108,7 @@ const CreateRoom = () => {
     };
 
     const joinRoom = (room) => {
+        setNormal(false);
         socket.on("usersList", (joinedList) => {
             setJoinedList(joinedList);
             console.log('Join Users are ', joinedList);
@@ -160,9 +161,6 @@ const CreateRoom = () => {
                         <h2 className="rooms_heading" style={{ textAlign: 'center' }}>Available Rooms:</h2>
                         <Button type="primary" htmlType="submit" onClick={createRoom}>
                             Create Room
-                        </Button>
-                        <Button type="primary" htmlType="submit" onClick={test}>
-                            Test
                         </Button>
                         {rooms.length === 0 ? (
                             <h3 className="no_rooms" style={{ textAlign: 'center' }}>No Rooms! Create a room !</h3>
