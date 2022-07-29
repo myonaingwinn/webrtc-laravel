@@ -25,6 +25,12 @@ app.get("/", (req, res) => {
 io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
 
+  socket.emit("your id", socket.id);
+  socket.on("send message", (body) => {
+    io.emit("message", body);
+    console.log("sgsfg", body);
+  });
+
   socket.emit("me", socket.id);
   users.push(socket.id);
 
@@ -64,7 +70,7 @@ io.on("connection", (socket) => {
     socket.join(room.id);
     console.log(`user ${socket.id} joined room: ${room.id}`);
     joinedUsers.push(socket.id);
-    console.log('Number of user in this room is ', joinedUsers.length);
+    console.log("Number of user in this room is ", joinedUsers.length);
     socket.emit("usersList", joinedUsers);
     socket.broadcast.emit("updateUsers", joinedUsers);
   });
@@ -74,23 +80,25 @@ io.on("connection", (socket) => {
   socket.broadcast.emit("updateRooms", rooms);
 
   socket.on("leave_room", (room) => {
-    console.log('user ', socket.id, ' leave from room ', room);
+    console.log("user ", socket.id, " leave from room ", room);
     joinedUsers.splice(socket.id, 1);
     socket.emit("leftUsers", joinedUsers);
     socket.broadcast.emit("updateUsers", joinedUsers);
     socket.disconnect();
-    console.log('Number of users remain in this room is ', joinedUsers.length);
+    console.log("Number of users remain in this room is ", joinedUsers.length);
 
     if (joinedUsers.length == 0) {
-      console.log('no users in this room so this room will delete');
+      console.log("no users in this room so this room will delete");
       rooms.splice(room, 1);
       io.in(rooms).socketsLeave(room);
       socket.leave(room);
       socket.broadcast.emit("updateRooms", rooms);
-      console.log('current rooms are ', rooms);
-      socket.broadcast.emit("updateRooms", rooms);
+      console.log("current rooms are ", rooms);
     }
-  })
+  });
+  socket.emit("getAllRooms", rooms);
+  console.log(rooms);
+  socket.broadcast.emit("updateRooms", rooms);
 });
 
 server.listen(PORT, () => {
