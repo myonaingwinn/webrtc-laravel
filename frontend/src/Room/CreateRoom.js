@@ -132,6 +132,7 @@ const CreateRoom = () => {
   const [chat, setChat] = useState([]);
   const [showEmoji, setShowEmoji] = useState(false);
   const [file, setFile] = useState();
+
   const selectFile = (e) => {
     setMessage(e.target.files[0].name);
     setFile(e.target.files[0]);
@@ -172,7 +173,10 @@ const CreateRoom = () => {
     });
 
     if (joinedRoom === true) {
-      console.log("you are in the room!");
+      chatContainer.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
     }
   }, [messages, rooms]);
 
@@ -476,7 +480,6 @@ const CreateRoom = () => {
                 onEmojiClick={onEmojiClick}
                 pickerStyle={{
                   width: "20%",
-                  display: "absolute",
                   left: "0",
                   bottom: "270px",
                   backgroundColor: "#fff",
