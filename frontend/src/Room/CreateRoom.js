@@ -132,6 +132,7 @@ const CreateRoom = () => {
   const [chat, setChat] = useState([]);
   const [showEmoji, setShowEmoji] = useState(false);
   const [file, setFile] = useState();
+  const chatContainer = useRef(null);
 
   const selectFile = (e) => {
     setMessage(e.target.files[0].name);
@@ -141,8 +142,6 @@ const CreateRoom = () => {
   const onEmojiClick = (event, emojiObject) => {
     setMessage(message + emojiObject.emoji);
   };
-
-  const chatContainer = useRef(null);
 
   useEffect(() => {
     socket.on("me", (id) => {
@@ -172,11 +171,15 @@ const CreateRoom = () => {
       receivedMessage(messages);
     });
 
-    if (joinedRoom === true) {
+    if (showChat === true) {
       chatContainer.current.scrollIntoView({
         behavior: "smooth",
         block: "end",
       });
+    }
+
+    if (joinedRoom === true) {
+      console.log("you are in the room...");
     }
   }, [messages, rooms]);
 
@@ -203,44 +206,55 @@ const CreateRoom = () => {
 
   const joinRoom = (room) => {
     setNormal(false);
-    socket.on("usersList", (joinedList) => {
-      setJoinedList(joinedList);
-      console.log("Join Users are ", joinedList);
-      console.log("Number of user in this room is ", joinedList.length);
-      if (joinedList.length > room.maxParticipantsAllowed) {
-        alert("This Room has reached Maximum Limit!");
-        window.location.href = "/";
-      }
-    });
+    setJoinedRoom(true);
     socket.emit("join_room", room);
     setRoom(room.id);
-    setJoinedRoom(true);
-    console.log("user ", socketId, " joined room: ", room.id);
-    console.log(
-      "maximum participants allowed are ",
-      room.maxParticipantsAllowed
-    );
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
-        setStream(stream);
-        localVideo.current.srcObject = stream;
-      });
+    console.log('user ', socketId, ' joined room: ', room.id);
+    console.log('maximum participants allowed are ', room.maxParticipantsAllowed);
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+      setStream(stream)
+      localVideo.current.srcObject = stream
+    })
+
+    socket.on("full", async function (room) {
+      window.location.href = "/";
+      alert("This Room has reached Maximum Limit!");
+      console.log("this room ", room.id, "is full!");
+      console.log("users has reached maximum limit!");
+    });
+
+    socket.on("updateUsers", (users) => {
+      setUsers(users);
+    });
+
   };
+
+  const deleteRoom = (room) => {
+    console.log('delete room id is', room.id);
+    socket.emit("delete_room", room);
+    window.location.href = "/";
+  }
 
   function receivedMessage(message) {
     setMessages([...messages, message]);
   }
 
   const leaveRoom = (room) => {
-    console.log("this is in leave room");
+    // console.log("leave from ",room.id);
+    // console.log("this is in leave room");
+    // socket.emit("disconnect", () => {
+    //   socket.disconnect();
+    // });
     socket.emit("leave_room", room);
     console.log("user ", socketId, " leave from room ", room);
-    socket.on("leftUsers", (leftList) => {
-      setLeftList(leftList);
-      console.log("Remain Users are ", leftList);
-      console.log("Number of user remain in this room is ", leftList.length);
-    });
+    // window.opener = null;
+    // window.open("http://localhost:3000/", "_self");
+    // window.close();
+    // socket.on("leftUsers", (leftList) => {
+    //   setLeftList(leftList);
+    //   console.log("Remain Users are ", leftList);
+    //   console.log("Number of user remain in this room is ", leftList.length);
+    // });
     window.location.href = "/";
   };
 
@@ -337,6 +351,9 @@ const CreateRoom = () => {
                       <Card size="small" title={room.roomName}>
                         <button onClick={() => joinRoom(room)}>
                           Join Room
+                        </button>
+                        <button onClick={() => deleteRoom(room)}>
+                          Delete Room
                         </button>
                       </Card>
                     </Col>
