@@ -240,21 +240,8 @@ const CreateRoom = () => {
   }
 
   const leaveRoom = (room) => {
-    // console.log("leave from ",room.id);
-    // console.log("this is in leave room");
-    // socket.emit("disconnect", () => {
-    //   socket.disconnect();
-    // });
     socket.emit("leave_room", room);
     console.log("user ", socketId, " leave from room ", room);
-    // window.opener = null;
-    // window.open("http://localhost:3000/", "_self");
-    // window.close();
-    // socket.on("leftUsers", (leftList) => {
-    //   setLeftList(leftList);
-    //   console.log("Remain Users are ", leftList);
-    //   console.log("Number of user remain in this room is ", leftList.length);
-    // });
     window.location.href = "/";
   };
 
