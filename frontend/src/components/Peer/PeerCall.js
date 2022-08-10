@@ -119,6 +119,10 @@ const PeerOne = () => {
     setShowUsers(true);
   };
 
+  const handleRegisterSubmit = (event) => {
+    window.location.href = '/register';
+  }
+
   const handleChange = (event) => {
     setUserName(event.target.value);
   };
@@ -274,9 +278,17 @@ const PeerOne = () => {
             </Form.Item>
 
             <Form.Item {...tailFormItemLayout}>
-              <Button type="primary" htmlType="submit" onClick={handleSubmit}>
-                Enter
-              </Button>
+              <div>
+                <Button type="primary" htmlType="submit" onClick={handleSubmit}>
+                  Enter
+                </Button>
+              </div>
+              <div style={{ marginTop: "20px", display: "flex" }}>
+                <p style={{ marginLeft: "200px", color: "red" }}>No Account?</p>
+                <Button type="primary" htmlType="submit" onClick={handleRegisterSubmit} style={{ marginLeft: "auto" }}>
+                  Register
+                </Button>
+              </div>
             </Form.Item>
           </Form>
         </Card>

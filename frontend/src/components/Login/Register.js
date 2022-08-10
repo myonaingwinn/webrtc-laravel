@@ -64,6 +64,10 @@ const Register = () => {
 
     };
 
+    const handleLoginSubmit=(e)=>{
+        window.location.href = '/';
+    }
+
     const handleNameChange = (e) => {
         setName(e.target.value);
     };
@@ -160,9 +164,17 @@ const Register = () => {
                         <Form.Item
                             {...tailFormItemLayout}
                         >
-                            <Button type="primary" htmlType="submit" onClick={handleSubmit}>
-                                Register
-                            </Button>
+                            <div>
+                                <Button type="primary" htmlType="submit" onClick={handleSubmit}>
+                                    Register
+                                </Button>
+                            </div>
+                            <div style={{ marginTop: "20px", display: "flex" }}>
+                                <p style={{ marginLeft: "200px", color: "red" }}>Have Account?</p>
+                                <Button type="primary" htmlType="submit" onClick={handleLoginSubmit} style={{ marginLeft: "auto" }}>
+                                    Login
+                                </Button>
+                            </div>
                         </Form.Item>
 
                     </Form>
