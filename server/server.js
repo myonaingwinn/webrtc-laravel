@@ -75,7 +75,7 @@ io.on("connection", (socket) => {
       console.log("room full...");
     }
     console.log("Number of clients in this room is ", numClients);
-    socket.broadcast.emit("updateUsers", connectedUsers);
+    socket.emit("updateUsers", connectedUsers);
   });
 
   socket.emit("getAllRooms", rooms);
