@@ -253,6 +253,10 @@ const PeerOne = () => {
               onChange={handleEmailChange}
               rules={[
                 {
+                  type: 'email',
+                  message: 'The input is not valid email!',
+                },
+                {
                   required: true,
                   message: "Please input your email!",
                 },
@@ -268,6 +272,11 @@ const PeerOne = () => {
               value={password}
               onChange={handlePasswordChange}
               rules={[
+                {
+                  type: 'string',
+                  min: 8,
+                  message: 'Password must have at least 8 characters!',
+                },
                 {
                   required: true,
                   message: "Please input your password!",
