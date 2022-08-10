@@ -37,6 +37,13 @@ io.on("connection", (socket) => {
   socket.on("answerCall", (data) => {
     io.to(data.to).emit("callAccepted", data.signal);
   });
+
+  socket.on("endCall", () => {
+    users = users.filter((user) => user !== socket.id);
+    socket.disconnect();
+    socket.broadcast.emit("updateUsers", users);
+    console.log(users);
+  })
 });
 
 const PORT = process.env.SERVER_PORT || 5000;

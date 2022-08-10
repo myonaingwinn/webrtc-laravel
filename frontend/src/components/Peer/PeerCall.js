@@ -61,13 +61,16 @@ const PeerOne = () => {
   const [name, setName] = useState("");
   const [callerSignal, setCallerSignal] = useState();
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   useEffect(() => {
     navigator.mediaDevices.getUserMedia(control).then((str) => {
       setStream(str);
       myVideo.current.srcObject = str;
     });
 
-    console.log("Using useEffect");
+    // console.log("Using useEffect");
     socket.on("me", (id) => {
       setMe(id);
     });
@@ -87,10 +90,30 @@ const PeerOne = () => {
   }, [userList]);
 
   const handleSubmit = async () => {
-    if (!(userName === "")) {
+    if (!(userName === '' || email === '' || password === '')) {
       setUserName(userName);
       var data = { name: userName, userId: me };
       socket.emit("setSocketId", data);
+      await fetch("http://127.0.0.1:8000/api/v1/login", {
+        method: "POST",
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => {
+          res.json();
+          console.log(res);
+        })
+        .catch((err) => console.log(err));
+      // if (!(userName === "")) {
+      //   setUserName(userName);
+      //   var data = { name: userName, userId: me };
+      //   socket.emit("setSocketId", data);
+      // }
     }
     setDisplay(false);
     setShowUsers(true);
@@ -98,6 +121,14 @@ const PeerOne = () => {
 
   const handleChange = (event) => {
     setUserName(event.target.value);
+  };
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
   };
 
   const peerCall = (cliName, id) => {
@@ -134,6 +165,7 @@ const PeerOne = () => {
     setCallAccepted(true);
     // setUserMedia();
     setCallUI(true);
+    setShowUsers(false);
     const peer = new Peer({
       initiator: false,
       trickle: false,
@@ -149,6 +181,14 @@ const PeerOne = () => {
     peer.signal(callerSignal);
     connectionRef.current = peer;
   };
+
+  const endCall = () => {
+    console.log('ending call....');
+    socket.emit("endCall");
+    setCallUI(false);
+    setShowUsers(true);
+    window.location.href = '/list';
+  }
 
   return (
     <>
@@ -166,7 +206,7 @@ const PeerOne = () => {
         }}
       >
         <Card
-          title="User Register"
+          title="User Login"
           style={{
             textAlign: "center",
             width: "800px",
@@ -201,6 +241,38 @@ const PeerOne = () => {
               <Input placeholder="Enter your name" />
             </Form.Item>
 
+            <Form.Item
+              name="email"
+              label="Email"
+              id="email"
+              value={email}
+              onChange={handleEmailChange}
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your email!",
+                },
+              ]}
+            >
+              <Input placeholder="Enter your name" />
+            </Form.Item>
+
+            <Form.Item
+              name="password"
+              label="Password"
+              id="password"
+              value={password}
+              onChange={handlePasswordChange}
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your password!",
+                },
+              ]}
+            >
+              <Input placeholder="Enter your name" />
+            </Form.Item>
+
             <Form.Item {...tailFormItemLayout}>
               <Button type="primary" htmlType="submit" onClick={handleSubmit}>
                 Enter
@@ -218,25 +290,26 @@ const PeerOne = () => {
         <Row gutter={16}>
           {userList.length > 0
             ? userList.map((ulist) => {
-                return (
-                  <Col className="gutter-row" span={6} key={ulist.userId}>
-                    <Card size="small" title={ulist.name}>
-                      {ulist.userId === me ? (
-                        <h4>(You)</h4>
-                      ) : (
-                        <button
-                          onClick={() => peerCall(ulist.name, ulist.userId)}
-                        >
-                          Call
-                        </button>
-                      )}
-                    </Card>
-                  </Col>
-                );
-              })
-            : "No room available!"}
+              return (
+                <Col className="gutter-row" span={6} key={ulist.userId}>
+                  <Card size="small" title={ulist.name}>
+                    {ulist.userId === me ? (
+                      <h4>(You)</h4>
+                    ) : (
+                      <button
+                        onClick={() => peerCall(ulist.name, ulist.userId)}
+                      >
+                        Call
+                      </button>
+                    )}
+                  </Card>
+                </Col>
+              );
+            })
+            : "No user available!"}
         </Row>
       </div>
+
 
       {/* Video Call UI */}
 
@@ -244,6 +317,9 @@ const PeerOne = () => {
         <div id="video-chat-container" className="video-position">
           <video id="local-video" autoPlay ref={myVideo}></video>
           <video id="remote-video" autoPlay ref={remoteVideo}></video>
+        </div>
+        <div>
+          <button className='btn btn-danger' onClick={() => endCall()}>End Call</button>
         </div>
       </div>
     </>
