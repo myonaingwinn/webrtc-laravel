@@ -64,6 +64,14 @@ const PeerOne = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [roomForm, setRoomForm] = useState(false);
+  const [rooms, setRooms] = useState([]);
+  const [roomName, setRoomName] = useState("");
+  const [room, setRoom] = useState("");
+  const localVideo = useRef();
+  const [joinedRoom, setJoinedRoom] = useState(false);
+  const [users, setUsers] = useState([]);
+
   useEffect(() => {
     navigator.mediaDevices.getUserMedia(control).then((str) => {
       setStream(str);
@@ -74,20 +82,32 @@ const PeerOne = () => {
     socket.on("me", (id) => {
       setMe(id);
     });
+    socket.on("disconnect", () => {
+      socket.disconnect();
+    });
     socket.on("getAllUsers", (users) => {
       setUserList(users);
     });
     socket.on("updateAllUsers", (users) => {
       setUserList(users);
     });
-
+    socket.on("getAllRooms", (rooms) => {
+      setRooms(rooms);
+    });
+    // Real time
+    socket.on("updateRooms", (rooms) => {
+      setRooms(rooms);
+    });
     socket.on("callUser", (data) => {
       setReceivingCall(true);
       setCaller(data.from);
       setName(data.name);
       setCallerSignal(data.signal);
     });
-  }, [userList]);
+    if (joinedRoom === true) {
+      console.log("you are in the room...");
+    }
+  }, [userList, rooms]);
 
   const handleSubmit = async () => {
     if (!(userName === '' || email === '' || password === '')) {
@@ -106,17 +126,21 @@ const PeerOne = () => {
       })
         .then((res) => {
           res.json();
+          setDisplay(false);
           console.log(res);
+          setJoinedRoom(false);
+          setShowUsers(true);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          window.location.href = '/';
+        });
       // if (!(userName === "")) {
       //   setUserName(userName);
       //   var data = { name: userName, userId: me };
       //   socket.emit("setSocketId", data);
       // }
     }
-    setDisplay(false);
-    setShowUsers(true);
   };
 
   const handleRegisterSubmit = (event) => {
@@ -191,7 +215,73 @@ const PeerOne = () => {
     socket.emit("endCall");
     setCallUI(false);
     setShowUsers(true);
-    window.location.href = '/list';
+    setJoinedRoom(false);
+  }
+
+  const createRoom = () => {
+    setRoomForm(true);
+    setShowUsers(false);
+    setJoinedRoom(false);
+  };
+
+  const roomCreation = async () => {
+    setRoomForm(false);
+    setJoinedRoom(false);
+    if (!(roomName === "")) {
+      setRoomName(roomName);
+      form.resetFields();
+      console.log("user id is ", me);
+      console.log("room name is ", roomName);
+      socket.emit("create_room", roomName);
+      socket.on("get_room", (room) => {
+        setRooms([...rooms, room]);
+        console.log("room id is ", room.id);
+      });
+    }
+    setShowUsers(true);
+  };
+
+  const joinRoom = (room) => {
+    setJoinedRoom(true);
+    setShowUsers(false);
+    setDisplay(false);
+    socket.emit("join_room", room);
+    setRoom(room.id);
+    console.log('user ', me, ' joined room: ', room.id);
+    console.log('maximum participants allowed are ', room.maxParticipantsAllowed);
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+      setStream(stream)
+      localVideo.current.srcObject = stream
+    })
+    socket.on("full", async function (room) {
+      window.location.href = "/";
+      alert("This Room has reached Maximum Limit!");
+      console.log("this room ", room.id, "is full!");
+      console.log("users has reached maximum limit!");
+    });
+    socket.on("updateAllUsers", (users) => {
+      setUserList(users);
+    });
+  };
+
+  const leaveRoom = (room) => {
+    socket.emit("leave_room", room);
+    console.log("user ", me, " leave from room ", room);
+    setDisplay(false);
+    setJoinedRoom(false);
+    setShowUsers(true);
+  };
+
+  const deleteRoom = (room) => {
+    console.log('delete room id is', room.id);
+    socket.emit("delete_room", room);
+    // socket.on("updateRooms", rooms);
+    rooms.splice(room.id,1);
+    // setDisplay(false);
+    // window.location.reload(false);
+    // setJoinedRoom(false);
+    // setUsers(true);
+    // window.location.href = '/';
   }
 
   return (
@@ -304,32 +394,137 @@ const PeerOne = () => {
       </div>
 
       <div
+        className="container"
         style={{
           display: showUsers ? "block" : "none",
         }}
       >
-        <Row gutter={16}>
-          {userList.length > 0
-            ? userList.map((ulist) => {
-              return (
-                <Col className="gutter-row" span={6} key={ulist.userId}>
-                  <Card size="small" title={ulist.name}>
-                    {ulist.userId === me ? (
-                      <h4>(You)</h4>
-                    ) : (
-                      <button
-                        onClick={() => peerCall(ulist.name, ulist.userId)}
-                      >
-                        Call
+        <div className="rooms-container">
+          <h2 className="rooms_heading" style={{ textAlign: "center" }}>
+            Available Rooms:
+          </h2>
+          <Button type="primary" htmlType="submit" onClick={createRoom}>
+            Create Room
+          </Button>
+          {rooms.length === 0 ? (
+            <h3 className="no_rooms" style={{ textAlign: "center" }}>
+              No Rooms! Create a room !
+            </h3>
+          ) : (
+            <Row gutter={16}>
+              {rooms.map((room) => {
+                return (
+                  <Col className="gutter-row" span={6} key={room.id}>
+                    <Card size="small" title={room.roomName}>
+                      <button onClick={() => joinRoom(room)}>
+                        Join Room
                       </button>
-                    )}
-                  </Card>
-                </Col>
-              );
-            })
-            : "No user available!"}
-        </Row>
+                      <button onClick={() => deleteRoom(room)}>
+                        Delete Room
+                      </button>
+                    </Card>
+                  </Col>
+                );
+              })}
+            </Row>
+          )}
+        </div>
+        <div className="users-container">
+          <h2 className="users_heading" style={{ textAlign: "center" }}>
+            Online Users:
+          </h2>
+          <Row gutter={16}>
+            {userList.length > 0
+              ? userList.map((ulist) => {
+                return (
+                  <Col className="gutter-row" span={6} key={ulist.userId}>
+                    <Card size="small" title={ulist.name}>
+                      {ulist.userId === me ? (
+                        <h4>(You)</h4>
+                      ) : (
+                        <button
+                          onClick={() => peerCall(ulist.name, ulist.userId)}
+                        >
+                          Call
+                        </button>
+                      )}
+                    </Card>
+                  </Col>
+                );
+              })
+              : null}
+          </Row>
+        </div>
       </div>
+
+      {/* Join Room */}
+      {joinedRoom && (
+        <>
+          <div className="video-container" style={{ marginTop: "50px" }}>
+            <h1>Group Video Chat will be here!</h1>
+          </div>
+          <div className="leave-room">
+            <button className="btn btn-primary" onClick={() => leaveRoom(room)}>
+              Leave Room
+            </button>
+          </div>
+        </>
+      )}
+
+
+      {/* Create Room */}
+      {roomForm && (
+        <div
+          className="site-card-wrapper"
+          style={{
+            display: roomForm ? "block" : "none",
+          }}
+        >
+          <Card
+            title="Room Creation"
+            style={{
+              textAlign: "center",
+              width: "800px",
+              margin: "0 auto",
+              marginTop: "80px",
+            }}
+          >
+            <Form
+              {...formItemLayout}
+              form={form}
+              name="room"
+              style={{
+                marginTop: "30px",
+                marginRight: "200px",
+              }}
+              colon={false}
+              requiredMark={false}
+            >
+              <Form.Item
+                name="roomName"
+                label="Room Name"
+                id="name"
+                value={roomName}
+                onChange={(e) => setRoomName(e.target.value)}
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input room name!",
+                  },
+                ]}
+              >
+                <Input placeholder="Enter room name" />
+              </Form.Item>
+
+              <Form.Item {...tailFormItemLayout}>
+                <Button type="primary" htmlType="submit" onClick={roomCreation}>
+                  Create
+                </Button>
+              </Form.Item>
+            </Form>
+          </Card>
+        </div>
+      )}
 
 
       {/* Video Call UI */}
