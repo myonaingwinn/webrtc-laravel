@@ -372,13 +372,14 @@ const CreateRoom = () => {
       {joinedRoom && (
         <>
           <div className="video-container" style={{ marginTop: "50px" }}>
-            <video
+            {/* <video
               playsInline
               muted
               ref={localVideo}
               autoPlay
               style={{ width: "500px", marginLeft: "500px" }}
-            />
+            /> */}
+            <h1>Video Group Chat Will be here!</h1>
           </div>
           <div className="leave-room">
             <button className="btn btn-primary" onClick={() => leaveRoom(room)}>
