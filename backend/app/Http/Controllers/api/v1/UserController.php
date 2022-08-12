@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     public function login(LoginRequest $request)
     {
-        $credentials = $request->only('name', 'email', 'password');
+        $credentials = $request->only('email', 'password');
 
         $user = User::where('email', $credentials['email'])->first();
 

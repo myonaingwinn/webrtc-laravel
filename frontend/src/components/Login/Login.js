@@ -1,16 +1,12 @@
-import {
-    Button,
-    Form,
-    Input,
-} from 'antd';
+import { Button, Form, Input } from "antd";
 import {
     baseUrl,
     isLoggedIn,
     localStorageRemove,
     localStorageSet,
-} from "../../Utilities";
-import React, { useState, useEffect } from 'react';
-import { Card } from 'antd';
+} from "../../helpers/Utilities";
+import React, { useState, useEffect } from "react";
+import { Card } from "antd";
 import { useNavigate } from "react-router-dom";
 
 const formItemLayout = {
@@ -46,7 +42,6 @@ const tailFormItemLayout = {
 };
 
 const Login = () => {
-    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [connecting, setConnecting] = useState(false);
@@ -56,25 +51,25 @@ const Login = () => {
     useEffect(() => {
         if (isLoggedIn()) return navigator("/");
     });
-    const handleNameChange = (e) => {
-        setName(e.target.value);
-    };
+
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
     };
+
     const handlePasswordChange = (e) => {
         setPassword(e.target.value);
     };
+
     const handleRegisterSubmit = (e) => {
         return navigator("/register");
-    }
+    };
+
     const handleSubmit = async () => {
         setConnecting(true);
-        if (!(name === '' || email === '' || password === '')) {
+        if (!(email === "" || password === "")) {
             const data = await fetch(baseUrl + "/login", {
                 method: "POST",
                 body: JSON.stringify({
-                    name: name,
                     email: email,
                     password: password,
                 }),
@@ -86,9 +81,11 @@ const Login = () => {
                 .catch((err) => console.log(err));
 
             console.log(data);
-            console.log('id is ', data.id);
+            console.log("id is ", data.id);
 
-            data.id ? localStorageSet("user", data) : localStorageRemove("user");
+            data.id
+                ? localStorageSet("user", data)
+                : localStorageRemove("user");
 
             setConnecting(false);
         }
@@ -97,42 +94,26 @@ const Login = () => {
     return (
         <>
             <div className="site-card-wrapper">
-                <Card title="Login" style=
-                    {{
-                        textAlign: 'center',
-                        width: '800px',
-                        margin: '0 auto',
-                        marginTop: '80px'
+                <Card
+                    title="Login"
+                    style={{
+                        textAlign: "center",
+                        width: "800px",
+                        margin: "0 auto",
+                        marginTop: "80px",
                     }}
                 >
                     <Form
                         {...formItemLayout}
                         form={form}
                         name="register"
-                        style=
-                        {{
-                            marginTop: '30px',
-                            marginRight: '200px'
+                        style={{
+                            marginTop: "30px",
+                            marginRight: "200px",
                         }}
                         colon={false}
                         requiredMark={false}
                     >
-                        <Form.Item
-                            name="name"
-                            label="Name"
-                            id="name"
-                            value={name}
-                            onChange={handleNameChange}
-                            readOnly={connecting}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input your name!',
-                                },
-                            ]}
-                        >
-                            <Input placeholder='Enter your email' />
-                        </Form.Item>
                         <Form.Item
                             name="email"
                             label="Email"
@@ -142,16 +123,16 @@ const Login = () => {
                             readOnly={connecting}
                             rules={[
                                 {
-                                    type: 'email',
-                                    message: 'The input is not valid email!',
+                                    type: "email",
+                                    message: "The input is not valid email!",
                                 },
                                 {
                                     required: true,
-                                    message: 'Please input your email!',
+                                    message: "Please input your email!",
                                 },
                             ]}
                         >
-                            <Input placeholder='Enter your email' />
+                            <Input placeholder="Enter your email" />
                         </Form.Item>
                         <Form.Item
                             name="password"
@@ -161,35 +142,48 @@ const Login = () => {
                             readOnly={connecting}
                             rules={[
                                 {
-                                    type: 'string',
+                                    type: "string",
                                     min: 8,
-                                    message: 'Password must have at least 8 characters!',
+                                    message:
+                                        "Password must have at least 8 characters!",
                                 },
                                 {
                                     required: true,
-                                    message: 'Please input your password!',
+                                    message: "Please input your password!",
                                 },
                             ]}
                             hasFeedback
                         >
-                            <Input.Password placeholder='Enter your password' />
+                            <Input.Password placeholder="Enter your password" />
                         </Form.Item>
-                        <Form.Item
-                            {...tailFormItemLayout}
-                        >
+                        <Form.Item {...tailFormItemLayout}>
                             <div>
                                 <Button
                                     type="primary"
                                     htmlType="submit"
                                     onClick={handleSubmit}
-                                    disabled={connecting || !(email && password)}
+                                    disabled={
+                                        connecting || !(email && password)
+                                    }
                                 >
                                     Login
                                 </Button>
                             </div>
                             <div style={{ marginTop: "20px", display: "flex" }}>
-                                <p style={{ marginLeft: "150px", color: "red" }}>Have No Account?</p>
-                                <Button type="primary" htmlType="submit" onClick={handleRegisterSubmit} style={{ marginLeft: "auto" }}>
+                                <p
+                                    style={{
+                                        marginLeft: "150px",
+                                        color: "red",
+                                    }}
+                                >
+                                    Have No Account?
+                                </p>
+                                <Button
+                                    type="link"
+                                    htmlType="submit"
+                                    onClick={handleRegisterSubmit}
+                                    style={{ marginLeft: "auto" }}
+                                >
                                     Register
                                 </Button>
                             </div>
@@ -200,4 +194,5 @@ const Login = () => {
         </>
     );
 };
+
 export default Login;
