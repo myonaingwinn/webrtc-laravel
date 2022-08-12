@@ -1,6 +1,8 @@
 import { Button, Col, Row } from "antd";
 import { localStorageRemove } from "../../helpers/Utilities";
 import { useNavigate } from "react-router-dom";
+import UserList from "../User/UserList";
+
 const Home = () => {
     const navigator = useNavigate();
 
@@ -17,6 +19,7 @@ const Home = () => {
                     style={{ background: "#95de64", height: "100vh" }}
                 >
                     <h1>Online Users</h1>
+                    <UserList />
                 </Col>
                 <Col
                     span={14}
