@@ -3,8 +3,16 @@ import {
     Form,
     Input,
 } from 'antd';
-import React, { useState } from 'react';
+import {
+    baseUrl,
+    isLoggedIn,
+    localStorageRemove,
+    localStorageSet,
+} from "../../Utilities";
+import React, { useState, useEffect } from 'react';
 import { Card } from 'antd';
+import { useNavigate } from "react-router-dom";
+
 const formItemLayout = {
     labelCol: {
         xs: {
@@ -23,6 +31,7 @@ const formItemLayout = {
         },
     },
 };
+
 const tailFormItemLayout = {
     wrapperCol: {
         xs: {
@@ -36,51 +45,59 @@ const tailFormItemLayout = {
     },
 };
 
-const Register = () => {
+const Login = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [connecting, setConnecting] = useState(false);
     const [form] = Form.useForm();
+    const navigator = useNavigate();
 
+    useEffect(() => {
+        if (isLoggedIn()) return navigator("/");
+    });
+    const handleNameChange = (e) => {
+        setName(e.target.value);
+    };
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+    };
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+    };
+    const handleRegisterSubmit = (e) => {
+        return navigator("/register");
+    }
     const handleSubmit = async () => {
+        setConnecting(true);
         if (!(name === '' || email === '' || password === '')) {
-            await fetch("http://127.0.0.1:8000/api/v1/register", {
+            const data = await fetch(baseUrl + "/login", {
                 method: "POST",
                 body: JSON.stringify({
-                    name,
-                    email,
-                    password,
+                    name: name,
+                    email: email,
+                    password: password,
                 }),
                 headers: {
                     "Content-Type": "application/json",
                 },
             })
-                .then((res) => {
-                    console.log(res);
-                    window.location.href = '/';
-                })
+                .then((res) => res.json())
                 .catch((err) => console.log(err));
+
+            console.log(data);
+            console.log('id is ', data.id);
+
+            data.id ? localStorageSet("user", data) : localStorageRemove("user");
+
+            setConnecting(false);
         }
-
-    };
-
-    const handleNameChange = (e) => {
-        setName(e.target.value);
-    };
-
-    const handleEmailChange = (e) => {
-        setEmail(e.target.value);
-    };
-
-    const handlePasswordChange = (e) => {
-        setPassword(e.target.value);
     };
 
     return (
-
         <>
             <div className="site-card-wrapper">
-                <Card title="Register" style=
+                <Card title="Login" style=
                     {{
                         textAlign: 'center',
                         width: '800px',
@@ -106,6 +123,7 @@ const Register = () => {
                             id="name"
                             value={name}
                             onChange={handleNameChange}
+                            readOnly={connecting}
                             rules={[
                                 {
                                     required: true,
@@ -113,15 +131,15 @@ const Register = () => {
                                 },
                             ]}
                         >
-                            <Input placeholder='Enter your name' />
+                            <Input placeholder='Enter your email' />
                         </Form.Item>
-
                         <Form.Item
                             name="email"
                             label="Email"
                             id="email"
                             value={email}
                             onChange={handleEmailChange}
+                            readOnly={connecting}
                             rules={[
                                 {
                                     type: 'email',
@@ -135,12 +153,12 @@ const Register = () => {
                         >
                             <Input placeholder='Enter your email' />
                         </Form.Item>
-
                         <Form.Item
                             name="password"
                             label="Password"
                             value={password}
                             onChange={handlePasswordChange}
+                            readOnly={connecting}
                             rules={[
                                 {
                                     type: 'string',
@@ -156,20 +174,30 @@ const Register = () => {
                         >
                             <Input.Password placeholder='Enter your password' />
                         </Form.Item>
-
                         <Form.Item
                             {...tailFormItemLayout}
                         >
-                            <Button type="primary" htmlType="submit" onClick={handleSubmit}>
-                                Register
-                            </Button>
+                            <div>
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    onClick={handleSubmit}
+                                    disabled={connecting || !(email && password)}
+                                >
+                                    Login
+                                </Button>
+                            </div>
+                            <div style={{ marginTop: "20px", display: "flex" }}>
+                                <p style={{ marginLeft: "150px", color: "red" }}>Have No Account?</p>
+                                <Button type="primary" htmlType="submit" onClick={handleRegisterSubmit} style={{ marginLeft: "auto" }}>
+                                    Register
+                                </Button>
+                            </div>
                         </Form.Item>
-
                     </Form>
                 </Card>
             </div>
         </>
     );
 };
-
-export default Register;
+export default Login;
