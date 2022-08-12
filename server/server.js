@@ -19,6 +19,12 @@ let rooms = [];
 io.on("connection", (socket) => {
   socket.emit("me", socket.id);
 
+  socket.emit("your id", socket.id);
+  socket.on("send message", (body) => {
+    io.emit("message", body);
+    console.log("sgsfg", body);
+  });
+
   socket.on("setSocketId", (data) => {
     users.push(data);
     console.log(users);

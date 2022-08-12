@@ -3,6 +3,9 @@ import { Button, Form, Input, Card, Col, Row, Modal } from "antd";
 import Peer from "simple-peer";
 import io from "socket.io-client";
 import "./Peer.css";
+import Image from "./Image";
+import styled from "styled-components";
+import Picker from "emoji-picker-react";
 
 const socket = io.connect("http://localhost:5000");
 
@@ -38,6 +41,80 @@ const tailFormItemLayout = {
   },
 };
 
+const Page = styled.div`
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  align-items: center;
+  flex-direction: column;
+`;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+  max-height: 500px;
+  overflow: auto;
+  width: 400px;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding-bottom: 10px;
+  margin-top: 25px;
+`;
+
+const TextArea = styled.textarea`
+  width: 98%;
+  height: 100px;
+  border-radius: 10px;
+  margin-top: 10px;
+  padding-left: 10px;
+  padding-top: 10px;
+  font-size: 17px;
+  background-color: transparent;
+  border: 1px solid black;
+  outline: none;
+  color: black;
+  letter-spacing: 1px;
+  line-height: 20px;
+  ::placeholder {
+    color: lightgray;
+  }
+`;
+
+const MyRow = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+`;
+
+const MyMessage = styled.div`
+  width: 45%;
+  background-color: pink;
+  color: black;
+  padding: 10px;
+  margin-right: 5px;
+  text-align: center;
+  border-top-right-radius: 10%;
+  border-bottom-right-radius: 10%;
+`;
+
+const PartnerRow = styled(MyRow)`
+  justify-content: flex-start;
+`;
+
+const PartnerMessage = styled.div`
+  width: 45%;
+  background-color: transparent;
+  color: black;
+  border: 1px solid lightgray;
+  padding: 10px;
+  margin-left: 5px;
+  text-align: center;
+  border-top-left-radius: 10%;
+  border-bottom-left-radius: 10%;
+`;
+
 const PeerOne = () => {
   const [form] = Form.useForm();
   const [userName, setUserName] = useState("");
@@ -70,7 +147,23 @@ const PeerOne = () => {
   const [room, setRoom] = useState("");
   const localVideo = useRef();
   const [joinedRoom, setJoinedRoom] = useState(false);
-  const [users, setUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
+  const [showChat, setShowChat] = useState(false);
+  const [chat, setChat] = useState([]);
+  const [showEmoji, setShowEmoji] = useState(false);
+  const [file, setFile] = useState();
+  const chatContainer = useRef(null);
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  const selectFile = (e) => {
+    setMessage(e.target.files[0].name);
+    setFile(e.target.files[0]);
+  };
+
+  const onEmojiClick = (event, emojiObject) => {
+    setMessage(message + emojiObject.emoji);
+  };
 
   useEffect(() => {
     navigator.mediaDevices.getUserMedia(control).then((str) => {
@@ -107,7 +200,17 @@ const PeerOne = () => {
     if (joinedRoom === true) {
       console.log("you are in the room...");
     }
-  }, [userList, rooms]);
+    socket.on("message", (messages) => {
+      receivedMessage(messages);
+    });
+
+    if (showChat === true) {
+      chatContainer.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
+  }, [userList, rooms, messages]);
 
   const handleSubmit = async () => {
     if (!(userName === '' || email === '' || password === '')) {
@@ -264,6 +367,73 @@ const PeerOne = () => {
     });
   };
 
+  function receivedMessage(message) {
+    setMessages([...messages, message]);
+  }
+
+  const sendMessage = () => {
+    if (file) {
+      const messageObject = {
+        id: me,
+        type: "file",
+        body: file,
+        mimeType: file.type,
+        fileName: file.name,
+      };
+      setMessage("");
+      setFile();
+      socket.emit("send message", { ...messageObject });
+      console.log(messageObject);
+    } else {
+      const messageObject = {
+        body: message,
+        id: me,
+        type: "text",
+      };
+      setMessage("");
+      setShowEmoji(false);
+      socket.emit("send message", { ...messageObject });
+      console.log(messageObject);
+    }
+  };
+
+  function renderMessages(message, index) {
+    if (message.type === "file") {
+      const blob = new Blob([message.body], { type: message.type });
+      if (message.id === me) {
+        return (
+          <MyRow key={index}>
+            <Image fileName={message.fileName} blob={blob} />
+          </MyRow>
+        );
+      }
+      return (
+        <PartnerRow key={index}>
+          <Image fileName={message.fileName} blob={blob} />
+        </PartnerRow>
+      );
+    }
+    if (message.id === me) {
+      return (
+        <MyRow key={index}>
+          <MyMessage>{message.body}</MyMessage>
+        </MyRow>
+      );
+    }
+    return (
+      <PartnerRow key={index}>
+        <PartnerMessage>{message.body}</PartnerMessage>
+      </PartnerRow>
+    );
+  }
+
+  const chatUser = () => {
+    setShowChat(true);
+    setCallUI(false);
+    setDisplay(false);
+    setShowUsers(false);
+  };
+
   const leaveRoom = (room) => {
     socket.emit("leave_room", room);
     console.log("user ", me, " leave from room ", room);
@@ -276,7 +446,7 @@ const PeerOne = () => {
     console.log('delete room id is', room.id);
     socket.emit("delete_room", room);
     // socket.on("updateRooms", rooms);
-    rooms.splice(room.id,1);
+    rooms.splice(room.id, 1);
     // setDisplay(false);
     // window.location.reload(false);
     // setJoinedRoom(false);
@@ -419,9 +589,9 @@ const PeerOne = () => {
                       <button onClick={() => joinRoom(room)}>
                         Join Room
                       </button>
-                      <button onClick={() => deleteRoom(room)}>
+                      {/* <button onClick={() => deleteRoom(room)}>
                         Delete Room
-                      </button>
+                      </button> */}
                     </Card>
                   </Col>
                 );
@@ -442,11 +612,18 @@ const PeerOne = () => {
                       {ulist.userId === me ? (
                         <h4>(You)</h4>
                       ) : (
-                        <button
-                          onClick={() => peerCall(ulist.name, ulist.userId)}
-                        >
-                          Call
-                        </button>
+                        <>
+                          <button
+                            onClick={() => peerCall(ulist.name, ulist.userId)}
+                          >
+                            Call
+                          </button>
+                          <button
+                            onClick={() => chatUser(ulist.userId)}
+                          >
+                            Chat
+                          </button>
+                        </>
                       )}
                     </Card>
                   </Col>
@@ -538,6 +715,59 @@ const PeerOne = () => {
           <button className='btn btn-danger' onClick={() => endCall()}>End Call</button>
         </div>
       </div>
+
+      {showChat && (
+        <div
+          className="chat-container"
+          style={{
+            display: showChat ? "block" : "none",
+          }}
+        >
+          <ul className="chat-list" id="chat-list" ref={chatContainer}>
+            {chat.map((chat, idx) => (
+              <li
+                key={idx}
+                className={chat.writer === me ? "chat-me" : "chat-user"}
+              >
+                {chat.writer === me
+                  ? `${chat.message}: ME*`
+                  : `User (${chat.writer.slice(0, 5)}): ${chat.message}`}
+              </li>
+            ))}
+          </ul>
+
+          <Page>
+            <Container>{messages.map(renderMessages)}</Container>
+            <Form onSubmit={(e) => e.preventDefault()}>
+              <TextArea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Say something..."
+              />
+              <input onChange={selectFile} type="file" />
+              <button
+                className="emoji_btn"
+                type="button"
+                onClick={() => setShowEmoji(!showEmoji)}
+              >
+                Emoji
+              </button>
+              <Button onClick={sendMessage}>Send</Button>
+            </Form>
+            {showEmoji && (
+              <Picker
+                onEmojiClick={onEmojiClick}
+                pickerStyle={{
+                  width: "20%",
+                  left: "0",
+                  bottom: "270px",
+                  backgroundColor: "#fff",
+                }}
+              />
+            )}
+          </Page>
+        </div>
+      )}
     </>
   );
 };
