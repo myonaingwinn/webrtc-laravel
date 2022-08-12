@@ -1,10 +1,7 @@
-import {
-    Button,
-    Form,
-    Input,
-} from 'antd';
-import React, { useState } from 'react';
-import { Card } from 'antd';
+import { Button, Form, Input } from "antd";
+import React, { useState } from "react";
+import { Card } from "antd";
+import { useNavigate } from "react-router-dom";
 const formItemLayout = {
     labelCol: {
         xs: {
@@ -41,9 +38,10 @@ const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [form] = Form.useForm();
+    const navigator = useNavigate();
 
     const handleSubmit = async () => {
-        if (!(name === '' || email === '' || password === '')) {
+        if (!(name === "" || email === "" || password === "")) {
             await fetch("http://127.0.0.1:8000/api/v1/register", {
                 method: "POST",
                 body: JSON.stringify({
@@ -57,11 +55,10 @@ const Register = () => {
             })
                 .then((res) => {
                     console.log(res);
-                    window.location.href = '/';
+                    return navigator("/login");
                 })
                 .catch((err) => console.log(err));
         }
-
     };
 
     const handleNameChange = (e) => {
@@ -76,26 +73,29 @@ const Register = () => {
         setPassword(e.target.value);
     };
 
-    return (
+    const handleLoginSubmit = (e) => {
+        return navigator("/login");
+    };
 
+    return (
         <>
             <div className="site-card-wrapper">
-                <Card title="Register" style=
-                    {{
-                        textAlign: 'center',
-                        width: '800px',
-                        margin: '0 auto',
-                        marginTop: '80px'
+                <Card
+                    title="Register"
+                    style={{
+                        textAlign: "center",
+                        width: "800px",
+                        margin: "0 auto",
+                        marginTop: "80px",
                     }}
                 >
                     <Form
                         {...formItemLayout}
                         form={form}
                         name="register"
-                        style=
-                        {{
-                            marginTop: '30px',
-                            marginRight: '200px'
+                        style={{
+                            marginTop: "30px",
+                            marginRight: "200px",
                         }}
                         colon={false}
                         requiredMark={false}
@@ -109,11 +109,11 @@ const Register = () => {
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Please input your name!',
+                                    message: "Please input your name!",
                                 },
                             ]}
                         >
-                            <Input placeholder='Enter your name' />
+                            <Input placeholder="Enter your name" />
                         </Form.Item>
 
                         <Form.Item
@@ -124,16 +124,16 @@ const Register = () => {
                             onChange={handleEmailChange}
                             rules={[
                                 {
-                                    type: 'email',
-                                    message: 'The input is not valid email!',
+                                    type: "email",
+                                    message: "The input is not valid email!",
                                 },
                                 {
                                     required: true,
-                                    message: 'Please input your email!',
+                                    message: "Please input your email!",
                                 },
                             ]}
                         >
-                            <Input placeholder='Enter your email' />
+                            <Input placeholder="Enter your email" />
                         </Form.Item>
 
                         <Form.Item
@@ -143,28 +143,50 @@ const Register = () => {
                             onChange={handlePasswordChange}
                             rules={[
                                 {
-                                    type: 'string',
+                                    type: "string",
                                     min: 8,
-                                    message: 'Password must have at least 8 characters!',
+                                    message:
+                                        "Password must have at least 8 characters!",
                                 },
                                 {
                                     required: true,
-                                    message: 'Please input your password!',
+                                    message: "Please input your password!",
                                 },
                             ]}
                             hasFeedback
                         >
-                            <Input.Password placeholder='Enter your password' />
+                            <Input.Password placeholder="Enter your password" />
                         </Form.Item>
 
-                        <Form.Item
-                            {...tailFormItemLayout}
-                        >
-                            <Button type="primary" htmlType="submit" onClick={handleSubmit}>
-                                Register
-                            </Button>
+                        <Form.Item {...tailFormItemLayout}>
+                            <div>
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    onClick={handleSubmit}
+                                >
+                                    Register
+                                </Button>
+                            </div>
+                            <div style={{ marginTop: "20px", display: "flex" }}>
+                                <p
+                                    style={{
+                                        marginLeft: "200px",
+                                        color: "red",
+                                    }}
+                                >
+                                    Have Account?
+                                </p>
+                                <Button
+                                    type="link"
+                                    htmlType="submit"
+                                    onClick={handleLoginSubmit}
+                                    style={{ marginLeft: "auto" }}
+                                >
+                                    Login
+                                </Button>
+                            </div>
                         </Form.Item>
-
                     </Form>
                 </Card>
             </div>
