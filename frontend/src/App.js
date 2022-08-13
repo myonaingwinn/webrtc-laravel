@@ -6,6 +6,7 @@ import PrivateRoute from "./helpers/PrivateRoute";
 import Header from "./components/Header/Header";
 import RoomList from "./components/Room/RoomList";
 import CreateRoom from "./components/Room/CreateRoom";
+import UserList from "./components/User/UserList";
 
 function App() {
     return (
@@ -38,6 +39,16 @@ function App() {
                         <PrivateRoute>
                             <Header>
                                 <CreateRoom />
+                            </Header>
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/users"
+                    element={
+                        <PrivateRoute>
+                            <Header>
+                                <UserList />
                             </Header>
                         </PrivateRoute>
                     }
