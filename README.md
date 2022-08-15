@@ -2,7 +2,7 @@
 
 ## Configuration
 
--   Frontend => `cp .env.sample .env`.
+-   Frontend => `cp .env.sample .env.local`.
 
 ## Installation
 
