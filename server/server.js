@@ -11,7 +11,7 @@ const io = socket(server, {
     },
 });
 
-const PORT = process.env.SERVER_PORT || 5000;
+const PORT = process.env.PORT || 5000;
 
 const users = {};
 
