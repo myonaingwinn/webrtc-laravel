@@ -89,7 +89,7 @@ const Room = () => {
         width: window.innerWidth / 2,
     };
     useEffect(() => {
-        socketRef.current = io("http://localhost:5000");
+        socketRef.current = io("https://webrtc-server-17-aug.herokuapp.com"); // http://localhost:5000
         createStream();
     }, []);
 
