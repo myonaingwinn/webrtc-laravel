@@ -4,7 +4,7 @@ const RoomList = () => {
     const { Title } = Typography;
 
     return (
-        <Layout className="room-list">
+        <Layout className="room-list common">
             <Title className="title">Room List Component</Title>
         </Layout>
     );

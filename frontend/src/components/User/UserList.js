@@ -4,7 +4,7 @@ const UserList = () => {
     const { Title } = Typography;
 
     return (
-        <Layout className="user-list">
+        <Layout className="user-list common">
             <Title className="title">User List Component</Title>
         </Layout>
     );
