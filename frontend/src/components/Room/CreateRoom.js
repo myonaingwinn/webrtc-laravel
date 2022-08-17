@@ -4,7 +4,7 @@ const CreateRoom = () => {
     const { Title } = Typography;
 
     return (
-        <Layout className="create-room">
+        <Layout className="create-room common">
             <Title className="title">Create Room Component</Title>
         </Layout>
     );

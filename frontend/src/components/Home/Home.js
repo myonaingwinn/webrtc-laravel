@@ -4,7 +4,7 @@ const Home = () => {
     const { Title } = Typography;
 
     return (
-        <Layout className="home">
+        <Layout className="home common">
             <Title className="title">Home Component</Title>
         </Layout>
     );
