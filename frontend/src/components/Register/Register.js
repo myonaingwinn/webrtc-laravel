@@ -2,6 +2,9 @@ import { Button, Form, Input } from "antd";
 import React, { useState } from "react";
 import { Card } from "antd";
 import { useNavigate } from "react-router-dom";
+import {
+    baseUrl,
+} from "../../helpers/Utilities";
 const formItemLayout = {
     labelCol: {
         xs: {
@@ -42,7 +45,7 @@ const Register = () => {
 
     const handleSubmit = async () => {
         if (!(name === "" || email === "" || password === "")) {
-            await fetch("http://127.0.0.1:8000/api/v1/register", {
+            await fetch(baseUrl + "/register", {
                 method: "POST",
                 body: JSON.stringify({
                     name,
