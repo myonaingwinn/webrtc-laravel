@@ -66,7 +66,7 @@ const Video = (props) => {
         props.peer.on("stream", (stream) => {
             ref.current.srcObject = stream;
         });
-    }, []);
+    }, [props]);
 
     return <StyledVideo playsInline autoPlay ref={ref} />;
 };
@@ -91,6 +91,7 @@ const Room = () => {
     useEffect(() => {
         socketRef.current = io("https://webrtc-server-17-aug.herokuapp.com"); // http://localhost:5000
         createStream();
+        // eslint-disable-next-line
     }, []);
 
     function createStream() {
