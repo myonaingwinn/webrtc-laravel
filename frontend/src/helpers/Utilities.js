@@ -3,6 +3,10 @@ export const baseUrl =
     process.env.REACT_APP_BASE_URL ||
     "https://laravel-server-17-aug.herokuapp.com/api/v1";
 
+export const signalServerUrl =
+    process.env.REACT_APP_SIGNAL_SERVER ||
+    "https://webrtc-server-17-aug.herokuapp.com";
+
 // local storage
 export const localStorageSet = (key, value) => {
     localStorage.setItem(key, JSON.stringify(value));

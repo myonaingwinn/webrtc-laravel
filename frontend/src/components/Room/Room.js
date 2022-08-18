@@ -8,6 +8,7 @@ import micunmute from "../../assets/micunmute.svg";
 import webcam from "../../assets/webcam.svg";
 import webcamoff from "../../assets/webcamoff.svg";
 import { useParams } from "react-router-dom";
+import { signalServerUrl } from "../../helpers/Utilities";
 
 const Container = styled.div`
     height: 100vh;
@@ -89,7 +90,7 @@ const Room = () => {
         width: window.innerWidth / 2,
     };
     useEffect(() => {
-        socketRef.current = io("https://webrtc-server-17-aug.herokuapp.com"); // http://localhost:5000
+        socketRef.current = io(signalServerUrl);
         createStream();
         // eslint-disable-next-line
     }, []);
