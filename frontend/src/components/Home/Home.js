@@ -2,6 +2,7 @@ import { Button, Col, Layout, Space, Typography } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import io from "socket.io-client";
+import { signalServerUrl } from "../../helpers/Utilities";
 
 const Home = () => {
     const { Title } = Typography;
@@ -11,7 +12,7 @@ const Home = () => {
     const navigator = useNavigate();
 
     useEffect(() => {
-        socketRef.current = io("https://webrtc-server-17-aug.herokuapp.com"); //http://localhost:5000
+        socketRef.current = io(signalServerUrl);
         socketRef.current.on("rooms", (rooms) => {
             setRoomList(rooms);
             console.log("🚀 ~ file: Home.js ~ rooms", rooms);
