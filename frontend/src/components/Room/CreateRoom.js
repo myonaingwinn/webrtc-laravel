@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import io from "socket.io-client";
 import { localStorageGet } from "../../helpers/Utilities";
+import { signalServerUrl } from "../../helpers/Utilities";
 
 const formItemLayout = {
     labelCol: {
@@ -36,7 +37,7 @@ const tailFormItemLayout = {
     },
 };
 
-const socket = io("http://localhost:5000");
+const socket = io(signalServerUrl);
 
 const CreateRoom = () => {
     const { Title } = Typography;

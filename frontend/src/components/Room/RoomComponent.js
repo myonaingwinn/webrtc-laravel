@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import React, { useState, useEffect } from "react";
 import { UserOutlined } from "@ant-design/icons";
+import { signalServerUrl } from "../../helpers/Utilities";
 
-const socket = io("http://localhost:5000");
+const socket = io(signalServerUrl);
 
 const RoomComponent = () => {
     const [roomList, setRoomList] = useState({});

@@ -10,7 +10,7 @@ import webcamoff from "../../assets/webcamoff.svg";
 import { useParams } from "react-router-dom";
 import { signalServerUrl } from "../../helpers/Utilities";
 
-const socket = io("http://localhost:5000");
+const socket = io(signalServerUrl);
 
 const Container = styled.div`
     height: 100vh;
