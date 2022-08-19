@@ -1,7 +1,19 @@
 .login {
     .card {
-        border-radius: 10px;
+        border-radius: 8px;
+        width: 500px;
+        height: 400px;
+        margin-top: 20vh;
         box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
+    }
+
+    .form {
+        padding-top: 2rem;
+        padding-right: 70px;
+
+        .ant-form-item {
+            margin-bottom: 33px;
+        }
     }
 
     .btn-login {
