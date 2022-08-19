@@ -72,7 +72,7 @@ const CreateRoom = () => {
                     className="card"
                     style={{
                         textAlign: "center",
-                        width: "800px",
+                        width: "500px",
                         margin: "0 auto",
                         marginTop: "80px",
                     }}
@@ -83,7 +83,8 @@ const CreateRoom = () => {
                         name="room"
                         style={{
                             marginTop: "30px",
-                            marginRight: "200px",
+                            marginRight: "50px",
+                            alignItems: "center"
                         }}
                         colon={false}
                         requiredMark={false}
