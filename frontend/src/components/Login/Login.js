@@ -1,4 +1,4 @@
-import { Button, Form, Input, notification } from "antd";
+import { Button, Form, Input, notification, Space } from "antd";
 import {
     baseUrl,
     isLoggedIn,
@@ -7,7 +7,7 @@ import {
 } from "../../helpers/Utilities";
 import React, { useState, useEffect } from "react";
 import { Card } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const formItemLayout = {
     labelCol: {
@@ -59,10 +59,6 @@ const Login = () => {
         setPassword(e.target.value);
     };
 
-    const handleRegisterSubmit = (e) => {
-        return navigator("/register");
-    };
-
     const handleSubmit = async () => {
         if (!(email === "" || password === "")) {
             const data = await fetch(baseUrl + "/login", {
@@ -87,109 +83,94 @@ const Login = () => {
 
             if (data.id) {
                 notification.open({
-                    type: 'success',
-                    message: 'Login Success!',
+                    type: "success",
+                    message: "Login Success!",
                 });
                 return navigator("/");
             } else {
                 notification.open({
-                    type: 'error',
-                    message: 'Login Fail!',
-                    description: 'incorrect mail or password!',
+                    type: "error",
+                    message: "Login Fail!",
+                    description: "Incorrect mail or password.",
                 });
             }
         }
     };
 
     return (
-        <>
-            <div className="site-card-wrapper">
-                <Card
-                    title="Login"
+        <div className="login">
+            <Card
+                title="Login"
+                style={{
+                    textAlign: "center",
+                    width: "800px",
+                    margin: "0 auto",
+                    marginTop: "80px",
+                }}
+            >
+                <Form
+                    {...formItemLayout}
+                    form={form}
+                    name="register"
                     style={{
-                        textAlign: "center",
-                        width: "800px",
-                        margin: "0 auto",
-                        marginTop: "80px",
+                        marginTop: "30px",
+                        marginRight: "200px",
                     }}
+                    colon={false}
+                    requiredMark={false}
                 >
-                    <Form
-                        {...formItemLayout}
-                        form={form}
-                        name="register"
-                        style={{
-                            marginTop: "30px",
-                            marginRight: "200px",
-                        }}
-                        colon={false}
-                        requiredMark={false}
+                    <Form.Item
+                        name="email"
+                        label="Email"
+                        id="email"
+                        value={email}
+                        onChange={handleEmailChange}
+                        rules={[
+                            {
+                                type: "email",
+                                message: "Please enter valid email!",
+                            },
+                            {
+                                required: true,
+                                message: "Please enter your email!",
+                            },
+                        ]}
                     >
-                        <Form.Item
-                            name="email"
-                            label="Email"
-                            id="email"
-                            value={email}
-                            onChange={handleEmailChange}
-                            rules={[
-                                {
-                                    type: "email",
-                                    message: "The input is not valid email!",
-                                },
-                                {
-                                    required: true,
-                                    message: "Please input your email!",
-                                },
-                            ]}
+                        <Input placeholder="Enter your email" />
+                    </Form.Item>
+                    <Form.Item
+                        name="password"
+                        label="Password"
+                        value={password}
+                        onChange={handlePasswordChange}
+                        rules={[
+                            {
+                                required: true,
+                                message: "Please enter your password!",
+                            },
+                        ]}
+                    >
+                        <Input.Password placeholder="Enter your password" />
+                    </Form.Item>
+                    <Form.Item {...tailFormItemLayout}>
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            className="btn-login"
+                            onClick={handleSubmit}
                         >
-                            <Input placeholder="Enter your email" />
-                        </Form.Item>
-                        <Form.Item
-                            name="password"
-                            label="Password"
-                            value={password}
-                            onChange={handlePasswordChange}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Please input your password!",
-                                },
-                            ]}
-                        >
-                            <Input.Password placeholder="Enter your password" />
-                        </Form.Item>
-                        <Form.Item {...tailFormItemLayout}>
-                            <div>
-                                <Button
-                                    type="primary"
-                                    htmlType="submit"
-                                    onClick={handleSubmit}
-                                >
-                                    Login
-                                </Button>
-                            </div>
-                            <div style={{ marginTop: "20px", display: "flex" }}>
-                                <p
-                                    style={{
-                                        marginLeft: "150px",
-                                        color: "red",
-                                    }}
-                                >
-                                    Have No Account?
-                                </p>
-                                <Button
-                                    type="link"
-                                    htmlType="submit"
-                                    onClick={handleRegisterSubmit}
-                                    style={{ marginLeft: "auto" }}
-                                >
-                                    Register
-                                </Button>
-                            </div>
-                        </Form.Item>
-                    </Form>
-                </Card>
-            </div>
-        </>
+                            Login
+                        </Button>
+                    </Form.Item>
+                    <div className="link-register">
+                        <Space>
+                            Don't have an account?
+                            <Link to="/register">Register</Link>
+                        </Space>
+                    </div>
+                </Form>
+            </Card>
+        </div>
     );
 };
 
