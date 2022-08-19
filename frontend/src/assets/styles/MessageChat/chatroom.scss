@@ -1,0 +1,123 @@
+.chatdesign {
+    .chat-container {
+        width: 40vw;
+        height: 80vh;
+        display: flex;
+        float: center;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 20px;
+
+        font-size: large;
+        border: none;
+        border-radius: 15;
+        background-color: rgba(255, 255, 255, 0.601);
+    }
+
+    .msgarea {
+        width: 38vw;
+        height: 60vh;
+        outline: none;
+        border: none;
+        overflow-y: auto;
+        // margin-bottom: 20px;
+        // padding: 13px;
+        padding-top: 10px;
+        position: fixed;
+        background-color: rgba(255, 255, 255, 0.601);
+    }
+
+    .typing-area {
+        width: 35vw;
+        height: 5vh;
+        position: absolute;
+        bottom: 0px;
+        background-color: transparent;
+    }
+
+    .typing-input {
+        width: 30vw;
+        height: 6vh;
+        position: absolute;
+        bottom: 0px;
+        background-color: transparent;
+    }
+
+    .send-button {
+        float: right;
+        width: 40px;
+        height: 40px;
+       
+    }
+    .attachment-btn {
+        float: right;
+        width: 40px;
+        height: 50px;
+        padding: 7px 10px;
+    }
+
+    .previewmediabox {
+        width: auto;
+        max-width: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: none;
+        position: absolute;
+        font-weight: 100;
+        position: relative;
+    }
+    .previewmediaclose {
+        border: none;
+        outline: none;
+        font-weight: 700;
+        position: absolute;
+        right: 10px;
+        transform: rotate(45deg);
+        cursor: pointer;
+    }
+
+    .previewmediabox {
+        width: auto;
+        max-width: 60%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: none;
+        font-weight: 500;
+    }
+
+    .mymsgbox {
+        max-width: 90%;
+        text-align: right;
+        outline: none;
+        border: none;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        margin-right: 0px;
+        overflow-wrap: break-word;
+    }
+    .mymsg {
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+            sans-serif;
+        font-size: 20px;
+        
+    }
+    .othermsgbox {
+        max-width: 90%;
+        text-align: left;
+        border: none;
+        outline: none;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        overflow-wrap: break-word;
+    }
+
+    .othermsg {
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+            sans-serif;
+        font-size: 20px;
+       
+        margin-top: 5px;
+    }
+}

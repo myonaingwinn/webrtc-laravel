@@ -7,6 +7,11 @@ import Header from "./components/Header/Header";
 import RoomList from "./components/Room/RoomList";
 import CreateRoom from "./components/Room/CreateRoom";
 import UserList from "./components/User/UserList";
+// import Chat from "./components/Chat/Chat";
+import Mainform from "./components/MessageChat/Mainform";
+import Chatroom from "./components/MessageChat/Chatroom";
+import Namesec from "./components/MessageChat/Namesec";
+import ChatDesign from "./components/MessageChat/ChatDesign";
 
 function App() {
     return (
@@ -55,6 +60,58 @@ function App() {
                 />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
+
+                <Route
+                    path="/Chatroom"
+                    element={
+                        <PrivateRoute>
+                            <Header>
+                                <Chatroom />
+                            </Header>
+                        </PrivateRoute>
+                    }
+                />
+
+                <Route
+                    path="/message"
+                    element={
+                        <PrivateRoute>
+                            <Header>
+                                <Namesec />
+                            </Header>
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/chat"
+                    element={
+                        <PrivateRoute>
+                            <Header>
+                                <ChatDesign />
+                            </Header>
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/chat/message/mainform"
+                    element={
+                        <PrivateRoute>
+                            <Header>
+                                <Mainform />
+                            </Header>
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/chat/message/:roomname"
+                    element={
+                        <PrivateRoute>
+                            <Header>
+                                <Chatroom />
+                            </Header>
+                        </PrivateRoute>
+                    }
+                />
             </Routes>
         </Router>
     );
