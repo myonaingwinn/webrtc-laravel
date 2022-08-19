@@ -1,4 +1,4 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, notification } from "antd";
 import React, { useState } from "react";
 import { Card } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -58,9 +58,28 @@ const Register = () => {
             })
                 .then((res) => {
                     console.log(res);
-                    return navigator("/login");
+                    if (res.ok) {
+                        notification.open({
+                            type: 'success',
+                            message: 'Register Success!',
+                        });
+                        return navigator("/login");
+                    } else {
+                        notification.open({
+                            type: 'error',
+                            message: 'Register Fail!',
+                        });
+                        return navigator("/register");
+                    }
                 })
-                .catch((err) => console.log(err));
+                .catch((err) => {
+                    notification.open({
+                        type: 'error',
+                        message: 'Register Fail!',
+                    });
+                    console.log(err);
+                    return navigator("/register");
+                });
         }
     };
 
@@ -82,14 +101,17 @@ const Register = () => {
 
     return (
         <>
-            <div className="site-card-wrapper">
+            <div className="register">
                 <Card
                     title="Register"
+                    className="card"
                     style={{
                         textAlign: "center",
                         width: "800px",
                         margin: "0 auto",
                         marginTop: "80px",
+                        borderRadius: "10px",
+                        boxShadow: "rgba(0, 0, 0, 0.08) 0px 4px 12px",
                     }}
                 >
                     <Form

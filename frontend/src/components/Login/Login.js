@@ -1,4 +1,4 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, notification } from "antd";
 import {
     baseUrl,
     isLoggedIn,
@@ -44,7 +44,6 @@ const tailFormItemLayout = {
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [connecting, setConnecting] = useState(false);
     const [form] = Form.useForm();
     const navigator = useNavigate();
 
@@ -65,7 +64,6 @@ const Login = () => {
     };
 
     const handleSubmit = async () => {
-        setConnecting(true);
         if (!(email === "" || password === "")) {
             const data = await fetch(baseUrl + "/login", {
                 method: "POST",
@@ -87,7 +85,19 @@ const Login = () => {
                 ? localStorageSet("user", data)
                 : localStorageRemove("user");
 
-            setConnecting(false);
+            if (data.id) {
+                notification.open({
+                    type: 'success',
+                    message: 'Login Success!',
+                });
+                return navigator("/");
+            } else {
+                notification.open({
+                    type: 'error',
+                    message: 'Login Fail!',
+                    description: 'incorrect mail or password!',
+                });
+            }
         }
     };
 
@@ -120,7 +130,6 @@ const Login = () => {
                             id="email"
                             value={email}
                             onChange={handleEmailChange}
-                            readOnly={connecting}
                             rules={[
                                 {
                                     type: "email",
@@ -139,7 +148,6 @@ const Login = () => {
                             label="Password"
                             value={password}
                             onChange={handlePasswordChange}
-                            readOnly={connecting}
                             rules={[
                                 {
                                     type: "string",
@@ -162,9 +170,6 @@ const Login = () => {
                                     type="primary"
                                     htmlType="submit"
                                     onClick={handleSubmit}
-                                    disabled={
-                                        connecting || !(email && password)
-                                    }
                                 >
                                     Login
                                 </Button>
