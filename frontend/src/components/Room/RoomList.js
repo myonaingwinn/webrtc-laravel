@@ -12,7 +12,7 @@ const RoomList = () => {
             <Title className="title">Room Component</Title>
             <Space direction="vertical">
                 <Link to="/create_room">
-                    <p style={{ marginLeft: "20px", fontWeight: "bold", fontSize: "17px" }}>Goto Create Room<Button type="primary" style={{ marginLeft: "10px" }}><PlusOutlined /></Button></p>
+                    <p className="create-btn-text">Goto Create Room<Button type="primary" className="plus-btn"><PlusOutlined /></Button></p>
                 </Link>
                 <RoomComponent />
             </Space>

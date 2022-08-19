@@ -71,22 +71,11 @@ const CreateRoom = () => {
                 <Card
                     title="Room Creation"
                     className="card"
-                    style={{
-                        textAlign: "center",
-                        width: "500px",
-                        margin: "0 auto",
-                        marginTop: "80px",
-                    }}
                 >
                     <Form
                         {...formItemLayout}
                         form={form}
                         name="room"
-                        style={{
-                            marginTop: "30px",
-                            marginRight: "50px",
-                            alignItems: "center"
-                        }}
                         colon={false}
                         requiredMark={false}
 

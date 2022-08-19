@@ -36,7 +36,7 @@ const RoomComponent = () => {
         return navigator("/rooms");
     }
     return (
-        <Row gutter={16}>
+        <Row gutter={16} className="room-component">
             {roomList &&
                 Object.keys(roomList).map((key) => {
                     return (
@@ -50,7 +50,7 @@ const RoomComponent = () => {
                                         Delete Room
                                     </Button>
                                 </div>
-                                <div style={{ marginTop: "5px" }}>
+                                <div className="user-count">
                                     <UserOutlined /> {roomList[key].usersInRoom.length}
                                 </div>
                             </Card>
