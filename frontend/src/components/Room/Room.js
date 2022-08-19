@@ -82,7 +82,6 @@ const Room = () => {
     const [audioFlag, setAudioFlag] = useState(true);
     const [videoFlag, setVideoFlag] = useState(true);
     const [userUpdate, setUserUpdate] = useState([]);
-    const socketRef = useRef();
     const userVideo = useRef();
     const peersRef = useRef([]);
     const room = useParams();
@@ -93,7 +92,6 @@ const Room = () => {
         width: window.innerWidth / 2,
     };
     useEffect(() => {
-        socketRef.current = io(signalServerUrl);
         createStream();
         // eslint-disable-next-line
     }, []);
@@ -103,14 +101,14 @@ const Room = () => {
             .getUserMedia({ video: videoConstraints, audio: true })
             .then((stream) => {
                 userVideo.current.srcObject = stream;
-                socketRef.current.emit("join room", room.id);
-                socketRef.current.on("all users", (users) => {
+                socket.emit("join room", room.id);
+                socket.on("all users", (users) => {
                     console.log(users);
                     const peers = [];
                     users.forEach((userID) => {
                         const peer = createPeer(
                             userID,
-                            socketRef.current.id,
+                            socket.id,
                             stream
                         );
                         peersRef.current.push({
@@ -124,7 +122,7 @@ const Room = () => {
                     });
                     setPeers(peers);
                 });
-                socketRef.current.on("user joined", (payload) => {
+                socket.on("user joined", (payload) => {
                     console.log("==", payload);
                     const peer = addPeer(
                         payload.signal,
@@ -142,7 +140,7 @@ const Room = () => {
                     setPeers((users) => [...users, peerObj]);
                 });
 
-                socketRef.current.on("user left", (id) => {
+                socket.on("user left", (id) => {
                     const peerObj = peersRef.current.find(
                         (p) => p.peerID === id
                     );
@@ -156,14 +154,14 @@ const Room = () => {
                     setPeers(peers);
                 });
 
-                socketRef.current.on("receiving returned signal", (payload) => {
+                socket.on("receiving returned signal", (payload) => {
                     const item = peersRef.current.find(
                         (p) => p.peerID === payload.id
                     );
                     item.peer.signal(payload.signal);
                 });
 
-                socketRef.current.on("change", (payload) => {
+                socket.on("change", (payload) => {
                     setUserUpdate(payload);
                 });
             });
@@ -177,7 +175,7 @@ const Room = () => {
         });
 
         peer.on("signal", (signal) => {
-            socketRef.current.emit("sending signal", {
+            socket.emit("sending signal", {
                 userToSignal,
                 callerID,
                 signal,
@@ -195,7 +193,7 @@ const Room = () => {
         });
 
         peer.on("signal", (signal) => {
-            socketRef.current.emit("returning signal", { signal, callerID });
+            socket.emit("returning signal", { signal, callerID });
         });
 
         peer.signal(incomingSignal);
@@ -218,13 +216,12 @@ const Room = () => {
                                     .forEach(function (track) {
                                         if (track.kind === "video") {
                                             if (track.enabled) {
-                                                socketRef.current.emit(
+                                                socket.emit(
                                                     "change",
                                                     [
                                                         ...userUpdate,
                                                         {
-                                                            id: socketRef
-                                                                .current.id,
+                                                            id: socket.id,
                                                             videoFlag: false,
                                                             audioFlag,
                                                         },
@@ -233,13 +230,12 @@ const Room = () => {
                                                 track.enabled = false;
                                                 setVideoFlag(false);
                                             } else {
-                                                socketRef.current.emit(
+                                                socket.emit(
                                                     "change",
                                                     [
                                                         ...userUpdate,
                                                         {
-                                                            id: socketRef
-                                                                .current.id,
+                                                            id: socket.id,
                                                             videoFlag: true,
                                                             audioFlag,
                                                         },
@@ -263,13 +259,12 @@ const Room = () => {
                                     .forEach(function (track) {
                                         if (track.kind === "audio") {
                                             if (track.enabled) {
-                                                socketRef.current.emit(
+                                                socket.emit(
                                                     "change",
                                                     [
                                                         ...userUpdate,
                                                         {
-                                                            id: socketRef
-                                                                .current.id,
+                                                            id: socket.id,
                                                             videoFlag,
                                                             audioFlag: false,
                                                         },
@@ -278,13 +273,12 @@ const Room = () => {
                                                 track.enabled = false;
                                                 setAudioFlag(false);
                                             } else {
-                                                socketRef.current.emit(
+                                                socket.emit(
                                                     "change",
                                                     [
                                                         ...userUpdate,
                                                         {
-                                                            id: socketRef
-                                                                .current.id,
+                                                            id: socket.id,
                                                             videoFlag,
                                                             audioFlag: true,
                                                         },
