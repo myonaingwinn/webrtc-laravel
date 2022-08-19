@@ -1,4 +1,4 @@
-import { Layout, Typography } from "antd";
+import { Layout, Typography, Button } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import Peer from "simple-peer";
@@ -9,6 +9,8 @@ import webcam from "../../assets/webcam.svg";
 import webcamoff from "../../assets/webcamoff.svg";
 import { useParams } from "react-router-dom";
 import { signalServerUrl } from "../../helpers/Utilities";
+
+const socket = io("http://localhost:5000");
 
 const Container = styled.div`
     height: 100vh;
@@ -64,6 +66,7 @@ const Video = (props) => {
     const ref = useRef();
 
     useEffect(() => {
+        console.log(signalServerUrl)
         props.peer.on("stream", (stream) => {
             ref.current.srcObject = stream;
         });
@@ -312,18 +315,20 @@ const Room = () => {
                         });
                     }
                     return (
-                        <div key={peer.peerID}>
-                            <Video peer={peer.peer} />
-                            <ControlSmall>
-                                <ImgComponentSmall
-                                    src={videoFlagTemp ? webcam : webcamoff}
-                                />
-                                &nbsp;&nbsp;&nbsp;
-                                <ImgComponentSmall
-                                    src={audioFlagTemp ? micunmute : micmute}
-                                />
-                            </ControlSmall>
-                        </div>
+                        <>
+                            <div key={peer.peerID}>
+                                <Video peer={peer.peer} />
+                                <ControlSmall>
+                                    <ImgComponentSmall
+                                        src={videoFlagTemp ? webcam : webcamoff}
+                                    />
+                                    &nbsp;&nbsp;&nbsp;
+                                    <ImgComponentSmall
+                                        src={audioFlagTemp ? micunmute : micmute}
+                                    />
+                                </ControlSmall>
+                            </div>
+                        </>
                     );
                 })}
             </Container>
