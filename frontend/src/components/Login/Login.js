@@ -150,17 +150,10 @@ const Login = () => {
                             onChange={handlePasswordChange}
                             rules={[
                                 {
-                                    type: "string",
-                                    min: 8,
-                                    message:
-                                        "Password must have at least 8 characters!",
-                                },
-                                {
                                     required: true,
                                     message: "Please input your password!",
                                 },
                             ]}
-                            hasFeedback
                         >
                             <Input.Password placeholder="Enter your password" />
                         </Form.Item>
