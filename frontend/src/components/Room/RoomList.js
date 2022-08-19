@@ -1,7 +1,7 @@
 import { Button, Layout, Space, Typography } from "antd";
 import { Link } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
-import RoomData from "./RoomData";
+import RoomComponent from "./RoomComponent";
 
 
 const RoomList = () => {
@@ -14,7 +14,7 @@ const RoomList = () => {
                 <Link to="/create_room">
                     <p style={{ marginLeft: "20px", fontWeight: "bold", fontSize: "17px" }}>Goto Create Room<Button type="primary" style={{ marginLeft: "10px" }}><PlusOutlined /></Button></p>
                 </Link>
-                <RoomData />
+                <RoomComponent />
             </Space>
         </Layout>
     );

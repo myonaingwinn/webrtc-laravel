@@ -6,7 +6,7 @@ import { UserOutlined } from "@ant-design/icons";
 
 const socket = io("http://localhost:5000");
 
-const RoomData = () => {
+const RoomComponent = () => {
     const [roomList, setRoomList] = useState({});
     const navigator = useNavigate();
 
@@ -60,4 +60,4 @@ const RoomData = () => {
     )
 
 };
-export default RoomData;
+export default RoomComponent;
