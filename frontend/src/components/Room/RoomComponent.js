@@ -36,20 +36,12 @@ const RoomComponent = () => {
         console.log('room id is ', key);
         console.log('room created user id is ', roomList[key].createdBy);
         console.log('login user id is ', id);
-        if (id == roomList[key].createdBy) {
-            socket.emit("delete_room", key);
-            notification.open({
-                type: "success",
-                message: "Room Delete Success!",
-            });
-            return navigator("/rooms");
-        } else {
-            notification.open({
-                type: "error",
-                message: "Room Delete Fail!",
-                description: "you are not owner of the room.you can't delete!",
-            });
-        }
+        socket.emit("delete_room", key);
+        notification.open({
+            type: "success",
+            message: "Room Delete Success!",
+        });
+        return navigator("/rooms");
 
     }
     return (
@@ -63,9 +55,11 @@ const RoomComponent = () => {
                                     <Button type="primary" htmlType="submit" onClick={() => handleJoinRoom(key)} className="btn btn-sm">
                                         Join Room
                                     </Button>
-                                    <Button type="danger" htmlType="submit" onClick={() => deleteRoom(key)} className="btn btn-sm">
-                                        Delete Room
-                                    </Button>
+                                    {id == roomList[key].createdBy && (
+                                        <Button type="danger" htmlType="submit" onClick={() => deleteRoom(key)} className="btn btn-sm">
+                                            Delete Room
+                                        </Button>
+                                    )}
                                 </div>
                                 <div className="user-count">
                                     <UserOutlined /> {roomList[key].usersInRoom.length}
