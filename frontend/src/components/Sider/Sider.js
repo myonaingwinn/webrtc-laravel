@@ -41,7 +41,7 @@ const SiderLeft = (props) => {
             navigator(key);
         } else {
             await localStorageRemove("user");
-            navigator("login");
+            navigator("/login");
         }
     };
 
