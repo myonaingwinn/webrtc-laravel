@@ -2,18 +2,19 @@
     min-height: 100vh;
 
     .sider-left {
-        margin-top: 64px;
+        margin-top: 60px;
         overflow: auto;
         height: 100vh;
         position: fixed;
         left: 0;
         top: 0;
         bottom: 0;
-        z-index: 0.5;
+        z-index: 1;
         box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
     }
 
     .content {
         margin: 80px 15px 15px 215px;
+        overflow: auto;
     }
 }
