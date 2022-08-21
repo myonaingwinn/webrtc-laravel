@@ -36,11 +36,11 @@ const SiderLeft = (props) => {
         getItem("Logout", "/logout", <LogoutOutlined />),
     ];
 
-    const handleMenuClick = async (key) => {
+    const handleMenuClick = (key) => {
         if (key !== "/logout") {
             navigator(key);
         } else {
-            await localStorageRemove("user");
+            localStorageRemove("user");
             navigator("/login");
         }
     };
