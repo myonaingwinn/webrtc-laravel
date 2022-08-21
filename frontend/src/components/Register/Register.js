@@ -1,37 +1,35 @@
-import { Button, Form, Input } from "antd";
+import { Button, Col, Form, Input, notification, Row, Space } from "antd";
 import React, { useState } from "react";
 import { Card } from "antd";
-import { useNavigate } from "react-router-dom";
-import {
-    baseUrl,
-} from "../../helpers/Utilities";
+import { Link, useNavigate } from "react-router-dom";
+import { baseUrl } from "../../helpers/Utilities";
 const formItemLayout = {
     labelCol: {
         xs: {
-            span: 8,
+            span: 6,
         },
         sm: {
-            span: 8,
+            span: 6,
         },
     },
     wrapperCol: {
         xs: {
-            span: 24,
+            span: 18,
         },
         sm: {
-            span: 16,
+            span: 18,
         },
     },
 };
 const tailFormItemLayout = {
     wrapperCol: {
         xs: {
-            span: 24,
-            offset: 0,
+            span: 18,
+            offset: 6,
         },
         sm: {
-            span: 16,
-            offset: 8,
+            span: 18,
+            offset: 6,
         },
     },
 };
@@ -58,9 +56,28 @@ const Register = () => {
             })
                 .then((res) => {
                     console.log(res);
-                    return navigator("/login");
+                    if (res.ok) {
+                        notification.open({
+                            type: "success",
+                            message: "Register Success!",
+                        });
+                        return navigator("/login");
+                    } else {
+                        notification.open({
+                            type: "error",
+                            message: "Register Fail!",
+                        });
+                        return navigator("/register");
+                    }
                 })
-                .catch((err) => console.log(err));
+                .catch((err) => {
+                    notification.open({
+                        type: "error",
+                        message: "Register Fail!",
+                    });
+                    console.log(err);
+                    return navigator("/register");
+                });
         }
     };
 
@@ -76,32 +93,17 @@ const Register = () => {
         setPassword(e.target.value);
     };
 
-    const handleLoginSubmit = (e) => {
-        return navigator("/login");
-    };
-
     return (
-        <>
-            <div className="site-card-wrapper">
-                <Card
-                    title="Register"
-                    style={{
-                        textAlign: "center",
-                        width: "800px",
-                        margin: "0 auto",
-                        marginTop: "80px",
-                    }}
-                >
+        <Row className="register" align="center">
+            <Col>
+                <Card title="Register" className="card">
                     <Form
                         {...formItemLayout}
                         form={form}
                         name="register"
-                        style={{
-                            marginTop: "30px",
-                            marginRight: "200px",
-                        }}
                         colon={false}
                         requiredMark={false}
+                        className="form"
                     >
                         <Form.Item
                             name="name"
@@ -112,7 +114,7 @@ const Register = () => {
                             rules={[
                                 {
                                     required: true,
-                                    message: "Please input your name!",
+                                    message: "Please enter your name!",
                                 },
                             ]}
                         >
@@ -128,11 +130,11 @@ const Register = () => {
                             rules={[
                                 {
                                     type: "email",
-                                    message: "The input is not valid email!",
+                                    message: "Please enter valid email!",
                                 },
                                 {
                                     required: true,
-                                    message: "Please input your email!",
+                                    message: "Please enter your email!",
                                 },
                             ]}
                         >
@@ -153,7 +155,7 @@ const Register = () => {
                                 },
                                 {
                                     required: true,
-                                    message: "Please input your password!",
+                                    message: "Please enter your password!",
                                 },
                             ]}
                             hasFeedback
@@ -162,38 +164,25 @@ const Register = () => {
                         </Form.Item>
 
                         <Form.Item {...tailFormItemLayout}>
-                            <div>
-                                <Button
-                                    type="primary"
-                                    htmlType="submit"
-                                    onClick={handleSubmit}
-                                >
-                                    Register
-                                </Button>
-                            </div>
-                            <div style={{ marginTop: "20px", display: "flex" }}>
-                                <p
-                                    style={{
-                                        marginLeft: "200px",
-                                        color: "red",
-                                    }}
-                                >
-                                    Have Account?
-                                </p>
-                                <Button
-                                    type="link"
-                                    htmlType="submit"
-                                    onClick={handleLoginSubmit}
-                                    style={{ marginLeft: "auto" }}
-                                >
-                                    Login
-                                </Button>
-                            </div>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                className="btn-register"
+                                onClick={handleSubmit}
+                            >
+                                Register
+                            </Button>
                         </Form.Item>
+                        <div className="link-login">
+                            <Space>
+                                Already have an account?
+                                <Link to="/login">Login</Link>
+                            </Space>
+                        </div>
                     </Form>
                 </Card>
-            </div>
-        </>
+            </Col>
+        </Row>
     );
 };
 
