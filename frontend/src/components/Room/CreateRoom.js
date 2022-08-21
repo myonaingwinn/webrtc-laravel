@@ -3,36 +3,34 @@ import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import io from "socket.io-client";
-import { localStorageGet } from "../../helpers/Utilities";
-import { signalServerUrl } from "../../helpers/Utilities";
+import { localStorageGet, signalServerUrl } from "../../helpers/Utilities";
 
 const formItemLayout = {
     labelCol: {
         xs: {
-            span: 8,
+            span: 5,
         },
         sm: {
-            span: 8,
+            span: 5,
         },
     },
     wrapperCol: {
         xs: {
-            span: 24,
+            span: 19,
         },
         sm: {
-            span: 16,
+            span: 19,
         },
     },
 };
+
 const tailFormItemLayout = {
     wrapperCol: {
         xs: {
-            span: 24,
-            offset: 0,
+            offset: 1,
         },
         sm: {
-            span: 24,
-            offset: 8,
+            offset: 1,
         },
     },
 };
@@ -52,11 +50,21 @@ const CreateRoom = () => {
         if (!(roomName === "")) {
             setRoomName(roomName);
             form.resetFields();
-            var roomObj = { id: roomId, name: roomName, usersInRoom: [], createdBy: id };
+            var roomObj = {
+                id: roomId,
+                name: roomName,
+                usersInRoom: [],
+                createdBy: id,
+            };
             socket.emit("create_room", roomObj);
             socket.on("get_room", (roomObj) => {
                 setRoomList([...roomList, roomObj]);
-                console.log("room id is ", roomObj.id, " and room name is ", roomObj.roomName);
+                console.log(
+                    "room id is ",
+                    roomObj.id,
+                    " and room name is ",
+                    roomObj.roomName
+                );
             });
             navigator("/rooms");
         }
@@ -64,32 +72,28 @@ const CreateRoom = () => {
 
     return (
         <Layout className="create-room common">
-            <Title className="title">Create Room Component</Title>
-            <div
-                className="site-card-wrapper"
-            >
-                <Card
-                    title="Room Creation"
-                    className="card"
-                >
+            <Title className="title">
+                Create a Room to chat with your friends
+            </Title>
+            <div className="site-card-wrapper">
+                <Card title="Room Creation" className="card">
                     <Form
                         {...formItemLayout}
                         form={form}
                         name="room"
                         colon={false}
                         requiredMark={false}
-
                     >
                         <Form.Item
                             name="roomName"
-                            label="Room Name"
+                            label="Room name :"
                             id="name"
                             value={roomName}
                             onChange={(e) => setRoomName(e.target.value)}
                             rules={[
                                 {
                                     required: true,
-                                    message: "Please input room name!",
+                                    message: "Please enter room name.",
                                 },
                             ]}
                         >
@@ -97,7 +101,11 @@ const CreateRoom = () => {
                         </Form.Item>
 
                         <Form.Item {...tailFormItemLayout}>
-                            <Button type="primary" htmlType="submit" onClick={createRoom}>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                onClick={createRoom}
+                            >
                                 Create
                             </Button>
                         </Form.Item>
