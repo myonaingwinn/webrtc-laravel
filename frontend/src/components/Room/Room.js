@@ -9,6 +9,7 @@ import webcam from "../../assets/webcam.svg";
 import webcamoff from "../../assets/webcamoff.svg";
 import { useParams } from "react-router-dom";
 import { signalServerUrl } from "../../helpers/Utilities";
+import GroupChat from "../Chat/GroupChat";
 
 const socket = io(signalServerUrl);
 
@@ -66,7 +67,7 @@ const Video = (props) => {
     const ref = useRef();
 
     useEffect(() => {
-        console.log(signalServerUrl)
+        console.log(signalServerUrl);
         props.peer.on("stream", (stream) => {
             ref.current.srcObject = stream;
         });
@@ -82,9 +83,11 @@ const Room = () => {
     const [audioFlag, setAudioFlag] = useState(true);
     const [videoFlag, setVideoFlag] = useState(true);
     const [userUpdate, setUserUpdate] = useState([]);
+    const [chat, setChat] = useState([]);
     const userVideo = useRef();
     const peersRef = useRef([]);
     const room = useParams();
+    const [message, setMessage] = useState("");
     const videoConstraints = {
         minAspectRatio: 1.333,
         minFrameRate: 60,
@@ -102,15 +105,13 @@ const Room = () => {
             .then((stream) => {
                 userVideo.current.srcObject = stream;
                 socket.emit("join room", room.id);
+                socket.on("chat", room.id);
+                socket.emit("message", room.id);
                 socket.on("all users", (users) => {
                     console.log(users);
                     const peers = [];
                     users.forEach((userID) => {
-                        const peer = createPeer(
-                            userID,
-                            socket.id,
-                            stream
-                        );
+                        const peer = createPeer(userID, socket.id, stream);
                         peersRef.current.push({
                             peerID: userID,
                             peer,
@@ -216,31 +217,25 @@ const Room = () => {
                                     .forEach(function (track) {
                                         if (track.kind === "video") {
                                             if (track.enabled) {
-                                                socket.emit(
-                                                    "change",
-                                                    [
-                                                        ...userUpdate,
-                                                        {
-                                                            id: socket.id,
-                                                            videoFlag: false,
-                                                            audioFlag,
-                                                        },
-                                                    ]
-                                                );
+                                                socket.emit("change", [
+                                                    ...userUpdate,
+                                                    {
+                                                        id: socket.id,
+                                                        videoFlag: false,
+                                                        audioFlag,
+                                                    },
+                                                ]);
                                                 track.enabled = false;
                                                 setVideoFlag(false);
                                             } else {
-                                                socket.emit(
-                                                    "change",
-                                                    [
-                                                        ...userUpdate,
-                                                        {
-                                                            id: socket.id,
-                                                            videoFlag: true,
-                                                            audioFlag,
-                                                        },
-                                                    ]
-                                                );
+                                                socket.emit("change", [
+                                                    ...userUpdate,
+                                                    {
+                                                        id: socket.id,
+                                                        videoFlag: true,
+                                                        audioFlag,
+                                                    },
+                                                ]);
                                                 track.enabled = true;
                                                 setVideoFlag(true);
                                             }
@@ -259,31 +254,25 @@ const Room = () => {
                                     .forEach(function (track) {
                                         if (track.kind === "audio") {
                                             if (track.enabled) {
-                                                socket.emit(
-                                                    "change",
-                                                    [
-                                                        ...userUpdate,
-                                                        {
-                                                            id: socket.id,
-                                                            videoFlag,
-                                                            audioFlag: false,
-                                                        },
-                                                    ]
-                                                );
+                                                socket.emit("change", [
+                                                    ...userUpdate,
+                                                    {
+                                                        id: socket.id,
+                                                        videoFlag,
+                                                        audioFlag: false,
+                                                    },
+                                                ]);
                                                 track.enabled = false;
                                                 setAudioFlag(false);
                                             } else {
-                                                socket.emit(
-                                                    "change",
-                                                    [
-                                                        ...userUpdate,
-                                                        {
-                                                            id: socket.id,
-                                                            videoFlag,
-                                                            audioFlag: true,
-                                                        },
-                                                    ]
-                                                );
+                                                socket.emit("change", [
+                                                    ...userUpdate,
+                                                    {
+                                                        id: socket.id,
+                                                        videoFlag,
+                                                        audioFlag: true,
+                                                    },
+                                                ]);
                                                 track.enabled = true;
                                                 setAudioFlag(true);
                                             }
@@ -318,13 +307,18 @@ const Room = () => {
                                     />
                                     &nbsp;&nbsp;&nbsp;
                                     <ImgComponentSmall
-                                        src={audioFlagTemp ? micunmute : micmute}
+                                        src={
+                                            audioFlagTemp ? micunmute : micmute
+                                        }
                                     />
                                 </ControlSmall>
                             </div>
                         </>
                     );
                 })}
+            </Container>
+            <Container>
+                <GroupChat roomId={room.id} />
             </Container>
         </Layout>
     );

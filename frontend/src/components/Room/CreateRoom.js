@@ -52,11 +52,22 @@ const CreateRoom = () => {
         if (!(roomName === "")) {
             setRoomName(roomName);
             form.resetFields();
-            var roomObj = { id: roomId, name: roomName, usersInRoom: [], createdBy: id };
+            var roomObj = {
+                id: roomId,
+                name: roomName,
+                usersInRoom: [],
+                chat: [],
+                createdBy: id,
+            };
             socket.emit("create_room", roomObj);
             socket.on("get_room", (roomObj) => {
                 setRoomList([...roomList, roomObj]);
-                console.log("room id is ", roomObj.id, " and room name is ", roomObj.roomName);
+                console.log(
+                    "room id is ",
+                    roomObj.id,
+                    " and room name is ",
+                    roomObj.roomName
+                );
             });
             navigator("/rooms");
         }
@@ -65,20 +76,14 @@ const CreateRoom = () => {
     return (
         <Layout className="create-room common">
             <Title className="title">Create Room Component</Title>
-            <div
-                className="site-card-wrapper"
-            >
-                <Card
-                    title="Room Creation"
-                    className="card"
-                >
+            <div className="site-card-wrapper">
+                <Card title="Room Creation" className="card">
                     <Form
                         {...formItemLayout}
                         form={form}
                         name="room"
                         colon={false}
                         requiredMark={false}
-
                     >
                         <Form.Item
                             name="roomName"
@@ -97,7 +102,11 @@ const CreateRoom = () => {
                         </Form.Item>
 
                         <Form.Item {...tailFormItemLayout}>
-                            <Button type="primary" htmlType="submit" onClick={createRoom}>
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                onClick={createRoom}
+                            >
                                 Create
                             </Button>
                         </Form.Item>
