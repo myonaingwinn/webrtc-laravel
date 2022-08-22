@@ -1,14 +1,13 @@
 import { Layout } from "antd";
 import SiderLeft from "../Sider/Sider";
 import { Avatar, Space, Dropdown, Menu } from "antd";
-import { localStorageGet } from "../../helpers/Utilities";
-import React, { useState } from "react";
+import { localStorageGet, localStorageRemove } from "../../helpers/Utilities";
+import { useNavigate } from "react-router-dom";
 
 const { Header } = Layout;
 
 const HeaderTop = (props) => {
-    const user = localStorageGet("user");
-    const [name, setName] = useState(user.name);
+    const { name } = localStorageGet("user");
     const ColorList = [
         "#f56a00",
         "#7265e6",
@@ -19,21 +18,22 @@ const HeaderTop = (props) => {
     ];
     const id = Math.floor(Math.random() * (5 - 0 + 1)) + 0;
     const color = ColorList[id];
+    const navigator = useNavigate();
+
+    const logout = () => {
+        localStorageRemove("user");
+        navigator("/login");
+    };
 
     const menu = (
         <Menu
             items={[
                 {
                     key: "1",
-                    label: (
-                        <a
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href="https://www.antgroup.com"
-                        >
-                            Logout
-                        </a>
-                    ),
+                    label: "Logout",
+                    onClick: () => {
+                        logout();
+                    },
                 },
             ]}
         />
