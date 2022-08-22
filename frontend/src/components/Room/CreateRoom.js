@@ -93,6 +93,7 @@ const CreateRoom = () => {
                         name="room"
                         colon={false}
                         requiredMark={false}
+                        onFinish={() => createRoom()}
                     >
                         <Form.Item
                             name="roomName"
@@ -114,7 +115,6 @@ const CreateRoom = () => {
                             <Button
                                 type="primary"
                                 htmlType="submit"
-                                onClick={createRoom}
                             >
                                 Create
                             </Button>
