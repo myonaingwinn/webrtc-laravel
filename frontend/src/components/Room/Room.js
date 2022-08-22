@@ -9,6 +9,7 @@ import webcam from "../../assets/webcam.svg";
 import webcamoff from "../../assets/webcamoff.svg";
 import { useParams } from "react-router-dom";
 import { signalServerUrl } from "../../helpers/Utilities";
+import GroupChat from "../Chat/GroupChat";
 
 const socket = io(signalServerUrl);
 
@@ -102,6 +103,7 @@ const Room = () => {
             .then((stream) => {
                 userVideo.current.srcObject = stream;
                 socket.emit("join room", room.id);
+                socket.emit("chat", room.id);
                 socket.on("all users", (users) => {
                     console.log(users);
                     const peers = [];
@@ -311,6 +313,9 @@ const Room = () => {
                         </>
                     );
                 })}
+            </Container>
+            <Container>
+                <GroupChat roomId={room.id} />
             </Container>
         </Layout>
     );

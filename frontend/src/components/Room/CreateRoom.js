@@ -1,4 +1,12 @@
-import { Button, Layout, Typography, Form, Input, Card, notification } from "antd";
+import {
+    Button,
+    Layout,
+    Typography,
+    Form,
+    Input,
+    Card,
+    notification,
+} from "antd";
 import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
@@ -54,6 +62,7 @@ const CreateRoom = () => {
                 id: roomId,
                 name: roomName,
                 usersInRoom: [],
+                chat: [],
                 createdBy: id,
             };
             socket.emit("create_room", roomObj);
@@ -112,10 +121,7 @@ const CreateRoom = () => {
                         </Form.Item>
 
                         <Form.Item {...tailFormItemLayout}>
-                            <Button
-                                type="primary"
-                                htmlType="submit"
-                            >
+                            <Button type="primary" htmlType="submit">
                                 Create
                             </Button>
                         </Form.Item>
