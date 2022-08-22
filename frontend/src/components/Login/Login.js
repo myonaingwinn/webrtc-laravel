@@ -8,6 +8,11 @@ import {
 import React, { useState, useEffect } from "react";
 import { Card } from "antd";
 import { useNavigate } from "react-router-dom";
+import io from "socket.io-client";
+
+const SERVER_URL = "http://localhost:5000";
+
+export const socket = io(SERVER_URL);
 
 const formItemLayout = {
     labelCol: {
@@ -46,10 +51,20 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [connecting, setConnecting] = useState(false);
     const [form] = Form.useForm();
+    const [me, setMe] = useState();
     const navigator = useNavigate();
+    const [userName, setUserName] = useState();
 
     useEffect(() => {
-        if (isLoggedIn()) return navigator("/");
+        socket.on("me", (id) => {
+            setMe(id);
+        });
+        if (isLoggedIn()) {
+            console.log("setUserName value :", userName);
+            var data = { name: userName, userId: me };
+            socket.emit("setSocketId", data);
+            return navigator("/users");
+        }
     });
 
     const handleEmailChange = (e) => {
@@ -81,6 +96,8 @@ const Login = () => {
                 .catch((err) => console.log(err));
 
             console.log(data);
+            data["me"] = me;
+            setUserName(data.name);
             console.log("id is ", data.id);
 
             data.id

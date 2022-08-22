@@ -1,6 +1,65 @@
 .user-list {
+    border-radius: 10px;
+    background-color: #fff;
+    width: auto;
+    height: 90vh;
+
     .title {
-        align-self: center;
+        text-align: center;
         margin-top: 30px;
     }
+}
+
+.user-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // text-align: center;
+    width: 50px;
+    height: 100%;
+    // border: 1px solid deeppink;
+}
+
+.avatar {
+
+    background-color: #f56a00;
+    vertical-align: middle;
+}
+
+.phone {
+    width: 20px;
+    height: 10px;
+    font-size: 1rem;
+}
+
+.user-name {
+    margin-left: 20px;
+    margin-top: 3px;
+    width: 150px;
+}
+
+.btn {
+    margin-top: 10px;
+}
+
+.remoteVideo {
+    margin-top: 80px;
+    border: 1px solid black;
+}
+
+.localVideo {
+    border: 1px solid black;
+}
+
+.controlBtn {
+    text-align: center;
+    padding-top: 10px;
+    height: 50px;
+    width: 98.4%;
+    background-color: #40a9ff;
+}
+
+.leaveBtn {
+    background-color: red;
+    border-radius: 10px;
 }
