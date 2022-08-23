@@ -3,10 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import Peer from "simple-peer";
 import styled from "styled-components";
-// import micmute from "../../assets/micmute.svg";
-// import micunmute from "../../assets/micunmute.svg";
-// import webcam from "../../assets/webcam.svg";
-// import webcamoff from "../../assets/webcamoff.svg";
 import { useNavigate, useParams } from "react-router-dom";
 import { signalServerUrl } from "../../helpers/Utilities";
 import ControlButtons from "./ControlButtons";
@@ -19,18 +15,6 @@ const Container = styled.div`
     height: 100vh;
     width: 20%;
 `;
-
-// const Controls = styled.div`
-//     margin: 3px;
-//     padding: 5px;
-//     height: 27px;
-//     width: 98%;
-//     background-color: rgba(255, 226, 104, 0.1);
-//     margin-top: -8.5vh;
-//     filter: brightness(1);
-//     z-index: 1;
-//     border-radius: 6px;
-// `;
 
 const ControlSmall = styled.div`
     margin: 3px;
@@ -45,17 +29,6 @@ const ControlSmall = styled.div`
     justify-content: center;
     gap: 10px;
 `;
-
-// const ImgComponent = styled.img`
-//     cursor: pointer;
-//     height: 25px;
-// `;
-
-// const ImgComponentSmall = styled.img`
-//     height: 15px;
-//     text-align: left;
-//     opacity: 0.5;
-// `;
 
 const StyledVideo = styled.video`
     width: 100%;
@@ -107,7 +80,7 @@ const Room = () => {
             .then((stream) => {
                 userVideo.current.srcObject = stream;
                 socket.emit("join room", room.id);
-                socket.on("all users", (users) => {
+                socket.on("all users in a room", (users) => {
                     console.log(users);
                     const peers = [];
                     users.forEach((userID) => {
@@ -123,6 +96,7 @@ const Room = () => {
                     });
                     setPeers(peers);
                 });
+
                 socket.on("user joined", (payload) => {
                     console.log("==", payload);
                     const peer = addPeer(
@@ -277,17 +251,6 @@ const Room = () => {
             <Title className="title">Room Component</Title>
             <Container>
                 <StyledVideo muted ref={userVideo} autoPlay playsInline />
-                {/* <Controls>
-                    <ImgComponent
-                        src={videoFlag ? webcam : webcamoff}
-                        onClick={handleVideoControlClick}
-                    />
-                    &nbsp;&nbsp;&nbsp;
-                    <ImgComponent
-                        src={audioFlag ? micunmute : micmute}
-                        onClick={handleAudioControlClick}
-                    />
-                </Controls> */}
                 {peers.map((peer, index) => {
                     let audioFlagTemp = true;
                     let videoFlagTemp = true;
@@ -306,15 +269,6 @@ const Room = () => {
                     return (
                         <div key={peer.peerID}>
                             <Video peer={peer.peer} />
-                            {/* <ControlSmall>
-                                <ImgComponentSmall
-                                    src={videoFlagTemp ? webcam : webcamoff}
-                                />
-                                &nbsp;&nbsp;&nbsp;
-                                <ImgComponentSmall
-                                    src={audioFlagTemp ? micunmute : micmute}
-                                />
-                            </ControlSmall> */}
                             <ControlSmall>
                                 <VideoControl videoFlag={videoFlagTemp} small />
                                 <AudioControl audioFlag={audioFlagTemp} small />
