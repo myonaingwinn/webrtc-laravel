@@ -1,4 +1,5 @@
 import { Layout } from "antd";
+import { Link } from "react-router-dom";
 import SiderLeft from "../Sider/Sider";
 import { Avatar, Space, Dropdown, Menu } from "antd";
 import { localStorageGet, localStorageRemove } from "../../helpers/Utilities";
@@ -42,6 +43,9 @@ const HeaderTop = (props) => {
     return (
         <Layout className="header">
             <Header className="header-top">
+                <div className="logo" onClick={() => window.location.reload()}>
+                    <Link to="/">WebRTC</Link>
+                </div>
                 <div className="profile">
                     <Dropdown overlay={menu} placement="bottomRight" arrow>
                         <Space>
