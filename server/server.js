@@ -135,10 +135,6 @@ io.on("connection", (socket) => {
         }
 
         io.to(payload.room).emit("chat", payload);
-
-        // io.to(room.id).emit("chat", payload);
-        // io.emit("chat", payload);
-        // socket.broadcast.emit("chat", payload);
     });
 });
 

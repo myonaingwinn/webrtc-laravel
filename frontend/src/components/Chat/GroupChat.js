@@ -2,9 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import Picker from "emoji-picker-react";
 import { localStorageGet } from "../../helpers/Utilities";
-// import axios from "axios";
-// import { SendOutlined, PictureOutlined } from "@ant-design/icons";
-// import { sendMessage, isTyping } from "react-chat-engine";
 
 const socket = io("http://localhost:5000");
 
@@ -17,18 +14,10 @@ const GroupChat = (props) => {
     const [room, setRoom] = useState("");
     const [chat, setChat] = useState([]);
     const [showEmoji, setShowEmoji] = useState(false);
-    const [file, setFile] = useState();
-    const [fileName, setFileName] = useState("");
     const [value, setValue] = useState("");
     const { chatId, creds } = props;
     const socketRef = useRef();
     const { id } = localStorageGet("user");
-
-    // const handleChange = (event) => {
-    //   setValue(event.target.value);
-
-    //   isTyping(props, chatId);
-    // };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -37,17 +26,12 @@ const GroupChat = (props) => {
 
         if (text.length > 0) {
             sendMessage(creds, chatId, {
-                file: event.target.files[0].name,
                 text: "",
             });
         }
 
         setValue("");
     };
-
-    // const handleUpload = (event) => {
-    //   sendMessage(creds, chatId, { files: event.target.files, text: "" });
-    // };
 
     //Emoji
 
