@@ -7,69 +7,157 @@ import {
     Avatar,
     Button,
     Modal,
+    Space,
 } from "antd";
-import {
-    PhoneOutlined,
-    MessageOutlined,
-    AudioOutlined,
-    VideoCameraOutlined,
-    AudioMutedOutlined,
-} from "@ant-design/icons";
+import { PhoneOutlined, MessageOutlined } from "@ant-design/icons";
 import React, { useEffect, useState, useRef } from "react";
 import Peer from "simple-peer";
-import VideoOff from "../../assets/styles/User/video-off.svg";
 import { localStorageGet } from "../../helpers/Utilities";
-
+import ControlButtons from "./ControlButtons";
+import styled from "styled-components";
 import { socket } from "../Login/Login";
 const { Content } = Layout;
+
+const StyledVideo = styled.video`
+    width: 80%;
+    position: static;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 1px;
+    border: 5px solid gray;
+`;
 
 const UserList = () => {
     const user = localStorageGet("user");
     const { Title } = Typography;
-    const [userName, setUserName] = useState(user.name);
-    const [display, setDisplay] = useState(true);
-    const [showUsers, setShowUsers] = useState(false);
+    const userName = user.name;
     const [callUI, setCallUI] = useState(false);
     const [userList, setUserList] = useState([]);
-    const [clientName, setClientName] = useState([]);
-    const [clientId, setClientId] = useState([]);
     const myVideo = useRef();
     const remoteVideo = useRef();
     const connectionRef = useRef();
     const control = { video: true, audio: true };
     const [receivingCall, setReceivingCall] = useState(false);
     const [callAccepted, setCallAccepted] = useState(false);
+    const [reject, setReject] = useState(true);
 
-    const [me, setMe] = useState(user.me);
+    const me = user.me;
     const [caller, setCaller] = useState("");
     const [name, setName] = useState("");
     const [callerSignal, setCallerSignal] = useState();
 
-    const [mic, setMic] = useState(true);
-    const [video, setVideo] = useState(true);
-
     useEffect(() => {
-        console.log("Using use Effect");
-        socket.on("getAllUsers", (users) => {
-            setUserList(users);
+        socket.on("updateAllUsers", (userList) => {
+            setUserList(userList);
         });
-        socket.on("updateAllUsers", (users) => {
-            setUserList(users);
+        socket.on("getAllUsers", (userList) => {
+            setUserList(userList);
+        });
+        socket.on("reject", (data) => {
+            if (reject) {
+                info();
+            }
         });
         socket.on("callUser", (data) => {
             setReceivingCall(true);
             setCaller(data.from);
             setName(data.name);
-            setClientId(data.from);
             setCallerSignal(data.signal);
         });
-    }, []);
-    const controlMic = () => {
-        setMic(!mic);
+    }, [reject]);
+
+    const info = () => {
+        setReject(false);
+        setCallUI(false);
+        Modal.info({
+            content: "Rejected your call.",
+            onOk: () => {
+                if (myVideo.current.srcObject) {
+                    myVideo.current.srcObject
+                        .getTracks()
+                        .forEach(function (track) {
+                            if (track.kind === "video") {
+                                if (track.enabled) {
+                                    track.stop();
+                                }
+                            }
+                            if (track.kind === "audio") {
+                                if (track.enabled) {
+                                    track.stop();
+                                }
+                            }
+                        });
+                }
+            },
+        });
+    };
+    const handleAudioControlClick = () => {
+        if (myVideo.current.srcObject) {
+            myVideo.current.srcObject.getTracks().forEach(function (track) {
+                if (track.kind === "audio") {
+                    if (track.enabled) {
+                        socket.emit("updateMyMedia", {
+                            type: "audio",
+                            currentMediaStatus: false,
+                        });
+                        track.enabled = false;
+                    } else {
+                        socket.emit("updateMyMedia", {
+                            type: "audio",
+                            currentMediaStatus: true,
+                        });
+                        track.enabled = true;
+                    }
+                }
+            });
+        }
     };
 
-    const controlVideo = () => {
-        setVideo(!video);
+    const handleVideoControlClick = () => {
+        if (myVideo.current.srcObject) {
+            myVideo.current.srcObject.getTracks().forEach(function (track) {
+                if (track.kind === "video") {
+                    if (track.enabled) {
+                        socket.emit("updateMyMedia", {
+                            type: "video",
+                            currentMediaStatus: false,
+                        });
+                        track.enabled = false;
+                    } else {
+                        socket.emit("updateMyMedia", {
+                            type: "video",
+                            currentMediaStatus: true,
+                        });
+                        track.enabled = true;
+                    }
+                }
+            });
+        }
+    };
+
+    const leaveCall = () => {
+        if (myVideo.current.srcObject) {
+            myVideo.current.srcObject.getTracks().forEach(function (track) {
+                if (track.kind === "video") {
+                    if (track.enabled) {
+                        track.stop();
+                    }
+                }
+                if (track.kind === "audio") {
+                    if (track.enabled) {
+                        track.stop();
+                    }
+                }
+            });
+            socket.emit("updateMyMedia", {
+                type: "end",
+                currentMediaStatus: false,
+            });
+            setCallUI(false);
+            // connectionRef.destory();
+            // window.location.reload();
+            connectionRef.current = null;
+        }
     };
 
     const peerCall = async (cliName, id) => {
@@ -93,14 +181,13 @@ const UserList = () => {
             });
         });
         peer.on("stream", (stream) => {
-            remoteVideo.current.srcObject = stream;
+            if (remoteVideo.current) remoteVideo.current.srcObject = stream;
         });
         socket.on("callAccepted", (signal) => {
             setCallAccepted(true);
             peer.signal(signal);
         });
         connectionRef.current = peer;
-        setShowUsers(false);
         setCallUI(true);
     };
 
@@ -118,26 +205,27 @@ const UserList = () => {
             socket.emit("answerCall", { signal: data, to: caller });
         });
         peer.on("stream", (stream) => {
-            remoteVideo.current.srcObject = stream;
+            if (remoteVideo.current) remoteVideo.current.srcObject = stream;
         });
         peer.signal(callerSignal);
         connectionRef.current = peer;
     };
 
-    const callEndAction = () => {
-        connectionRef.current.destroy();
-        socket.emit("endCall", { id: clientId });
-
-        setShowUsers(true);
+    const rejectCall = () => {
+        socket.emit("reject", { name: userName, id: caller });
+        setReceivingCall(false);
         setCallUI(false);
     };
 
     return (
         <>
             <Modal
-                title="Basic Modal"
+                closable={false}
                 visible={receivingCall && !callAccepted}
+                okText="Accept"
+                cancelText="Reject"
                 onOk={answerCall}
+                onCancel={rejectCall}
             >
                 <p>{name} is calling ...</p>
             </Modal>
@@ -145,11 +233,7 @@ const UserList = () => {
                 className="user-list"
                 style={{ display: callUI ? "none" : "block" }}
             >
-                <Title
-                    className="title"
-                >
-                    User List Component
-                </Title>
+                <Title className="title">User List Component</Title>
                 <Row
                     gutter={[40, 40]}
                     className="userRow"
@@ -228,31 +312,22 @@ const UserList = () => {
             </Layout>
             <Layout style={{ display: callUI ? "block" : "none" }}>
                 <Content>
-                    <video
-                        className="localVideo"
-                        ref={myVideo}
-                        autoPlay
-                    ></video>
-                    <video
-                        className="remoteVideo"
-                        ref={remoteVideo}
-                        autoPlay
-                    ></video>
-                    <div className="controlBtn">
-                        <Button className="leaveBtn" onClick={callEndAction}>
-                            Leave
-                        </Button>
-                        <Button type="text" onClick={controlVideo}>
-                            {video ? <AudioOutlined /> : <AudioMutedOutlined />}
-                        </Button>
-                        <Button type="text" onClick={controlMic}>
-                            {mic ? (
-                                <VideoCameraOutlined />
-                            ) : (
-                                <img src={VideoOff} alt="video off icon" />
-                            )}
-                        </Button>
-                    </div>
+                    <Space>
+                        <StyledVideo muted ref={myVideo} autoPlay playsInline />
+
+                        <StyledVideo
+                            muted
+                            ref={remoteVideo}
+                            autoPlay
+                            playsInline
+                        />
+                    </Space>
+                    <ControlButtons
+                        style={{ marginBottom: "3px" }}
+                        handleVideoControlClick={handleVideoControlClick}
+                        handleAudioControlClick={handleAudioControlClick}
+                        leaveCall={leaveCall}
+                    />
                 </Content>
             </Layout>
         </>

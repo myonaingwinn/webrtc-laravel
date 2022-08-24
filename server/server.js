@@ -10,16 +10,28 @@ const io = require("socket.io")(server, {
     },
 });
 
-let users = [];
+let userList = [];
 
 io.on("connection", (socket) => {
     socket.emit("me", socket.id);
 
     socket.on("setSocketId", (data) => {
-        users.push(data);
-        console.log(users);
-        socket.emit("getAllUsers", users);
-        socket.broadcast.emit("updateAllUsers", users);
+        userList.push(data);
+        console.log(userList);
+        socket.emit("getAllUsers", userList);
+        socket.broadcast.emit("updateAllUsers", userList);
+    });
+    socket.broadcast.emit("updateAllUsers", userList);
+    socket.emit("getAllUsers", userList);
+    socket.on("reject", (data) => {
+        io.to(data.id).emit("reject", {
+            name: data.name,
+        });
+    });
+
+    socket.on("updateMyMedia", ({ type, currentMediaStatus }) => {
+        console.log("updateMyMedia");
+        socket.broadcast.emit("updateUserMedia", { type, currentMediaStatus });
     });
 
     socket.on("callUser", (data) => {
@@ -31,17 +43,15 @@ io.on("connection", (socket) => {
             name: data.name,
         });
     });
-
-    socket.on("disconnect", () => {
-        socket.broadcast.emit("callEnded");
-    });
-
+    // socket.on("disconnect", () => {
+    //     socket.broadcast.emit("callEnded");
+    // });
     socket.on("answerCall", (data) => {
         io.to(data.to).emit("callAccepted", data.signal);
     });
-      socket.on("endCall", ({ id }) => {
-          io.to(id).emit("endCall");
-      });
+    //   socket.on("endCall", ({ id }) => {
+    //       io.to(id).emit("endCall");
+    //   });
 });
 
 const PORT = process.env.SERVER_PORT || 5000;
