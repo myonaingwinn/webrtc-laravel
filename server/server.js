@@ -70,12 +70,15 @@ io.on("connection", (socket) => {
         } else {
             // rooms[roomID].usersInRoom = [socket.id];
             console.log("🚀 ~ this room doesn't exist.");
+            return;
         }
+
         socketToRoom[socket.id] = roomID;
         const usersInThisRoom = rooms[roomID]
             ? rooms[roomID].usersInRoom.filter((id) => id !== socket.id)
             : [];
         socket.emit("all users in a room", usersInThisRoom);
+        socket.emit("room_name", rooms[roomID].name);
         console.log("When join room : ", rooms[roomID]);
     });
 

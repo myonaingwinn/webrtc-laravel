@@ -1,4 +1,4 @@
-import { Layout, Typography } from "antd";
+import { Col, Layout, Row, Typography } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import Peer from "simple-peer";
@@ -10,11 +10,6 @@ import VideoControl from "./components/VideoControl";
 import AudioControl from "./components/AudioControl";
 
 const socket = io(signalServerUrl);
-
-const Container = styled.div`
-    height: 100vh;
-    width: 20%;
-`;
 
 const ControlSmall = styled.div`
     margin: 3px;
@@ -61,6 +56,8 @@ const Room = () => {
     const userVideo = useRef();
     const peersRef = useRef([]);
     const room = useParams();
+    const [span, setSpan] = useState();
+    const [roomName, setRoomName] = useState();
     const navigate = useNavigate();
     const videoConstraints = {
         minAspectRatio: 1.333,
@@ -71,8 +68,24 @@ const Room = () => {
 
     useEffect(() => {
         createStream();
+
+        socket.on("room_name", (room_name) => {
+            setRoomName(room_name);
+        });
         // eslint-disable-next-line
     }, []);
+
+    const calcVideoConstraints = (arr) => {
+        let span = 6;
+        if (arr.length < 2) {
+            span = 12;
+        } else if (arr.length < 3) {
+            span = 8;
+        } else if (arr.length < 4) {
+            span = 6;
+        }
+        setSpan(span);
+    };
 
     function createStream() {
         navigator.mediaDevices
@@ -81,7 +94,7 @@ const Room = () => {
                 userVideo.current.srcObject = stream;
                 socket.emit("join room", room.id);
                 socket.on("all users in a room", (users) => {
-                    console.log(users);
+                    calcVideoConstraints(users);
                     const peers = [];
                     users.forEach((userID) => {
                         const peer = createPeer(userID, socket.id, stream);
@@ -177,7 +190,6 @@ const Room = () => {
     }
 
     const handleLeaveCall = () => {
-        console.log("leave call");
         navigate("/rooms");
         navigate(0);
     };
@@ -248,9 +260,12 @@ const Room = () => {
 
     return (
         <Layout className="room common">
-            <Title className="title">Room Component</Title>
-            <Container>
-                <StyledVideo muted ref={userVideo} autoPlay playsInline />
+            <Title className="title">{roomName}</Title>
+            <Row gutter={[16, 16]} className="video-container">
+                <Col span={span}>
+                    <StyledVideo muted ref={userVideo} autoPlay playsInline />
+                </Col>
+
                 {peers.map((peer, index) => {
                     let audioFlagTemp = true;
                     let videoFlagTemp = true;
@@ -267,16 +282,16 @@ const Room = () => {
                         });
                     }
                     return (
-                        <div key={peer.peerID}>
+                        <Col span={span} key={peer.peerID}>
                             <Video peer={peer.peer} />
                             <ControlSmall>
                                 <VideoControl videoFlag={videoFlagTemp} small />
                                 <AudioControl audioFlag={audioFlagTemp} small />
                             </ControlSmall>
-                        </div>
+                        </Col>
                     );
                 })}
-            </Container>
+            </Row>
             <ControlButtons
                 leaveCall={handleLeaveCall}
                 handleVideoControlClick={handleVideoControlClick}
