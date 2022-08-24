@@ -8,6 +8,7 @@ import { signalServerUrl } from "../../helpers/Utilities";
 import ControlButtons from "./ControlButtons";
 import VideoControl from "./components/VideoControl";
 import AudioControl from "./components/AudioControl";
+import GroupChat from "../Chat/GroupChat";
 
 const socket = io(signalServerUrl);
 
@@ -81,8 +82,6 @@ const Room = () => {
             span = 12;
         } else if (arr.length < 3) {
             span = 8;
-        } else if (arr.length < 4) {
-            span = 6;
         }
         setSpan(span);
     };
@@ -261,36 +260,54 @@ const Room = () => {
     return (
         <Layout className="room common">
             <Title className="title">{roomName}</Title>
-            <Row gutter={[16, 16]} className="video-container">
-                <Col span={span}>
-                    <StyledVideo muted ref={userVideo} autoPlay playsInline />
-                </Col>
-
-                {peers.map((peer, index) => {
-                    let audioFlagTemp = true;
-                    let videoFlagTemp = true;
-                    if (userUpdate) {
-                        userUpdate.forEach((entry) => {
-                            if (
-                                peer &&
-                                peer.peerID &&
-                                peer.peerID === entry.id
-                            ) {
-                                audioFlagTemp = entry.audioFlag;
-                                videoFlagTemp = entry.videoFlag;
-                            }
-                        });
-                    }
-                    return (
-                        <Col span={span} key={peer.peerID}>
-                            <Video peer={peer.peer} />
-                            <ControlSmall>
-                                <VideoControl videoFlag={videoFlagTemp} small />
-                                <AudioControl audioFlag={audioFlagTemp} small />
-                            </ControlSmall>
+            <Row>
+                <Col span={17}>
+                    <Row gutter={[16, 16]} className="video-container">
+                        <Col span={span}>
+                            <StyledVideo
+                                muted
+                                ref={userVideo}
+                                autoPlay
+                                playsInline
+                            />
                         </Col>
-                    );
-                })}
+
+                        {peers.map((peer, index) => {
+                            let audioFlagTemp = true;
+                            let videoFlagTemp = true;
+                            if (userUpdate) {
+                                userUpdate.forEach((entry) => {
+                                    if (
+                                        peer &&
+                                        peer.peerID &&
+                                        peer.peerID === entry.id
+                                    ) {
+                                        audioFlagTemp = entry.audioFlag;
+                                        videoFlagTemp = entry.videoFlag;
+                                    }
+                                });
+                            }
+                            return (
+                                <Col span={span} key={peer.peerID}>
+                                    <Video peer={peer.peer} />
+                                    <ControlSmall>
+                                        <VideoControl
+                                            videoFlag={videoFlagTemp}
+                                            small
+                                        />
+                                        <AudioControl
+                                            audioFlag={audioFlagTemp}
+                                            small
+                                        />
+                                    </ControlSmall>
+                                </Col>
+                            );
+                        })}
+                    </Row>
+                </Col>
+                <Col span={7}>
+                    <GroupChat roomId={room.id} />
+                </Col>
             </Row>
             <ControlButtons
                 leaveCall={handleLeaveCall}

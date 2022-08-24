@@ -109,6 +109,33 @@ io.on("connection", (socket) => {
     socket.on("change", (payload) => {
         socket.broadcast.emit("change", payload);
     });
+
+    socket.on("message", (payload) => {
+        socket.join(payload.room);
+        console.log(`Message from ${socket.id} : ${payload.message}`);
+
+        const room = rooms[payload.room];
+        if (room !== undefined) {
+            if (room.id === payload.room) {
+                singleChat = {
+                    message: payload.message,
+                    senderId: payload.userId,
+                    senderName: payload.userName,
+                };
+                room.chat.push(singleChat);
+                payload.chat = room.chat;
+            }
+
+            console.log(
+                "🚀 ~ file: server.js ~ line 75 ~ socket.on ~ room",
+                room,
+                payload.room
+            );
+        } else {
+            console.log("🚀 ~ file: server.js ~ line 82 ~ socket.on ~ else");
+        }
+        io.to(payload.room).emit("chat", payload);
+    });
 });
 
 app.get("/", (req, res) => {
