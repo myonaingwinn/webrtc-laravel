@@ -90,7 +90,7 @@ const Chatroom = () => {
     useEffect(() => {
         setData(location.state);
         setName(location.state.name);
-        setNewreciever(location.state.reciever);
+
         // console.log("formloat", location.state.reciever);
     }, [location]);
 
@@ -139,9 +139,16 @@ const Chatroom = () => {
 
     const submitHandler = (e) => {
         if (msg) {
-            const newmsg = { time: new Date(), msg: msg, name: data.name };
+            const newmsg = {
+                time: new Date(),
+                msg: msg,
+                name: data.name,
+                reciever: data.reciever,
+            };
+
             socket.emit("newmsg", { newmsg, room: data.room });
             setMedia({ image: false });
+            console.log("Submit Reciver", data.reciever);
             socket.emit("stop typing", data.room, reciever, name);
         }
         if (media.image === true && previewclose === false) {
