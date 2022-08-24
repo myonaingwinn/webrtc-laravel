@@ -1,3 +1,4 @@
+import { useNavigate, useLocation } from "react-router-dom";
 import {
     Layout,
     Typography,
@@ -19,14 +20,14 @@ import React, { useEffect, useState, useRef } from "react";
 import Peer from "simple-peer";
 import VideoOff from "../../assets/styles/User/video-off.svg";
 import { localStorageGet } from "../../helpers/Utilities";
-
+import { io } from "socket.io-client";
 import { socket } from "../Login/Login";
 const { Content } = Layout;
 
 const UserList = () => {
     const user = localStorageGet("user");
     const { Title } = Typography;
-    const [userName, setUserName] = useState(user.name);
+    const [userName, setUserName] = useState(user.reciever);
     const [display, setDisplay] = useState(true);
     const [showUsers, setShowUsers] = useState(false);
     const [callUI, setCallUI] = useState(false);
@@ -42,17 +43,39 @@ const UserList = () => {
 
     const [me, setMe] = useState(user.me);
     const [caller, setCaller] = useState("");
-    const [name, setName] = useState("");
+    // const [name, setName] = useState("");
     const [callerSignal, setCallerSignal] = useState();
 
     const [mic, setMic] = useState(true);
     const [video, setVideo] = useState(true);
 
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [error, setError] = useState("");
+    const [data, setData] = useState({
+        name: "",
+        room: "",
+        reciever: "",
+        allmsgg: [],
+    });
+    const [name, setName] = useState("");
+
+    const [users, setUsers] = useState({});
+    const [gotoprivate, setGotoprivate] = useState(false);
+    const [sender, setNotificationSender] = useState("");
+    const [reciever, setNotificationReciever] = useState("");
+    const [notificationcount, setNotificationcount] = useState();
+    const [allmsg, setallMsg] = useState([]);
+
     useEffect(() => {
         console.log("Using use Effect");
-        socket.on("getAllUsers", (users) => {
-            setUserList(users);
-        });
+        socket.on(
+            "getAllUsers",
+            (users) => {
+                setUserList(users);
+            },
+            []
+        );
         socket.on("updateAllUsers", (users) => {
             setUserList(users);
         });
@@ -131,6 +154,47 @@ const UserList = () => {
         setShowUsers(true);
         setCallUI(false);
     };
+    const orderId = (id) => {
+        if (me > id) {
+            return me + "-" + id;
+        } else {
+            return id + "-" + me;
+        }
+    };
+
+    const privatechat = (id, reciver) => {
+        setGotoprivate(true);
+
+        const room = orderId(id);
+        console.log("reciver name", reciver);
+        console.log("sender name", reciver);
+        setData({
+            ["name"]: me,
+            ["room"]: room,
+            ["reciever"]: reciver,
+            ["allmsgg"]: allmsg,
+        });
+    };
+
+    useEffect(() => {
+        if (socket) {
+            socket.on("setnotification", (sender, reciever, newmsg, room) => {
+                if (me === reciever) {
+                    setNotificationSender(sender);
+                    setNotificationReciever(reciever);
+                    allmsg.push(newmsg);
+
+                    if (gotoprivate === false) {
+                        var count = allmsg.filter((alm) => alm.me === sender);
+                        setNotificationcount(count.length);
+                    }
+                }
+            });
+        }
+    }, [socket]);
+    useEffect(() => {
+        if (gotoprivate) navigate(`/chat/${data.room}`, { state: data });
+    }, [gotoprivate]);
 
     return (
         <>
@@ -145,11 +209,7 @@ const UserList = () => {
                 className="user-list"
                 style={{ display: callUI ? "none" : "block" }}
             >
-                <Title
-                    className="title"
-                >
-                    User List Component
-                </Title>
+                <Title className="title">User List Component</Title>
                 <Row
                     gutter={[40, 40]}
                     className="userRow"
@@ -204,12 +264,12 @@ const UserList = () => {
                                                 </Button>
                                                 <Button
                                                     type="link"
-                                                    onClick={() => {
-                                                        alert(
-                                                            "Hello from Message " +
-                                                                user.name
-                                                        );
-                                                    }}
+                                                    onClick={() =>
+                                                        privatechat(
+                                                            user.userId,
+                                                            user.name
+                                                        )
+                                                    }
                                                 >
                                                     <MessageOutlined
                                                         spin={false}
