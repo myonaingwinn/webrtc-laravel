@@ -1,0 +1,22 @@
+.register {
+    .card {
+        border-radius: 8px;
+        width: 500px;
+        height: 420px;
+        margin-top: 20vh;
+        box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
+    }
+
+    .form {
+        padding-top: 15px;
+        padding-right: 70px;
+    }
+
+    .btn-register {
+        width: 100%;
+    }
+
+    .link-login {
+        float: right;
+    }
+}

@@ -1,6 +1,13 @@
+import { nanoid } from "nanoid";
+
 // env
 export const baseUrl =
-    process.env.REACT_APP_BASE_URL || "http://127.0.0.1:8000/api/v1";
+    process.env.REACT_APP_BASE_URL ||
+    "https://laravel-server-17-aug.herokuapp.com/api/v1";
+
+export const signalServerUrl =
+    process.env.REACT_APP_SIGNAL_SERVER ||
+    "https://webrtc-server-17-aug.herokuapp.com";
 
 // local storage
 export const localStorageSet = (key, value) => {
@@ -27,4 +34,8 @@ export const localStorageRemove = (key) => {
 export const isLoggedIn = () => {
     const user = localStorageGet("user");
     return user && user.id ? true : false;
+};
+
+export const getNanoId = () => {
+    return nanoid();
 };

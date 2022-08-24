@@ -47,6 +47,7 @@ const UserList = () => {
     const [callerSignal, setCallerSignal] = useState();
 
     useEffect(() => {
+        document.title = "Online Users";
         socket.on("updateAllUsers", (userList) => {
             setUserList(userList);
         });
@@ -230,7 +231,7 @@ const UserList = () => {
                 <p>{name} is calling ...</p>
             </Modal>
             <Layout
-                className="user-list"
+                className="user-list common"
                 style={{ display: callUI ? "none" : "block" }}
             >
                 <Title className="title">User List Component</Title>

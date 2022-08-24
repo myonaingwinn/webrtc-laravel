@@ -1,0 +1,55 @@
+.group-chat {
+    margin: 1%;
+    padding: 3%;
+    transform: translate(2%, 1%);
+    position: relative;
+    height: 95%;
+    min-height: 70vh;
+    width: 95%;
+    border-radius: 10px;
+    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
+        rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+
+    .chat-container {
+        padding: 10px;
+        background: rgb(255, 255, 255);
+        overflow: auto;
+        height: 92%;
+        border-radius: 8px;
+
+        .chat-content {
+            border-radius: 5px;
+
+            .chat-me {
+                text-align: right;
+                display: block;
+                width: 100%;
+            }
+
+            .chat-blk {
+                margin-bottom: 5px;
+                padding: 3px;
+                border-radius: 3px;
+                width: 100%;
+            }
+        }
+    }
+
+    .chat-form {
+        position: absolute;
+        width: 95%;
+        height: 20px;
+        padding-top: 5px;
+
+        .ant-input {
+            width: 77%;
+            bottom: 0;
+            left: 0;
+        }
+
+        .ant-btn {
+            bottom: 0;
+            right: 0;
+        }
+    }
+}

@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import Home from "./components/Home/Home";
@@ -7,10 +7,20 @@ import Header from "./components/Header/Header";
 import RoomList from "./components/Room/RoomList";
 import CreateRoom from "./components/Room/CreateRoom";
 import UserList from "./components/User/UserList";
+import Room from "./components/Room/Room";
+import Loading from "./components/Loading/Loading";
+import { useRef } from "react";
+import Error from "./components/Error/Error";
 
 function App() {
+    const loadingRef = useRef();
+
+    const handleLoading = () => {
+        if (loadingRef.current) loadingRef.current.handleLoading();
+    };
+
     return (
-        <Router>
+        <Loading ref={loadingRef}>
             <Routes>
                 <Route
                     exact
@@ -44,6 +54,16 @@ function App() {
                     }
                 />
                 <Route
+                    path="/rooms/:id"
+                    element={
+                        <PrivateRoute>
+                            <Header>
+                                <Room />
+                            </Header>
+                        </PrivateRoute>
+                    }
+                />
+                <Route
                     path="/users"
                     element={
                         <PrivateRoute>
@@ -53,10 +73,11 @@ function App() {
                         </PrivateRoute>
                     }
                 />
-                <Route path="/register" element={<Register />} />
-                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register handleLoading={handleLoading} />} />
+                <Route path="/login" element={<Login handleLoading={handleLoading} />} />
+                <Route path="*" element={<Error />} />
             </Routes>
-        </Router>
+        </Loading>
     );
 }
 export default App;

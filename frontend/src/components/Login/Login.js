@@ -1,34 +1,29 @@
-import { Button, Form, Input } from "antd";
+import { Button, Col, Form, Input, notification, Row, Space } from "antd";
 import {
     baseUrl,
     isLoggedIn,
     localStorageRemove,
     localStorageSet,
 } from "../../helpers/Utilities";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "antd";
-import { useNavigate } from "react-router-dom";
-import io from "socket.io-client";
-
-const SERVER_URL = "http://localhost:5000";
-
-export const socket = io(SERVER_URL);
+import { Link, useNavigate } from "react-router-dom";
 
 const formItemLayout = {
     labelCol: {
         xs: {
-            span: 8,
+            span: 6,
         },
         sm: {
-            span: 8,
+            span: 6,
         },
     },
     wrapperCol: {
         xs: {
-            span: 24,
+            span: 18,
         },
         sm: {
-            span: 16,
+            span: 18,
         },
     },
 };
@@ -36,20 +31,19 @@ const formItemLayout = {
 const tailFormItemLayout = {
     wrapperCol: {
         xs: {
-            span: 24,
-            offset: 0,
+            span: 18,
+            offset: 6,
         },
         sm: {
-            span: 16,
-            offset: 8,
+            span: 18,
+            offset: 6,
         },
     },
 };
 
-const Login = () => {
+const Login = ({ handleLoading }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [connecting, setConnecting] = useState(false);
     const [form] = Form.useForm();
     const [me, setMe] = useState();
     const navigator = useNavigate();
@@ -60,11 +54,13 @@ const Login = () => {
             setMe(id);
         });
         if (isLoggedIn()) {
-            console.log("setUserName value :", userName);
+	    console.log("setUserName value :", userName);
             var data = { name: userName, userId: me };
             socket.emit("setSocketId", data);
-            return navigator("/users");
-        }
+	    return navigator("/");
+    	};
+
+        document.title = "Login";
     });
 
     const handleEmailChange = (e) => {
@@ -75,13 +71,9 @@ const Login = () => {
         setPassword(e.target.value);
     };
 
-    const handleRegisterSubmit = (e) => {
-        return navigator("/register");
-    };
-
     const handleSubmit = async () => {
-        setConnecting(true);
         if (!(email === "" || password === "")) {
+            handleLoading();
             const data = await fetch(baseUrl + "/login", {
                 method: "POST",
                 body: JSON.stringify({
@@ -104,110 +96,89 @@ const Login = () => {
                 ? localStorageSet("user", data)
                 : localStorageRemove("user");
 
-            setConnecting(false);
+            if (data.id) {
+                notification.open({
+                    type: "success",
+                    message: "Login Success!",
+                });
+                navigator("/");
+            } else {
+                notification.open({
+                    type: "error",
+                    message: "Login Fail!",
+                    description: "Incorrect mail or password.",
+                });
+            }
+            handleLoading();
         }
     };
 
     return (
         <>
-            <div className="site-card-wrapper">
-                <Card
-                    title="Login"
-                    style={{
-                        textAlign: "center",
-                        width: "800px",
-                        margin: "0 auto",
-                        marginTop: "80px",
-                    }}
-                >
-                    <Form
-                        {...formItemLayout}
-                        form={form}
-                        name="register"
-                        style={{
-                            marginTop: "30px",
-                            marginRight: "200px",
-                        }}
-                        colon={false}
-                        requiredMark={false}
-                    >
-                        <Form.Item
-                            name="email"
-                            label="Email"
-                            id="email"
-                            value={email}
-                            onChange={handleEmailChange}
-                            readOnly={connecting}
-                            rules={[
-                                {
-                                    type: "email",
-                                    message: "The input is not valid email!",
-                                },
-                                {
-                                    required: true,
-                                    message: "Please input your email!",
-                                },
-                            ]}
+            <Row className="login" align="center">
+                <Col >
+                    <Card title="Login" className="card">
+                        <Form
+                            {...formItemLayout}
+                            form={form}
+                            name="register"
+                            colon={false}
+                            requiredMark={false}
+                            className="form"
                         >
-                            <Input placeholder="Enter your email" />
-                        </Form.Item>
-                        <Form.Item
-                            name="password"
-                            label="Password"
-                            value={password}
-                            onChange={handlePasswordChange}
-                            readOnly={connecting}
-                            rules={[
-                                {
-                                    type: "string",
-                                    min: 8,
-                                    message:
-                                        "Password must have at least 8 characters!",
-                                },
-                                {
-                                    required: true,
-                                    message: "Please input your password!",
-                                },
-                            ]}
-                            hasFeedback
-                        >
-                            <Input.Password placeholder="Enter your password" />
-                        </Form.Item>
-                        <Form.Item {...tailFormItemLayout}>
-                            <div>
+                            <Form.Item
+                                name="email"
+                                label="Email"
+                                id="email"
+                                value={email}
+                                onChange={handleEmailChange}
+                                rules={[
+                                    {
+                                        type: "email",
+                                        message: "Please enter valid email!",
+                                    },
+                                    {
+                                        required: true,
+                                        message: "Please enter your email!",
+                                    },
+                                ]}
+                            >
+                                <Input placeholder="Enter your email" />
+                            </Form.Item>
+                            <Form.Item
+                                name="password"
+                                label="Password"
+                                value={password}
+                                onChange={handlePasswordChange}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Please enter your password!",
+                                    },
+                                ]}
+                            >
+                                <Input.Password placeholder="Enter your password" />
+                            </Form.Item>
+                            <Form.Item {...tailFormItemLayout}>
                                 <Button
                                     type="primary"
                                     htmlType="submit"
+                                    className="btn-login"
                                     onClick={handleSubmit}
-                                    disabled={
-                                        connecting || !(email && password)
-                                    }
                                 >
                                     Login
                                 </Button>
+                            </Form.Item>
+                            <div className="link-register">
+                                <Space>
+                                    Don't have an account?
+                                    <Link to="/register">Register</Link>
+                                </Space>
                             </div>
-                            <div style={{ marginTop: "20px", display: "flex" }}>
-                                <p
-                                    style={{
-                                        marginLeft: "150px",
-                                        color: "red",
-                                    }}
-                                >
-                                    Have No Account?
-                                </p>
-                                <Button
-                                    type="link"
-                                    htmlType="submit"
-                                    onClick={handleRegisterSubmit}
-                                    style={{ marginLeft: "auto" }}
-                                >
-                                    Register
-                                </Button>
-                            </div>
-                        </Form.Item>
-                    </Form>
-                </Card>
-            </div>
+                        </Form>
+                    </Card>
+                </Col>
+            </Row>
         </>
     );
 };
