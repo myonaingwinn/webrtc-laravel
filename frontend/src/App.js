@@ -8,6 +8,7 @@ import RoomList from "./components/Room/RoomList";
 import CreateRoom from "./components/Room/CreateRoom";
 import UserList from "./components/User/UserList";
 import Room from "./components/Room/Room";
+import Error from "./components/Error/Error";
 
 function App() {
     return (
@@ -65,6 +66,7 @@ function App() {
             />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="*" element={<Error />} />
         </Routes>
     );
 }
