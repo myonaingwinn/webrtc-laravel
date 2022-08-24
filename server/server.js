@@ -16,8 +16,7 @@ const io = socket(server, {
 
 const PORT = process.env.PORT || 5000;
 
-const users = {};
-let rooms = {};
+const rooms = {};
 const maxParticipantsAllowed = 10;
 const socketToRoom = {};
 
@@ -27,10 +26,9 @@ io.on("connection", (socket) => {
     socket.emit("me", socket.id);
 
     socket.on("create_room", (room) => {
-
         console.log("room :", room);
         if (rooms[room.id]) {
-            console.log('room exit', rooms[room.id]);
+            console.log("room exit", rooms[room.id]);
         } else {
             rooms[room.id] = room;
         }
@@ -39,38 +37,50 @@ io.on("connection", (socket) => {
     });
 
     socket.emit("rooms", rooms);
-    socket.broadcast.emit("rooms", rooms);
+    // socket.broadcast.emit("rooms", rooms);
 
     socket.on("delete_room", (room) => {
-        console.log('org rooms: ', rooms);
+        console.log("org rooms: ", rooms);
         delete rooms[room];
-        console.log('remain rooms: ', rooms);
+        console.log("remain rooms: ", rooms);
         socket.emit("rooms", rooms);
     });
 
     socket.on("join room", (roomID) => {
-        console.log("🚀 ~ file: server.js ~ line 79 ~ socket.on ~ roomID", roomID)
+        console.log(
+            "🚀 ~ file: server.js ~ line 79 ~ socket.on ~ roomID",
+            roomID
+        );
         if (rooms[roomID]) {
             const length = rooms[roomID].usersInRoom.length;
-            console.log("🚀 ~ file: server.js ~ line 82 ~ socket.on ~ length", length)
+            console.log(
+                "🚀 ~ file: server.js ~ line 82 ~ socket.on ~ length",
+                length
+            );
             if (length === maxParticipantsAllowed) {
                 socket.emit("room full");
                 return;
             }
             rooms[roomID].usersInRoom.push(socket.id);
-            console.log('user count :', rooms[roomID].usersInRoom.length);
-            console.log("🚀 ~ file: server.js ~ line 81 ~ socket.on ~ rooms[roomID]", rooms[roomID].usersInRoom)
+            console.log("user count :", rooms[roomID].usersInRoom.length);
+            console.log(
+                "🚀 ~ file: server.js ~ line 81 ~ socket.on ~ rooms[roomID]",
+                rooms[roomID].usersInRoom
+            );
         } else {
             // rooms[roomID].usersInRoom = [socket.id];
-            console.log("🚀 ~ this room doesn't exist.")
+            console.log("🚀 ~ this room doesn't exist.");
+            return;
         }
+
         socketToRoom[socket.id] = roomID;
-        const usersInThisRoom = rooms[roomID] ? rooms[roomID].usersInRoom.filter((id) => id !== socket.id) : [];
-        socket.emit("all users", usersInThisRoom);
+        const usersInThisRoom = rooms[roomID]
+            ? rooms[roomID].usersInRoom.filter((id) => id !== socket.id)
+            : [];
+        socket.emit("all users in a room", usersInThisRoom);
+        socket.emit("room_name", rooms[roomID].name);
         console.log("When join room : ", rooms[roomID]);
     });
-
-    socket.emit("rooms", users);
 
     socket.on("sending signal", (payload) => {
         io.to(payload.userToSignal).emit("user joined", {
@@ -88,10 +98,10 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         const roomID = socketToRoom[socket.id];
-        let room = users[roomID];
+        let room = rooms[roomID];
         if (room) {
-            room = room.filter((id) => id !== socket.id);
-            users[roomID] = room;
+            usersInRoom = room.usersInRoom.filter((id) => id !== socket.id);
+            rooms[roomID].usersInRoom = usersInRoom;
         }
         socket.broadcast.emit("user left", socket.id);
     });
