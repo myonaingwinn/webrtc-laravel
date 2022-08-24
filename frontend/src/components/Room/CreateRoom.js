@@ -9,7 +9,7 @@ import {
 } from "antd";
 import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { localStorageGet, signalServerUrl } from "../../helpers/Utilities";
 
@@ -51,6 +51,10 @@ const CreateRoom = () => {
     const [form] = Form.useForm();
     const [roomName, setRoomName] = useState("");
     const [roomList, setRoomList] = useState([]);
+
+    useEffect(() => {
+        document.title = "Create Room";
+    });
 
     const createRoom = () => {
         const roomId = nanoid();

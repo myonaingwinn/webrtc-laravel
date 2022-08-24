@@ -72,7 +72,9 @@ const Room = () => {
 
         socket.on("room_name", (room_name) => {
             setRoomName(room_name);
+            document.title = `Room : ${room_name}`;
         });
+
         // eslint-disable-next-line
     }, []);
 

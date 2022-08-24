@@ -5,7 +5,7 @@ import {
     localStorageRemove,
     localStorageSet,
 } from "../../helpers/Utilities";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -49,6 +49,8 @@ const Login = ({ handleLoading }) => {
 
     useEffect(() => {
         if (isLoggedIn()) return navigator("/");
+
+        document.title = "Login";
     });
 
     const handleEmailChange = (e) => {
