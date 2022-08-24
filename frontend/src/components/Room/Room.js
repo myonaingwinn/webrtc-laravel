@@ -1,33 +1,16 @@
-import { Layout, Typography } from "antd";
+import { Col, Layout, Row, Typography } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import Peer from "simple-peer";
 import styled from "styled-components";
-import micmute from "../../assets/micmute.svg";
-import micunmute from "../../assets/micunmute.svg";
-import webcam from "../../assets/webcam.svg";
-import webcamoff from "../../assets/webcamoff.svg";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { signalServerUrl } from "../../helpers/Utilities";
+import ControlButtons from "./ControlButtons";
+import VideoControl from "./components/VideoControl";
+import AudioControl from "./components/AudioControl";
+import GroupChat from "../Chat/GroupChat";
 
 const socket = io(signalServerUrl);
-
-const Container = styled.div`
-    height: 100vh;
-    width: 20%;
-`;
-
-const Controls = styled.div`
-    margin: 3px;
-    padding: 5px;
-    height: 27px;
-    width: 98%;
-    background-color: rgba(255, 226, 104, 0.1);
-    margin-top: -8.5vh;
-    filter: brightness(1);
-    z-index: 1;
-    border-radius: 6px;
-`;
 
 const ControlSmall = styled.div`
     margin: 3px;
@@ -40,17 +23,7 @@ const ControlSmall = styled.div`
     border-radius: 6px;
     display: flex;
     justify-content: center;
-`;
-
-const ImgComponent = styled.img`
-    cursor: pointer;
-    height: 25px;
-`;
-
-const ImgComponentSmall = styled.img`
-    height: 15px;
-    text-align: left;
-    opacity: 0.5;
+    gap: 10px;
 `;
 
 const StyledVideo = styled.video`
@@ -66,7 +39,6 @@ const Video = (props) => {
     const ref = useRef();
 
     useEffect(() => {
-        console.log(signalServerUrl);
         props.peer.on("stream", (stream) => {
             ref.current.srcObject = stream;
         });
@@ -85,16 +57,34 @@ const Room = () => {
     const userVideo = useRef();
     const peersRef = useRef([]);
     const room = useParams();
+    const [span, setSpan] = useState();
+    const [roomName, setRoomName] = useState();
+    const navigate = useNavigate();
     const videoConstraints = {
         minAspectRatio: 1.333,
         minFrameRate: 60,
         height: window.innerHeight / 1.8,
         width: window.innerWidth / 2,
     };
+
     useEffect(() => {
         createStream();
+
+        socket.on("room_name", (room_name) => {
+            setRoomName(room_name);
+        });
         // eslint-disable-next-line
     }, []);
+
+    const calcVideoConstraints = (arr) => {
+        let span = 6;
+        if (arr.length < 2) {
+            span = 12;
+        } else if (arr.length < 3) {
+            span = 8;
+        }
+        setSpan(span);
+    };
 
     function createStream() {
         navigator.mediaDevices
@@ -102,8 +92,8 @@ const Room = () => {
             .then((stream) => {
                 userVideo.current.srcObject = stream;
                 socket.emit("join room", room.id);
-                socket.on("all users", (users) => {
-                    console.log(users);
+                socket.on("all users in a room", (users) => {
+                    calcVideoConstraints(users);
                     const peers = [];
                     users.forEach((userID) => {
                         const peer = createPeer(userID, socket.id, stream);
@@ -118,6 +108,7 @@ const Room = () => {
                     });
                     setPeers(peers);
                 });
+
                 socket.on("user joined", (payload) => {
                     console.log("==", payload);
                     const peer = addPeer(
@@ -197,121 +188,132 @@ const Room = () => {
         return peer;
     }
 
+    const handleLeaveCall = () => {
+        navigate("/rooms");
+        navigate(0);
+    };
+
+    const handleVideoControlClick = () => {
+        if (userVideo.current.srcObject) {
+            userVideo.current.srcObject.getTracks().forEach(function (track) {
+                if (track.kind === "video") {
+                    if (track.enabled) {
+                        socket.emit("change", [
+                            ...userUpdate,
+                            {
+                                id: socket.id,
+                                videoFlag: false,
+                                audioFlag,
+                            },
+                        ]);
+                        track.enabled = false;
+                        setVideoFlag(false);
+                    } else {
+                        socket.emit("change", [
+                            ...userUpdate,
+                            {
+                                id: socket.id,
+                                videoFlag: true,
+                                audioFlag,
+                            },
+                        ]);
+                        track.enabled = true;
+                        setVideoFlag(true);
+                    }
+                }
+            });
+        }
+    };
+
+    const handleAudioControlClick = () => {
+        if (userVideo.current.srcObject) {
+            userVideo.current.srcObject.getTracks().forEach(function (track) {
+                if (track.kind === "audio") {
+                    if (track.enabled) {
+                        socket.emit("change", [
+                            ...userUpdate,
+                            {
+                                id: socket.id,
+                                videoFlag,
+                                audioFlag: false,
+                            },
+                        ]);
+                        track.enabled = false;
+                        setAudioFlag(false);
+                    } else {
+                        socket.emit("change", [
+                            ...userUpdate,
+                            {
+                                id: socket.id,
+                                videoFlag,
+                                audioFlag: true,
+                            },
+                        ]);
+                        track.enabled = true;
+                        setAudioFlag(true);
+                    }
+                }
+            });
+        }
+    };
+
     return (
         <Layout className="room common">
-            <Title className="title">Room Component</Title>
-            <Container>
-                <StyledVideo muted ref={userVideo} autoPlay playsInline />
-                <Controls>
-                    <ImgComponent
-                        src={videoFlag ? webcam : webcamoff}
-                        onClick={() => {
-                            if (userVideo.current.srcObject) {
-                                userVideo.current.srcObject
-                                    .getTracks()
-                                    .forEach(function (track) {
-                                        if (track.kind === "video") {
-                                            if (track.enabled) {
-                                                socket.emit("change", [
-                                                    ...userUpdate,
-                                                    {
-                                                        id: socket.id,
-                                                        videoFlag: false,
-                                                        audioFlag,
-                                                    },
-                                                ]);
-                                                track.enabled = false;
-                                                setVideoFlag(false);
-                                            } else {
-                                                socket.emit("change", [
-                                                    ...userUpdate,
-                                                    {
-                                                        id: socket.id,
-                                                        videoFlag: true,
-                                                        audioFlag,
-                                                    },
-                                                ]);
-                                                track.enabled = true;
-                                                setVideoFlag(true);
-                                            }
-                                        }
-                                    });
+            <Title className="title">{roomName}</Title>
+            <Row>
+                <Col span={17}>
+                    <Row gutter={[16, 16]} className="video-container">
+                        <Col span={span}>
+                            <StyledVideo
+                                muted
+                                ref={userVideo}
+                                autoPlay
+                                playsInline
+                            />
+                        </Col>
+
+                        {peers.map((peer, index) => {
+                            let audioFlagTemp = true;
+                            let videoFlagTemp = true;
+                            if (userUpdate) {
+                                userUpdate.forEach((entry) => {
+                                    if (
+                                        peer &&
+                                        peer.peerID &&
+                                        peer.peerID === entry.id
+                                    ) {
+                                        audioFlagTemp = entry.audioFlag;
+                                        videoFlagTemp = entry.videoFlag;
+                                    }
+                                });
                             }
-                        }}
-                    />
-                    &nbsp;&nbsp;&nbsp;
-                    <ImgComponent
-                        src={audioFlag ? micunmute : micmute}
-                        onClick={() => {
-                            if (userVideo.current.srcObject) {
-                                userVideo.current.srcObject
-                                    .getTracks()
-                                    .forEach(function (track) {
-                                        if (track.kind === "audio") {
-                                            if (track.enabled) {
-                                                socket.emit("change", [
-                                                    ...userUpdate,
-                                                    {
-                                                        id: socket.id,
-                                                        videoFlag,
-                                                        audioFlag: false,
-                                                    },
-                                                ]);
-                                                track.enabled = false;
-                                                setAudioFlag(false);
-                                            } else {
-                                                socket.emit("change", [
-                                                    ...userUpdate,
-                                                    {
-                                                        id: socket.id,
-                                                        videoFlag,
-                                                        audioFlag: true,
-                                                    },
-                                                ]);
-                                                track.enabled = true;
-                                                setAudioFlag(true);
-                                            }
-                                        }
-                                    });
-                            }
-                        }}
-                    />
-                </Controls>
-                {peers.map((peer, index) => {
-                    let audioFlagTemp = true;
-                    let videoFlagTemp = true;
-                    if (userUpdate) {
-                        userUpdate.forEach((entry) => {
-                            if (
-                                peer &&
-                                peer.peerID &&
-                                peer.peerID === entry.id
-                            ) {
-                                audioFlagTemp = entry.audioFlag;
-                                videoFlagTemp = entry.videoFlag;
-                            }
-                        });
-                    }
-                    return (
-                        <>
-                            <div key={peer.peerID}>
-                                <Video peer={peer.peer} />
-                                <ControlSmall>
-                                    <ImgComponentSmall
-                                        src={videoFlagTemp ? webcam : webcamoff}
-                                    />
-                                    &nbsp;&nbsp;&nbsp;
-                                    <ImgComponentSmall
-                                        src={
-                                            audioFlagTemp ? micunmute : micmute
-                                        }
-                                    />
-                                </ControlSmall>
-                            </div>
-                        </>
-                    );
-                })}
-            </Container>
+                            return (
+                                <Col span={span} key={peer.peerID}>
+                                    <Video peer={peer.peer} />
+                                    <ControlSmall>
+                                        <VideoControl
+                                            videoFlag={videoFlagTemp}
+                                            small
+                                        />
+                                        <AudioControl
+                                            audioFlag={audioFlagTemp}
+                                            small
+                                        />
+                                    </ControlSmall>
+                                </Col>
+                            );
+                        })}
+                    </Row>
+                </Col>
+                <Col span={7}>
+                    <GroupChat roomId={room.id} />
+                </Col>
+            </Row>
+            <ControlButtons
+                leaveCall={handleLeaveCall}
+                handleVideoControlClick={handleVideoControlClick}
+                handleAudioControlClick={handleAudioControlClick}
+            />
         </Layout>
     );
 };

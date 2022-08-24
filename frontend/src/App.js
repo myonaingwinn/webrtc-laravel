@@ -10,6 +10,7 @@ import UserList from "./components/User/UserList";
 import Room from "./components/Room/Room";
 import Loading from "./components/Loading/Loading";
 import { useRef } from "react";
+import Error from "./components/Error/Error";
 
 function App() {
     const loadingRef = useRef();
@@ -74,6 +75,7 @@ function App() {
                 />
                 <Route path="/register" element={<Register handleLoading={handleLoading} />} />
                 <Route path="/login" element={<Login handleLoading={handleLoading} />} />
+                <Route path="*" element={<Error />} />
             </Routes>
         </Loading>
     );

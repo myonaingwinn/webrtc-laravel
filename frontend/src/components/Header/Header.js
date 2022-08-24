@@ -1,4 +1,5 @@
 import { Layout } from "antd";
+import { Link } from "react-router-dom";
 import SiderLeft from "../Sider/Sider";
 import { Avatar, Space, Dropdown, Menu } from "antd";
 import { localStorageGet, localStorageRemove } from "../../helpers/Utilities";
@@ -8,16 +9,6 @@ const { Header } = Layout;
 
 const HeaderTop = (props) => {
     const { name } = localStorageGet("user");
-    const ColorList = [
-        "#f56a00",
-        "#7265e6",
-        "#ffbf00",
-        "#00a2ae",
-        "#fa8c16",
-        "#fa541c",
-    ];
-    const id = Math.floor(Math.random() * (5 - 0 + 1)) + 0;
-    const color = ColorList[id];
     const navigator = useNavigate();
 
     const logout = () => {
@@ -42,12 +33,15 @@ const HeaderTop = (props) => {
     return (
         <Layout className="header">
             <Header className="header-top">
+                <div className="logo" onClick={() => window.location.reload()}>
+                    <Link to="/">WebRTC</Link>
+                </div>
                 <div className="profile">
                     <Dropdown overlay={menu} placement="bottomRight" arrow>
                         <Space>
                             <Avatar
                                 style={{
-                                    backgroundColor: color,
+                                    backgroundColor: "#87d068",
                                     verticalAlign: "middle",
                                 }}
                                 gap={4}

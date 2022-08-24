@@ -3,10 +3,13 @@
 @import "./Home/home";
 @import "./Room/create_room";
 @import "./Room/room";
+@import "./Room/control_buttons";
 @import "./Room/room_list";
-@import "./User/user_list";
 @import "./Room/room_component";
+@import "./User/user_list";
 @import "./common";
 @import "./Login/login";
 @import "./Register/register";
 @import "./Loading/loading";
+@import "./Chat/group_chat";
+@import "./Error/error";

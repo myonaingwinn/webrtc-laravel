@@ -1,12 +1,11 @@
 .room {
-    border-radius: 10px;
-    background-color: #fff;
-    width: 88vw;
-    height: 90vh;
-
     .title {
         align-self: center;
         margin-top: 30px;
-        color: #fff;
+    }
+
+    .video-container {
+        margin-left: 8px !important;
+        margin-right: 8px !important;
     }
 }
