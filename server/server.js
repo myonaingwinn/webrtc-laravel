@@ -119,7 +119,8 @@ io.on("connection", (socket) => {
             if (room.id === payload.room) {
                 singleChat = {
                     message: payload.message,
-                    writer: payload.userId,
+                    senderId: payload.userId,
+                    senderName: payload.userName,
                 };
                 room.chat.push(singleChat);
                 payload.chat = room.chat;
@@ -133,7 +134,6 @@ io.on("connection", (socket) => {
         } else {
             console.log("🚀 ~ file: server.js ~ line 82 ~ socket.on ~ else");
         }
-
         io.to(payload.room).emit("chat", payload);
     });
 });

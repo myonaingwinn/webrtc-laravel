@@ -1,4 +1,4 @@
-import { Layout, Typography } from "antd";
+import { Col, Layout, Row, Typography } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import Peer from "simple-peer";
@@ -202,121 +202,136 @@ const Room = () => {
     return (
         <Layout className="room common">
             <Title className="title">Room Component</Title>
-            <Container>
-                <StyledVideo muted ref={userVideo} autoPlay playsInline />
-                <Controls>
-                    <ImgComponent
-                        src={videoFlag ? webcam : webcamoff}
-                        onClick={() => {
-                            if (userVideo.current.srcObject) {
-                                userVideo.current.srcObject
-                                    .getTracks()
-                                    .forEach(function (track) {
-                                        if (track.kind === "video") {
-                                            if (track.enabled) {
-                                                socket.emit("change", [
-                                                    ...userUpdate,
-                                                    {
-                                                        id: socket.id,
-                                                        videoFlag: false,
-                                                        audioFlag,
-                                                    },
-                                                ]);
-                                                track.enabled = false;
-                                                setVideoFlag(false);
-                                            } else {
-                                                socket.emit("change", [
-                                                    ...userUpdate,
-                                                    {
-                                                        id: socket.id,
-                                                        videoFlag: true,
-                                                        audioFlag,
-                                                    },
-                                                ]);
-                                                track.enabled = true;
-                                                setVideoFlag(true);
-                                            }
-                                        }
-                                    });
+            <Row>
+                <Col span={17} className="main-col">
+                    <Container>
+                        <StyledVideo
+                            muted
+                            ref={userVideo}
+                            autoPlay
+                            playsInline
+                        />
+                        <Controls>
+                            <ImgComponent
+                                src={videoFlag ? webcam : webcamoff}
+                                onClick={() => {
+                                    if (userVideo.current.srcObject) {
+                                        userVideo.current.srcObject
+                                            .getTracks()
+                                            .forEach(function (track) {
+                                                if (track.kind === "video") {
+                                                    if (track.enabled) {
+                                                        socket.emit("change", [
+                                                            ...userUpdate,
+                                                            {
+                                                                id: socket.id,
+                                                                videoFlag: false,
+                                                                audioFlag,
+                                                            },
+                                                        ]);
+                                                        track.enabled = false;
+                                                        setVideoFlag(false);
+                                                    } else {
+                                                        socket.emit("change", [
+                                                            ...userUpdate,
+                                                            {
+                                                                id: socket.id,
+                                                                videoFlag: true,
+                                                                audioFlag,
+                                                            },
+                                                        ]);
+                                                        track.enabled = true;
+                                                        setVideoFlag(true);
+                                                    }
+                                                }
+                                            });
+                                    }
+                                }}
+                            />
+                            &nbsp;&nbsp;&nbsp;
+                            <ImgComponent
+                                src={audioFlag ? micunmute : micmute}
+                                onClick={() => {
+                                    if (userVideo.current.srcObject) {
+                                        userVideo.current.srcObject
+                                            .getTracks()
+                                            .forEach(function (track) {
+                                                if (track.kind === "audio") {
+                                                    if (track.enabled) {
+                                                        socket.emit("change", [
+                                                            ...userUpdate,
+                                                            {
+                                                                id: socket.id,
+                                                                videoFlag,
+                                                                audioFlag: false,
+                                                            },
+                                                        ]);
+                                                        track.enabled = false;
+                                                        setAudioFlag(false);
+                                                    } else {
+                                                        socket.emit("change", [
+                                                            ...userUpdate,
+                                                            {
+                                                                id: socket.id,
+                                                                videoFlag,
+                                                                audioFlag: true,
+                                                            },
+                                                        ]);
+                                                        track.enabled = true;
+                                                        setAudioFlag(true);
+                                                    }
+                                                }
+                                            });
+                                    }
+                                }}
+                            />
+                        </Controls>
+                        {peers.map((peer, index) => {
+                            let audioFlagTemp = true;
+                            let videoFlagTemp = true;
+                            if (userUpdate) {
+                                userUpdate.forEach((entry) => {
+                                    if (
+                                        peer &&
+                                        peer.peerID &&
+                                        peer.peerID === entry.id
+                                    ) {
+                                        audioFlagTemp = entry.audioFlag;
+                                        videoFlagTemp = entry.videoFlag;
+                                    }
+                                });
                             }
-                        }}
-                    />
-                    &nbsp;&nbsp;&nbsp;
-                    <ImgComponent
-                        src={audioFlag ? micunmute : micmute}
-                        onClick={() => {
-                            if (userVideo.current.srcObject) {
-                                userVideo.current.srcObject
-                                    .getTracks()
-                                    .forEach(function (track) {
-                                        if (track.kind === "audio") {
-                                            if (track.enabled) {
-                                                socket.emit("change", [
-                                                    ...userUpdate,
-                                                    {
-                                                        id: socket.id,
-                                                        videoFlag,
-                                                        audioFlag: false,
-                                                    },
-                                                ]);
-                                                track.enabled = false;
-                                                setAudioFlag(false);
-                                            } else {
-                                                socket.emit("change", [
-                                                    ...userUpdate,
-                                                    {
-                                                        id: socket.id,
-                                                        videoFlag,
-                                                        audioFlag: true,
-                                                    },
-                                                ]);
-                                                track.enabled = true;
-                                                setAudioFlag(true);
-                                            }
-                                        }
-                                    });
-                            }
-                        }}
-                    />
-                </Controls>
-                {peers.map((peer, index) => {
-                    let audioFlagTemp = true;
-                    let videoFlagTemp = true;
-                    if (userUpdate) {
-                        userUpdate.forEach((entry) => {
-                            if (
-                                peer &&
-                                peer.peerID &&
-                                peer.peerID === entry.id
-                            ) {
-                                audioFlagTemp = entry.audioFlag;
-                                videoFlagTemp = entry.videoFlag;
-                            }
-                        });
-                    }
-                    return (
-                        <>
-                            <div key={peer.peerID}>
-                                <Video peer={peer.peer} />
-                                <ControlSmall>
-                                    <ImgComponentSmall
-                                        src={videoFlagTemp ? webcam : webcamoff}
-                                    />
-                                    &nbsp;&nbsp;&nbsp;
-                                    <ImgComponentSmall
-                                        src={
-                                            audioFlagTemp ? micunmute : micmute
-                                        }
-                                    />
-                                </ControlSmall>
-                            </div>
-                        </>
-                    );
-                })}
-            </Container>
-            <Container>
-                <GroupChat roomId={room.id} />
-            </Container>
+                            return (
+                                <>
+                                    <div key={peer.peerID}>
+                                        <Video peer={peer.peer} />
+                                        <ControlSmall>
+                                            <ImgComponentSmall
+                                                src={
+                                                    videoFlagTemp
+                                                        ? webcam
+                                                        : webcamoff
+                                                }
+                                            />
+                                            &nbsp;&nbsp;&nbsp;
+                                            <ImgComponentSmall
+                                                src={
+                                                    audioFlagTemp
+                                                        ? micunmute
+                                                        : micmute
+                                                }
+                                            />
+                                        </ControlSmall>
+                                    </div>
+                                </>
+                            );
+                        })}
+                    </Container>
+                </Col>
+                <Col span={7} className="chat-col">
+                    <GroupChat roomId={room.id} />
+                </Col>
+            </Row>
         </Layout>
     );
 };
