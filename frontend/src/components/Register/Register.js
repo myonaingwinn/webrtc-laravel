@@ -1,5 +1,5 @@
 import { Button, Col, Form, Input, notification, Row, Space } from "antd";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { baseUrl } from "../../helpers/Utilities";
@@ -40,6 +40,10 @@ const Register = () => {
     const [password, setPassword] = useState("");
     const [form] = Form.useForm();
     const navigator = useNavigate();
+
+    useEffect(() => {
+        document.title = "Register";
+    });
 
     const handleSubmit = async () => {
         if (!(name === "" || email === "" || password === "")) {
