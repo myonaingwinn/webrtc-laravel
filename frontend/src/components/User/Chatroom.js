@@ -76,7 +76,7 @@ const Chatroom = () => {
     useEffect(() => {
         if (socket) {
             socket.emit(
-                console.log("DataReciver", data.reciever),
+                // console.log("DataReciver", data.reciever),
                 "notification",
                 data.name,
                 data.reciever,
@@ -90,8 +90,6 @@ const Chatroom = () => {
     useEffect(() => {
         setData(location.state);
         setName(location.state.name);
-
-        // console.log("formloat", location.state.reciever);
     }, [location]);
 
     const uploadFile = (e) => {
@@ -125,6 +123,7 @@ const Chatroom = () => {
             setTyping(true);
             socket.emit("typing", data.room, data.reciever, name);
         }
+        // console.log("Submit RRRRRRRRRRr", data.reciever);
         let lasttypingtime = new Date().getTime();
         setTimeout(() => {
             var timeNow = new Date().getTime();
@@ -145,10 +144,11 @@ const Chatroom = () => {
                 name: data.name,
                 reciever: data.reciever,
             };
+            // console.log("new MessageRRRRRRR", newmsg.reciever);
 
             socket.emit("newmsg", { newmsg, room: data.room });
             setMedia({ image: false });
-            console.log("Submit Reciver", data.reciever);
+            // console.log("Submit Reciver", data.reciever);
             socket.emit("stop typing", data.room, reciever, name);
         }
         if (media.image === true && previewclose === false) {
@@ -172,16 +172,14 @@ const Chatroom = () => {
                                         key={index}
                                     >
                                         <div className="mymsgbox">
-                                            <div>
-                                                <strong className="m-1">
-                                                    You&nbsp;
-                                                </strong>
-                                                <small className="text-muted">
-                                                    <Moment fromNow>
-                                                        {newmsg.time}
-                                                    </Moment>
-                                                </small>
-                                            </div>
+                                            <strong className="m-1">
+                                                You&nbsp;
+                                            </strong>
+                                            <small className="text-muted">
+                                                <Moment fromNow>
+                                                    {newmsg.time}
+                                                </Moment>
+                                            </small>
 
                                             <h4 className="mymsg">
                                                 {newmsg.msg}
@@ -189,7 +187,10 @@ const Chatroom = () => {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="row justify-content-start">
+                                    <div
+                                        className="row justify-content-start"
+                                        key={index}
+                                    >
                                         <div className="othermsgbox">
                                             <div>
                                                 <strong className="m-1">

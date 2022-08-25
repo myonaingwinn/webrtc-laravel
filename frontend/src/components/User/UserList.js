@@ -42,6 +42,7 @@ const UserList = () => {
     const [callAccepted, setCallAccepted] = useState(false);
 
     const [me, setMe] = useState(user.me);
+    const username = user.name;
     const [caller, setCaller] = useState("");
     // const [name, setName] = useState("");
     const [callerSignal, setCallerSignal] = useState();
@@ -166,14 +167,15 @@ const UserList = () => {
         setGotoprivate(true);
 
         const room = orderId(id);
-        console.log("reciver name", reciver);
-        console.log("sender name", reciver);
+
         setData({
-            ["name"]: me,
+            ["name"]: username,
             ["room"]: room,
             ["reciever"]: reciver,
             ["allmsgg"]: allmsg,
         });
+        console.log("UserListreciver name", reciver, id);
+        console.log("UserListsender name", userName);
     };
 
     useEffect(() => {
@@ -198,6 +200,11 @@ const UserList = () => {
 
     return (
         <>
+            <button
+                onClick={() => {
+                    alert(username);
+                }}
+            ></button>
             <Modal
                 title="Basic Modal"
                 visible={receivingCall && !callAccepted}
