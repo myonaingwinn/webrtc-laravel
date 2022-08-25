@@ -12,7 +12,6 @@ const io = require("socket.io")(server, {
 
 let users = [];
 
-
 io.on("connection", (socket) => {
     socket.emit("me", socket.id);
 
@@ -37,45 +36,44 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("callEnded");
     });
 
-    
-    socket.on("typing",(room,reciever,name)=>{
-        socket.in(room).emit("typing",reciever,name)
-    })
-    socket.on("stop typing",(room,reciever,name)=>{socket.in(room).emit("stop typing",reciever,name)})
-    
-    
-        socket.on("new_users", (username) => {
-            users[username] = socket.id;
-        });
-        //telling everyone that someone is connected
-        io.emit("all_users", users);
-    
-        //room
-        socket.on("joinroom", (room) => {
-            socket.join(room);
-        });
-    
-        //for msg
-        socket.on("newmsg", ({ newmsg, room }) => {
-            io.in(room).emit("getnewmsg", newmsg);
-        });
-    
-        //notification
-        socket.on("notification", (sender, reciever, newmsg, room) => {
-            io.emit("setnotification", sender, reciever, newmsg, room);
-        });
-    
-        socket.on("seen", (seen, room) => {
-            io.in(room).emit("setseen", seen);
-        });
-    
+    socket.on("typing", (room, reciever, name) => {
+        socket.in(room).emit("typing", reciever, name);
+    });
+    socket.on("stop typing", (room, reciever, name) => {
+        socket.in(room).emit("stop typing", reciever, name);
+    });
+
+    socket.on("new_users", (username) => {
+        users[username] = socket.id;
+    });
+    //telling everyone that someone is connected
+    io.emit("all_users", users);
+
+    //room
+    socket.on("joinroom", (room) => {
+        socket.join(room);
+    });
+
+    //for msg
+    socket.on("newmsg", ({ newmsg, room }) => {
+        io.in(room).emit("getnewmsg", newmsg);
+    });
+
+    //notification
+    socket.on("notification", (sender, reciever, newmsg, room) => {
+        io.emit("setnotification", sender, reciever, newmsg, room);
+    });
+
+    socket.on("seen", (seen, room) => {
+        io.in(room).emit("setseen", seen);
+    });
 
     socket.on("answerCall", (data) => {
         io.to(data.to).emit("callAccepted", data.signal);
     });
-      socket.on("endCall", ({ id }) => {
-          io.to(id).emit("endCall");
-      });
+    socket.on("endCall", ({ id }) => {
+        io.to(id).emit("endCall");
+    });
 });
 
 const PORT = process.env.SERVER_PORT || 5000;

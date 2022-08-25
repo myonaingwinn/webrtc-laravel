@@ -6,7 +6,7 @@ import { io } from "socket.io-client";
 import { SendOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 
-const Chatroom = () => {
+const ChatRoom = () => {
     const { Title } = Typography;
     const location = useLocation();
     const navigate = useNavigate();
@@ -32,7 +32,7 @@ const Chatroom = () => {
     const [newreciever, setNewreciever] = useState("");
     const [newname, setNewname] = useState("");
     useEffect(() => {
-        const socket = io("https://tempchatbackendsuvro.herokuapp.com/");
+        const socket = io("http://localhost:5000");
 
         setSocket(socket);
 
@@ -159,7 +159,7 @@ const Chatroom = () => {
     };
 
     return (
-        <Layout className="chatroom">
+        <Layout className="chat-room">
             <Title className="title">Chat Design</Title>
             <div className="chatdesign ">
                 <div className="chat-container">
@@ -248,4 +248,4 @@ const Chatroom = () => {
     );
 };
 
-export default Chatroom;
+export default ChatRoom;

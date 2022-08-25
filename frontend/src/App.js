@@ -7,6 +7,7 @@ import Header from "./components/Header/Header";
 import RoomList from "./components/Room/RoomList";
 import CreateRoom from "./components/Room/CreateRoom";
 import UserList from "./components/User/UserList";
+import ChatRoom from "./components/User/ChatRoom";
 
 function App() {
     return (
@@ -53,6 +54,18 @@ function App() {
                         </PrivateRoute>
                     }
                 />
+                <Route
+                    path="/chat/:roomname"
+                    element={
+                        <PrivateRoute>
+                            <Header>
+                                <ChatRoom />
+                            </Header>
+                        </PrivateRoute>
+                    }
+                />
+            
+                
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
             </Routes>

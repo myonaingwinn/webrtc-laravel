@@ -200,11 +200,6 @@ const UserList = () => {
 
     return (
         <>
-            <button
-                onClick={() => {
-                    alert(username);
-                }}
-            ></button>
             <Modal
                 title="Basic Modal"
                 visible={receivingCall && !callAccepted}
