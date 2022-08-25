@@ -1,6 +1,6 @@
 import { Layout, Typography } from "antd";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Moment from "react-moment";
 import { io } from "socket.io-client";
 import { SendOutlined } from "@ant-design/icons";
@@ -9,23 +9,11 @@ import { Button } from "antd";
 const ChatRoom = () => {
     const { Title } = Typography;
     const location = useLocation();
-    const navigate = useNavigate();
     const [name, setName] = useState("");
-    const [reciever, setNotificationReciever] = useState("");
     const [data, setData] = useState({});
-    const [media, setMedia] = useState({
-        image: false,
-        content: null,
-        name: "",
-        type: "",
-        size: null,
-    });
     const [msg, setMsg] = useState("");
     const [allmsg, setallMsg] = useState([]);
     const [nmsg, setNmsg] = useState();
-    const [users, setUsers] = useState({});
-    const [joined, setJoined] = useState(false);
-    const [previewclose, setPreviewclose] = useState(false);
     const [socket, setSocket] = useState();
     const [typing, setTyping] = useState(false);
     const [isTyping, setIstyping] = useState(false);
@@ -36,13 +24,8 @@ const ChatRoom = () => {
 
         setSocket(socket);
 
-        socket.on("all_users", (users) => {
-            setUsers(users);
-        });
-
         socket.on("connect", () => {
             socket.emit("joinroom", location.state.room);
-            setJoined(true);
             socket.on("typing", (reciever, name) => {
                 setIstyping(true);
                 setNewreciever(reciever);
@@ -54,14 +37,14 @@ const ChatRoom = () => {
                 setNewname(name);
             });
         });
-    }, []);
+    }, [location.state.room]);
 
     useEffect(() => {
         data.allmsgg &&
-            data.allmsgg.map((m) => {
+            data.allmsgg.forEach((m) => {
                 if (m.name === data.reciever) allmsg.push(m);
             });
-    }, [data.allmsgg, location]);
+    }, [data.allmsgg, allmsg, location, data.reciever]);
 
     useEffect(() => {
         if (socket) {
@@ -76,7 +59,6 @@ const ChatRoom = () => {
     useEffect(() => {
         if (socket) {
             socket.emit(
-                // console.log("DataReciver", data.reciever),
                 "notification",
                 data.name,
                 data.reciever,
@@ -85,36 +67,12 @@ const ChatRoom = () => {
             );
             if (data.name !== data.reciever) setMsg("");
         }
-    }, [nmsg]);
+    }, [nmsg, data.name, data.reciever, data.room, socket]);
 
     useEffect(() => {
         setData(location.state);
         setName(location.state.name);
     }, [location]);
-
-    const uploadFile = (e) => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function () {
-            if (file.size <= 600000) {
-                setMedia({
-                    ...media,
-                    image: true,
-                    content: reader.result,
-                    name: file.name,
-                    type: file.type,
-                    size: file.size,
-                });
-            } else {
-                alert("File size should be less than 550kb");
-            }
-        };
-        reader.onerror = function (err) {
-            console.log(err);
-        };
-        setPreviewclose(false);
-    };
 
     const inputHandler = (e) => {
         setMsg(e.target.value);
@@ -123,7 +81,7 @@ const ChatRoom = () => {
             setTyping(true);
             socket.emit("typing", data.room, data.reciever, name);
         }
-        // console.log("Submit RRRRRRRRRRr", data.reciever);
+
         let lasttypingtime = new Date().getTime();
         setTimeout(() => {
             var timeNow = new Date().getTime();
@@ -144,17 +102,9 @@ const ChatRoom = () => {
                 name: data.name,
                 reciever: data.reciever,
             };
-            // console.log("new MessageRRRRRRR", newmsg.reciever);
 
             socket.emit("newmsg", { newmsg, room: data.room });
-            setMedia({ image: false });
-            // console.log("Submit Reciver", data.reciever);
-            socket.emit("stop typing", data.room, reciever, name);
-        }
-        if (media.image === true && previewclose === false) {
-            const newmsg = { time: new Date(), msg: media, name: data.name };
-            socket.emit("newmsg", { newmsg, room: data.room });
-            setMedia({ image: false });
+            socket.emit("stop typing", data.room, name);
         }
     };
 

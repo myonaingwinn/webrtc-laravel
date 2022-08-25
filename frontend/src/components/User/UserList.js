@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
     Layout,
     Typography,
@@ -16,23 +16,19 @@ import {
     VideoCameraOutlined,
     AudioMutedOutlined,
 } from "@ant-design/icons";
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import Peer from "simple-peer";
 import VideoOff from "../../assets/styles/User/video-off.svg";
 import { localStorageGet } from "../../helpers/Utilities";
-import { io } from "socket.io-client";
 import { socket } from "../Login/Login";
 const { Content } = Layout;
 
 const UserList = () => {
     const user = localStorageGet("user");
     const { Title } = Typography;
-    const [userName, setUserName] = useState(user.reciever);
-    const [display, setDisplay] = useState(true);
-    const [showUsers, setShowUsers] = useState(false);
+    const userName = user.name;
     const [callUI, setCallUI] = useState(false);
     const [userList, setUserList] = useState([]);
-    const [clientName, setClientName] = useState([]);
     const [clientId, setClientId] = useState([]);
     const myVideo = useRef();
     const remoteVideo = useRef();
@@ -41,18 +37,15 @@ const UserList = () => {
     const [receivingCall, setReceivingCall] = useState(false);
     const [callAccepted, setCallAccepted] = useState(false);
 
-    const [me, setMe] = useState(user.me);
+    const me = user.me;
     const username = user.name;
     const [caller, setCaller] = useState("");
-    // const [name, setName] = useState("");
     const [callerSignal, setCallerSignal] = useState();
 
     const [mic, setMic] = useState(true);
     const [video, setVideo] = useState(true);
 
-    const location = useLocation();
     const navigate = useNavigate();
-    const [error, setError] = useState("");
     const [data, setData] = useState({
         name: "",
         room: "",
@@ -61,12 +54,7 @@ const UserList = () => {
     });
     const [name, setName] = useState("");
 
-    const [users, setUsers] = useState({});
     const [gotoprivate, setGotoprivate] = useState(false);
-    const [sender, setNotificationSender] = useState("");
-    const [reciever, setNotificationReciever] = useState("");
-    const [notificationcount, setNotificationcount] = useState();
-    const [allmsg, setallMsg] = useState([]);
 
     useEffect(() => {
         console.log("Using use Effect");
@@ -88,6 +76,7 @@ const UserList = () => {
             setCallerSignal(data.signal);
         });
     }, []);
+
     const controlMic = () => {
         setMic(!mic);
     };
@@ -96,7 +85,7 @@ const UserList = () => {
         setVideo(!video);
     };
 
-    const peerCall = async (cliName, id) => {
+    const peerCall = async (id) => {
         const stream = await navigator.mediaDevices.getUserMedia(control);
         myVideo.current.srcObject = stream;
         const peer = new Peer({
@@ -124,7 +113,6 @@ const UserList = () => {
             peer.signal(signal);
         });
         connectionRef.current = peer;
-        setShowUsers(false);
         setCallUI(true);
     };
 
@@ -152,9 +140,9 @@ const UserList = () => {
         connectionRef.current.destroy();
         socket.emit("endCall", { id: clientId });
 
-        setShowUsers(true);
         setCallUI(false);
     };
+
     const orderId = (id) => {
         if (me > id) {
             return me + "-" + id;
@@ -169,34 +157,18 @@ const UserList = () => {
         const room = orderId(id);
 
         setData({
-            ["name"]: username,
-            ["room"]: room,
-            ["reciever"]: reciver,
-            ["allmsgg"]: allmsg,
+            name: username,
+            room: room,
+            reciever: reciver,
         });
+
         console.log("UserListreciver name", reciver, id);
         console.log("UserListsender name", userName);
     };
 
     useEffect(() => {
-        if (socket) {
-            socket.on("setnotification", (sender, reciever, newmsg, room) => {
-                if (me === reciever) {
-                    setNotificationSender(sender);
-                    setNotificationReciever(reciever);
-                    allmsg.push(newmsg);
-
-                    if (gotoprivate === false) {
-                        var count = allmsg.filter((alm) => alm.me === sender);
-                        setNotificationcount(count.length);
-                    }
-                }
-            });
-        }
-    }, [socket]);
-    useEffect(() => {
         if (gotoprivate) navigate(`/chat/${data.room}`, { state: data });
-    }, [gotoprivate]);
+    }, [gotoprivate, data, navigate]);
 
     return (
         <>
