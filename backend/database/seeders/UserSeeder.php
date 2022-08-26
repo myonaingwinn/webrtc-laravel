@@ -16,53 +16,46 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $uuid1 = (string) Str::uuid();
-        $uuid2 = (string) Str::uuid();
-        $uuid3 = (string) Str::uuid();
-        $uuid4 = (string) Str::uuid();
-        $uuid5 = (string) Str::uuid();
-        $uuid6 = (string) Str::uuid();
-
         User::create([
             'name' => 'Aye Thi Khaing',
             'email' => 'atk@gmail.com',
             'password' => Hash::make('password'),
-            'uuid' => $uuid1,
+            'uuid' => Str::uuid(),
         ]);
 
         User::create([
             'name' => 'Hlaine Poe Ei',
             'email' => 'hpe@gmail.com',
             'password' => Hash::make('password'),
-            'uuid' => $uuid2,
+            'uuid' => Str::uuid(),
         ]);
 
         User::create([
             'name' => 'Sandar Su',
             'email' => 'sds@gmail.com',
             'password' => Hash::make('password'),
-            'uuid' => $uuid3,
+            'uuid' => Str::uuid(),
         ]);
 
         User::create([
             'name' => 'Theint Theint Hmawe',
             'email' => 'tth@gmail.com',
             'password' => Hash::make('password'),
-            'uuid' => $uuid4,
+            'uuid' => Str::uuid(),
         ]);
 
         User::create([
             'name' => 'Myo Naing Winn',
             'email' => 'mnw@gmail.com',
             'password' => Hash::make('password'),
-            'uuid' => $uuid5,
+            'uuid' => Str::uuid(),
         ]);
 
         User::create([
             'name' => 'Htet Linn',
             'email' => 'hl@gmail.com',
             'password' => Hash::make('password'),
-            'uuid' => $uuid6,
+            'uuid' => Str::uuid(),
         ]);
     }
 }

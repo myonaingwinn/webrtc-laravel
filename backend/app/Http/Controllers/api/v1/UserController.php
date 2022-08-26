@@ -27,13 +27,11 @@ class UserController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        $uuid = (string)Str::uuid();
-
         User::create([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
             'password' => bcrypt($request->get('password')),
-            'uuid' => $uuid,
+            'uuid' => Str::uuid(),
         ]);
 
         return response()->json('Register Successful', 200);
