@@ -13,6 +13,8 @@ import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { localStorageGet, signalServerUrl } from "../../helpers/Utilities";
 
+const { TextArea } = Input;
+
 const formItemLayout = {
     labelCol: {
         xs: {
@@ -51,6 +53,7 @@ const CreateRoom = () => {
     const [form] = Form.useForm();
     const [roomName, setRoomName] = useState("");
     const [roomList, setRoomList] = useState([]);
+    const [roomDescription, setRoomDescription] = useState("");
 
     useEffect(() => {
         document.title = "Create Room";
@@ -61,6 +64,7 @@ const CreateRoom = () => {
         const { id } = localStorageGet("user");
         if (!(roomName === "")) {
             setRoomName(roomName);
+            setRoomDescription(roomDescription);
             form.resetFields();
             var roomObj = {
                 id: roomId,
@@ -68,6 +72,7 @@ const CreateRoom = () => {
                 usersInRoom: [],
                 chat: [],
                 createdBy: id,
+                description: roomDescription,
             };
             socket.emit("create_room", roomObj);
             socket.on("get_room", (roomObj) => {
@@ -122,6 +127,17 @@ const CreateRoom = () => {
                             ]}
                         >
                             <Input placeholder="Enter room name" />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="description"
+                            label="Description :"
+                            id="description"
+                            value={roomDescription}
+                            onChange={(e) => setRoomDescription(e.target.value)}
+                            rules={[{ max: 20 }]}
+                        >
+                            <TextArea rows={2} placeholder="Enter description" />
                         </Form.Item>
 
                         <Form.Item {...tailFormItemLayout}>

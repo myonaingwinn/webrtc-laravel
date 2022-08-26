@@ -47,7 +47,7 @@ const RoomComponent = () => {
                 Object.keys(roomList).map((key) => {
                     return (
                         <Col className="gutter-row" span={5.5} key={key}>
-                            <Card title={roomList[key].name} className="card">
+                            <Card title={roomList[key].name} className="card" extra={roomList[key].description}>
                                 <Space>
                                     <Button
                                         type="primary"
