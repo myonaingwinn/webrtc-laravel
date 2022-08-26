@@ -34,12 +34,19 @@ const RoomComponent = () => {
         console.log("room id is ", key);
         console.log("room created user id is ", roomList[key].createdBy);
         console.log("login user id is ", id);
-        socket.emit("delete_room", key);
-        notification.open({
-            type: "success",
-            message: "Room Delete Success!",
-        });
-        return navigator("/rooms");
+        if (roomList[key].usersInRoom.length > 0) {
+            notification.open({
+                type: "error",
+                message: "Room has joining users!you cannot delete!",
+            });
+        } else {
+            socket.emit("delete_room", key);
+            notification.open({
+                type: "success",
+                message: "Room Delete Success!",
+            });
+        }
+        navigator("/rooms");
     };
     return (
         <Row gutter={16} className="room-component">
