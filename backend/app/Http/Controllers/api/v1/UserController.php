@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -26,10 +27,13 @@ class UserController extends Controller
 
     public function register(RegisterRequest $request)
     {
+        $uuid = (string)Str::uuid();
+
         User::create([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
             'password' => bcrypt($request->get('password')),
+            'uuid' => $uuid,
         ]);
 
         return response()->json('Register Successful', 200);
