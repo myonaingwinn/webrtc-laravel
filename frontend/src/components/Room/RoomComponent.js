@@ -1,4 +1,4 @@
-import { Button, Col, Card, Row, notification } from "antd";
+import { Button, Col, Card, Row, notification, Space } from "antd";
 import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import React, { useState, useEffect } from "react";
@@ -49,7 +49,7 @@ const RoomComponent = () => {
                     return (
                         <Col className="gutter-row" span={5.5} key={key}>
                             <Card title={roomList[key].name} className="card">
-                                <div>
+                                <Space>
                                     <Button
                                         type="primary"
                                         htmlType="submit"
@@ -68,7 +68,7 @@ const RoomComponent = () => {
                                             Delete Room
                                         </Button>
                                     )}
-                                </div>
+                                </Space>
                                 <div className="user-count">
                                     <UserOutlined />{" "}
                                     {roomList[key].usersInRoom.length}
