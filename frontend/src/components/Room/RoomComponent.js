@@ -11,6 +11,7 @@ const RoomComponent = () => {
     const [roomList, setRoomList] = useState({});
     const navigator = useNavigate();
     const { id } = localStorageGet("user");
+    const [isdisable, setIsDisable] = useState(false);
 
     useEffect(() => {
         socket.on("rooms", (rooms) => {
@@ -28,7 +29,16 @@ const RoomComponent = () => {
 
     const handleJoinRoom = (id) => {
         console.log("🚀 ~ file: Home.js ~ line 33 ~ handleJoinRoom ~ id", id);
-        navigator(`/rooms/${id}`);
+        if (socket.on("room full")) {
+            setIsDisable(true);
+            notification.open({
+                type: "error",
+                message: "Room has reached maximum limit!you cannot join!",
+            });
+            navigator(`/rooms`);
+        } else {
+            navigator(`/rooms/${id}`);
+        }
     };
 
     const deleteRoom = (key) => {
@@ -55,6 +65,7 @@ const RoomComponent = () => {
                                         htmlType="submit"
                                         onClick={() => handleJoinRoom(key)}
                                         className="btn btn-sm"
+                                        disabled={isdisable}
                                     >
                                         Join Room
                                     </Button>
