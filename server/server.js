@@ -32,12 +32,13 @@ io.on("connection", (socket) => {
         } else {
             rooms[room.id] = room;
         }
-        socket.broadcast.emit("rooms", rooms);
+        socket.broadcast.emit("updated rooms", rooms);
         console.log("all rooms : ", rooms);
     });
 
-    socket.emit("rooms", rooms);
-    // socket.broadcast.emit("rooms", rooms);
+    socket.on("get all rooms", () => {
+        socket.emit("rooms", rooms);
+    });
 
     socket.on("delete_room", (room) => {
         console.log("org rooms: ", rooms);

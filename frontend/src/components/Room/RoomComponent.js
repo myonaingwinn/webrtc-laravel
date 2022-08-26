@@ -15,15 +15,14 @@ const RoomComponent = () => {
     useEffect(() => {
         socket.on("rooms", (rooms) => {
             setRoomList(rooms);
-            console.log("🚀 ~ file: Home.js ~ rooms", rooms);
-            console.log("🚀 ~ file: Home.js ~ roomList", roomList);
         });
-        socket.on("updateRooms", (roomList) => {
-            setRoomList(roomList);
+
+        socket.on("updated rooms", (rooms) => {
+            setRoomList(rooms);
+            console.log("🚀 ~ file: RoomComponent.js ~ updated rooms", rooms);
         });
-        socket.on("getAllRooms", (roomList) => {
-            setRoomList(roomList);
-        });
+
+        socket.emit("get all rooms");
     }, [roomList]);
 
     const handleJoinRoom = (id) => {
@@ -44,7 +43,7 @@ const RoomComponent = () => {
     };
     return (
         <Row gutter={16} className="room-component">
-            {roomList &&
+            {Object.entries(roomList).length > 0 &&
                 Object.keys(roomList).map((key) => {
                     return (
                         <Col className="gutter-row" span={5.5} key={key}>
@@ -71,7 +70,9 @@ const RoomComponent = () => {
                                 </Space>
                                 <div className="user-count">
                                     <UserOutlined />{" "}
-                                    {roomList[key].usersInRoom.length}
+                                    {Object.entries(roomList).length !== 0
+                                        ? roomList[key].usersInRoom.length
+                                        : 0}
                                 </div>
                             </Card>
                         </Col>
