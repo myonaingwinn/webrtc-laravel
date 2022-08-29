@@ -1,4 +1,6 @@
 .home {
+    align-items: center;
+
     .title {
         text-align: center;
         margin-top: 50px;
@@ -22,17 +24,11 @@
         float: left;
     }
 
-    .text1 {
-        padding-left: 50px;
-        width: 50%;
-        font-size: 25px;
-        float: left;
-    }
-
     .devtext {
         margin-top: 55px;
         font-size: 20px;
-        color: #070707;
+        padding: 20px;
+        width: 90%;
     }
 
     .point-color {
@@ -45,25 +41,26 @@
         padding-left: 30px;
         padding-right: 30px;
     }
+
+    .text {
+        padding-left: 10%;
+    }
+
     .img1 {
         float: right;
-        padding-right: 50px;
+        padding-right: 10%;
     }
 
     .column {
         padding: 30px;
-
-        &-1 {
-            padding-left: 3rem;
-        }
     }
 
-    .tr {
-        padding: 30px;
+    .middle-row {
+        padding-left: 1%;
     }
 
     .last-row {
-        margin-left: 1.5rem;
+        padding-left: 13%;
         margin-bottom: 3.5rem;
     }
 }
