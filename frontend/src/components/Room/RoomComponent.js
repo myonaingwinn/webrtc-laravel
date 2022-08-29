@@ -37,7 +37,7 @@ const RoomComponent = () => {
         if (roomList[key].usersInRoom.length > 0) {
             notification.open({
                 type: "error",
-                message: "Room has joining users!you cannot delete!",
+                message: "You can delete this room after all users left!",
             });
         } else {
             socket.emit("delete_room", key);
