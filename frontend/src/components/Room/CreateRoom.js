@@ -1,7 +1,15 @@
-import { Button, Layout, Typography, Form, Input, Card, notification } from "antd";
+import {
+    Button,
+    Layout,
+    Typography,
+    Form,
+    Input,
+    Card,
+    notification,
+} from "antd";
 import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import { localStorageGet, signalServerUrl } from "../../helpers/Utilities";
 
@@ -44,6 +52,10 @@ const CreateRoom = () => {
     const [roomName, setRoomName] = useState("");
     const [roomList, setRoomList] = useState([]);
 
+    useEffect(() => {
+        document.title = "Create Room";
+    });
+
     const createRoom = () => {
         const roomId = nanoid();
         const { id } = localStorageGet("user");
@@ -54,6 +66,7 @@ const CreateRoom = () => {
                 id: roomId,
                 name: roomName,
                 usersInRoom: [],
+                chat: [],
                 createdBy: id,
             };
             socket.emit("create_room", roomObj);
@@ -112,10 +125,7 @@ const CreateRoom = () => {
                         </Form.Item>
 
                         <Form.Item {...tailFormItemLayout}>
-                            <Button
-                                type="primary"
-                                htmlType="submit"
-                            >
+                            <Button type="primary" htmlType="submit">
                                 Create
                             </Button>
                         </Form.Item>

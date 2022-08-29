@@ -1,5 +1,5 @@
 import { Button, Col, Form, Input, notification, Row, Space } from "antd";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { baseUrl } from "../../helpers/Utilities";
@@ -34,15 +34,20 @@ const tailFormItemLayout = {
     },
 };
 
-const Register = () => {
+const Register = ({ handleLoading }) => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [form] = Form.useForm();
     const navigator = useNavigate();
 
+    useEffect(() => {
+        document.title = "Register";
+    });
+
     const handleSubmit = async () => {
         if (!(name === "" || email === "" || password === "")) {
+            handleLoading();
             await fetch(baseUrl + "/register", {
                 method: "POST",
                 body: JSON.stringify({
@@ -61,13 +66,13 @@ const Register = () => {
                             type: "success",
                             message: "Register Success!",
                         });
-                        return navigator("/login");
+                        navigator("/login");
                     } else {
                         notification.open({
                             type: "error",
                             message: "Register Fail!",
                         });
-                        return navigator("/register");
+                        navigator("/register");
                     }
                 })
                 .catch((err) => {
@@ -76,8 +81,9 @@ const Register = () => {
                         message: "Register Fail!",
                     });
                     console.log(err);
-                    return navigator("/register");
+                    navigator("/register");
                 });
+            handleLoading();
         }
     };
 

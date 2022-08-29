@@ -1,11 +1,16 @@
 import { Layout, Typography } from "antd";
+import { useEffect } from "react";
 
 const UserList = () => {
     const { Title } = Typography;
 
+    useEffect(() => {
+        document.title = "Online Users";
+    });
+
     return (
         <Layout className="user-list common">
-            <Title className="title">User List Component</Title>
+            <Title className="title">Online Users</Title>
         </Layout>
     );
 };

@@ -1,13 +1,18 @@
 import { Layout } from "antd";
 
-import WebRTC from "./video-chat-cam.svg";
-import Video from "./video-call-svgrepo-com.svg";
-import Logo from "./webrtc.svg";
-import Chat from "./chat-svgrepo.svg";
-import VC from "./R.svg";
-import Robot from "./robot.svg";
+import WebRTC from "../../assets/images/Home/video-chat-cam.svg";
+import Video from "../../assets/images/Home/video-call-svgrepo-com.svg";
+import Logo from "../../assets/images/Home/webrtc.svg";
+import Chat from "../../assets/images/Home/chat-svgrepo.svg";
+import VC from "../../assets/images/Home/R.svg";
+import Robot from "../../assets/images/Home/robot.svg";
+import { useEffect } from "react";
 
 const Home = () => {
+    useEffect(() => {
+        document.title = "Home";
+    });
+
     return (
         <Layout className="home common">
             <div className="title">

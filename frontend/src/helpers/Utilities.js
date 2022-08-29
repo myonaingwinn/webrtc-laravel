@@ -1,3 +1,5 @@
+import { nanoid } from "nanoid";
+
 // env
 export const baseUrl =
     process.env.REACT_APP_BASE_URL ||
@@ -32,4 +34,8 @@ export const localStorageRemove = (key) => {
 export const isLoggedIn = () => {
     const user = localStorageGet("user");
     return user && user.id ? true : false;
+};
+
+export const getNanoId = () => {
+    return nanoid();
 };

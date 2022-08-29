@@ -9,16 +9,6 @@ const { Header } = Layout;
 
 const HeaderTop = (props) => {
     const { name } = localStorageGet("user");
-    const ColorList = [
-        "#f56a00",
-        "#7265e6",
-        "#ffbf00",
-        "#00a2ae",
-        "#fa8c16",
-        "#fa541c",
-    ];
-    const id = Math.floor(Math.random() * (5 - 0 + 1)) + 0;
-    const color = ColorList[id];
     const navigator = useNavigate();
 
     const logout = () => {
@@ -51,7 +41,7 @@ const HeaderTop = (props) => {
                         <Space>
                             <Avatar
                                 style={{
-                                    backgroundColor: color,
+                                    backgroundColor: "#87d068",
                                     verticalAlign: "middle",
                                 }}
                                 gap={4}
