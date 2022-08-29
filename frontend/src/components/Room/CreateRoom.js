@@ -68,6 +68,7 @@ const CreateRoom = () => {
                 usersInRoom: [],
                 chat: [],
                 createdBy: id,
+                roomFull: false,
             };
             socket.emit("create_room", roomObj);
             socket.on("get_room", (roomObj) => {

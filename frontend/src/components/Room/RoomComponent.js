@@ -15,6 +15,7 @@ const RoomComponent = () => {
     useEffect(() => {
         socket.on("rooms", (rooms) => {
             setRoomList(rooms);
+            console.log('room List : ', rooms);
         });
 
         socket.on("updated rooms", (rooms) => {
@@ -61,6 +62,7 @@ const RoomComponent = () => {
                                         htmlType="submit"
                                         onClick={() => handleJoinRoom(key)}
                                         className="btn btn-sm"
+                                        disabled={roomList[key].roomFull}
                                     >
                                         Join Room
                                     </Button>

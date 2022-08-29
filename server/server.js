@@ -58,11 +58,14 @@ io.on("connection", (socket) => {
                 "🚀 ~ file: server.js ~ line 82 ~ socket.on ~ length",
                 length
             );
-            if (length === maxParticipantsAllowed) {
-                socket.emit("room full");
+            rooms[roomID].usersInRoom.push(socket.id);
+            if (rooms[roomID].usersInRoom.length >= maxParticipantsAllowed) {
+                rooms[roomID].roomFull = true;
+                socket.broadcast.emit("rooms", rooms);
+                // socket.emit("room full", roomID);
+                console.log('in room full...')
                 return;
             }
-            rooms[roomID].usersInRoom.push(socket.id);
             console.log("user count :", rooms[roomID].usersInRoom.length);
             console.log(
                 "🚀 ~ file: server.js ~ line 81 ~ socket.on ~ rooms[roomID]",
@@ -103,6 +106,7 @@ io.on("connection", (socket) => {
         if (room) {
             usersInRoom = room.usersInRoom.filter((id) => id !== socket.id);
             rooms[roomID].usersInRoom = usersInRoom;
+            rooms[roomID].roomFull = false;
         }
         socket.broadcast.emit("user left", socket.id);
     });
