@@ -8,6 +8,7 @@ const io = socket(server, {
     cors: {
         origin: [
             "http://localhost:3000",
+            "https://webrtc-laravel.vercel.app",
             "https://webrtc-test-17-aug.netlify.app",
         ],
         methods: ["GET", "POST"],
