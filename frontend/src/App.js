@@ -73,8 +73,14 @@ function App() {
                         </PrivateRoute>
                     }
                 />
-                <Route path="/register" element={<Register handleLoading={handleLoading} />} />
-                <Route path="/login" element={<Login handleLoading={handleLoading} />} />
+                <Route
+                    path="/register"
+                    element={<Register handleLoading={handleLoading} />}
+                />
+                <Route
+                    path="/login"
+                    element={<Login handleLoading={handleLoading} />}
+                />
                 <Route path="*" element={<Error />} />
             </Routes>
         </Loading>

@@ -16,6 +16,7 @@ const io = socket(server, {
 
 const PORT = process.env.PORT || 5000;
 
+const onlineUsers = {};
 const rooms = {};
 const maxParticipantsAllowed = 10;
 const socketToRoom = {};
@@ -24,6 +25,38 @@ io.on("connection", (socket) => {
     console.log(`User connected: ${socket.id}`);
 
     socket.emit("me", socket.id);
+
+    /*********************************************
+     * Users
+     ********************************************/
+    socket.on("set online user", (user) => {
+        console.log("In Set Online Users");
+        console.log("User set online:", user);
+
+        if (user.uuid && user.socketId) {
+            onlineUsers[user.uuid] = user;
+        }
+        socket.emit("online users", onlineUsers);
+
+        console.log("Online Users :", onlineUsers);
+    });
+
+    socket.on("get online users", () => {
+        socket.emit("online users", onlineUsers);
+    });
+
+    socket.on("logout", (userId) => {
+        console.log("in Logout", userId);
+
+        delete onlineUsers[userId];
+        socket.emit("online users", onlineUsers);
+
+        console.log("in Logout after delete", onlineUsers);
+    });
+
+    /*********************************************
+     * Rooms
+     ********************************************/
 
     socket.on("create_room", (room) => {
         console.log("room :", room);
@@ -110,6 +143,10 @@ io.on("connection", (socket) => {
     socket.on("change", (payload) => {
         socket.broadcast.emit("change", payload);
     });
+
+    /*********************************************
+     * Room Chat
+     ********************************************/
 
     socket.on("message", (payload) => {
         socket.join(payload.room);
