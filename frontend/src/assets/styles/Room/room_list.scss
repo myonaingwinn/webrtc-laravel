@@ -9,7 +9,7 @@
         border-radius: 10px;
         height: 250px;
         margin: 20px;
-        width: 265px;
+        width: 330px;
         box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
     }
 
@@ -17,11 +17,11 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        width: 240px;
+        width: 295px;
         height: 90px;
         word-wrap: break-word;
         white-space: pre-wrap;
-        padding-right: 20px;
+        padding-right: 10px;
     }
 
     .create-btn-text {
@@ -32,5 +32,8 @@
 
     .plus-btn {
         margin-left: 10px;
+    }
+    .delete-btn {
+        margin-left: 40px;
     }
 }

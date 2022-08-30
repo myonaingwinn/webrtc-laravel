@@ -48,7 +48,7 @@ const RoomComponent = () => {
             {Object.entries(roomList).length > 0 &&
                 Object.keys(roomList).map((key) => {
                     return (
-                        <Col className="gutter-row" span={5.5} key={key}>
+                        <Col className="gutter-row" span={8} key={key}>
                             <Card title={roomList[key].name} className="card"
                                 extra={
                                     <div className="user-count">
@@ -60,16 +60,16 @@ const RoomComponent = () => {
                                 }
                             >
                                 <Space>
-                                    <Paragraph className="paragraph">
+                                    {roomList[key].description ? <Paragraph className="paragraph">
                                         {roomList[key].description}
-                                    </Paragraph>
+                                    </Paragraph> : <Paragraph className="paragraph">No description...</Paragraph>}
                                 </Space>
                                 <Space>
                                     <Button
                                         type="primary"
                                         htmlType="submit"
                                         onClick={() => handleJoinRoom(key)}
-                                        className="btn btn-sm"
+                                        className="btn btn-sm join-btn"
                                     >
                                         Join Room
                                     </Button>
@@ -78,7 +78,7 @@ const RoomComponent = () => {
                                             type="danger"
                                             htmlType="submit"
                                             onClick={() => deleteRoom(key)}
-                                            className="btn btn-sm"
+                                            className="btn btn-sm delete-btn"
                                         >
                                             Delete Room
                                         </Button>
