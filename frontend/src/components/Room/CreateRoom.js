@@ -5,7 +5,6 @@ import {
     Form,
     Input,
     Card,
-    notification,
 } from "antd";
 import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
@@ -79,17 +78,8 @@ const CreateRoom = () => {
                     roomObj.roomName
                 );
             });
-            notification.open({
-                type: "success",
-                message: "Room Creation Success!",
-            });
             navigator("/rooms");
-        } else {
-            notification.open({
-                type: "error",
-                message: "Room Creation Fail!",
-                description: "room name cannot be blank!",
-            });
+            window.location.reload();
         }
     };
 
