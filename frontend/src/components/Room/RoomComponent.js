@@ -1,9 +1,11 @@
-import { Button, Col, Card, Row, notification, Space } from "antd";
+import { Button, Col, Card, Row, notification, Space, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import React, { useState, useEffect } from "react";
 import { UserOutlined } from "@ant-design/icons";
 import { signalServerUrl, localStorageGet } from "../../helpers/Utilities";
+
+const { Paragraph } = Typography;
 
 const socket = io(signalServerUrl);
 
@@ -47,7 +49,21 @@ const RoomComponent = () => {
                 Object.keys(roomList).map((key) => {
                     return (
                         <Col className="gutter-row" span={5.5} key={key}>
-                            <Card title={roomList[key].name} className="card" extra={roomList[key].description}>
+                            <Card title={roomList[key].name} className="card"
+                                extra={
+                                    <div className="user-count">
+                                        <UserOutlined />{" "}
+                                        {Object.entries(roomList).length !== 0
+                                            ? roomList[key].usersInRoom.length
+                                            : 0}
+                                    </div>
+                                }
+                            >
+                                <Space>
+                                    <Paragraph className="paragraph">
+                                        {roomList[key].description}
+                                    </Paragraph>
+                                </Space>
                                 <Space>
                                     <Button
                                         type="primary"
@@ -68,17 +84,11 @@ const RoomComponent = () => {
                                         </Button>
                                     )}
                                 </Space>
-                                <div className="user-count">
-                                    <UserOutlined />{" "}
-                                    {Object.entries(roomList).length !== 0
-                                        ? roomList[key].usersInRoom.length
-                                        : 0}
-                                </div>
                             </Card>
                         </Col>
                     );
                 })}
-        </Row>
+        </Row >
     );
 };
 export default RoomComponent;

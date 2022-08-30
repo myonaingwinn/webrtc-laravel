@@ -7,10 +7,21 @@
 
     .card {
         border-radius: 10px;
-        height: 150px;
+        height: 250px;
         margin: 20px;
         width: 265px;
         box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
+    }
+
+    .paragraph {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 240px;
+        height: 90px;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        padding-right: 20px;
     }
 
     .create-btn-text {

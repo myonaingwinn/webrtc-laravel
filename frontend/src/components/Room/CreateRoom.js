@@ -122,7 +122,7 @@ const CreateRoom = () => {
                             rules={[
                                 {
                                     required: true,
-                                    message: "Please enter room name.",
+                                    max: 20,
                                 },
                             ]}
                         >
@@ -135,9 +135,9 @@ const CreateRoom = () => {
                             id="description"
                             value={roomDescription}
                             onChange={(e) => setRoomDescription(e.target.value)}
-                            rules={[{ max: 20 }]}
+                            rules={[{ max: 100 }]}
                         >
-                            <TextArea rows={2} placeholder="Enter description" />
+                            <TextArea rows={4} placeholder="Enter description" />
                         </Form.Item>
 
                         <Form.Item {...tailFormItemLayout}>
