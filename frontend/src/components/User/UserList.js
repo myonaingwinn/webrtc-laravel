@@ -1,14 +1,16 @@
 import { Layout, Row, Typography } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { connectWithServer, getOnlineUsers } from "../../helpers/SocketClient";
 import { localStorageGet } from "../../helpers/Utilities";
+import Empty from "../Error/Empty";
 import User from "./User";
 
 const UserList = () => {
     const { Title } = Typography;
     const users = useSelector((state) => state.onlineUserList.value);
     const { uuid } = localStorageGet("user") || {};
+    const [showEmpty, setShowEmpty] = useState(true);
 
     useEffect(() => {
         connectWithServer();
@@ -18,6 +20,9 @@ const UserList = () => {
         document.title = "Online Users";
 
         getOnlineUsers();
+
+        if (users && Object.keys(users).length > 1) setShowEmpty(false);
+        else setShowEmpty(true);
     }, [users]);
 
     return (
@@ -28,14 +33,18 @@ const UserList = () => {
                 className="user-container"
                 justify="space-evenly"
             >
-                {users &&
+                {!showEmpty ? (
+                    users &&
                     Object.keys(users).map(
                         (userId) =>
                             uuid &&
                             uuid !== userId && (
                                 <User user={users[userId]} key={userId} />
                             )
-                    )}
+                    )
+                ) : (
+                    <Empty description="Oops! There is no online users." />
+                )}
             </Row>
         </Layout>
     );
