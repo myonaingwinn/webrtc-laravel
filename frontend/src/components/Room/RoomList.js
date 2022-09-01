@@ -42,7 +42,7 @@ const RoomList = () => {
                 {!showEmpty ? (
                     <RoomComponent uuid={uuid} roomList={roomList} />
                 ) : (
-                    <Empty description={"No Active Rooms, Create a New One!"} />
+                    <Empty description={"No Rooms found, create a new one!"} />
                 )}
             </Space>
         </Layout>

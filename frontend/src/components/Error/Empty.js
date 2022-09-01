@@ -4,10 +4,8 @@ const EmptyComponent = ({ description }) => {
     return (
         <Empty
             description={
-                description ? (
+                description && (
                     <span className="empty-description">{description}</span>
-                ) : (
-                    ""
                 )
             }
             className="empty"
