@@ -1,6 +1,8 @@
 import { Avatar, Col, Row, Space, Typography } from "antd";
 import { mdiMessageText, mdiPhone } from "@mdi/js";
 import Icon from "@mdi/react";
+import { getColor } from "../../helpers/Utilities";
+
 const { Title } = Typography;
 
 const User = ({ user }) => {
@@ -18,10 +20,9 @@ const User = ({ user }) => {
         <Col span={5} className="user-card">
             <Row>
                 <Col span={8}>
-                    {/* TODO: change color according to user's name */}
                     <Avatar
                         style={{
-                            backgroundColor: "#A21CAF",
+                            backgroundColor: getColor(user.name),
                         }}
                         size={{
                             md: 40,
