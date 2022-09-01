@@ -2,7 +2,11 @@ import { Layout } from "antd";
 import { Link } from "react-router-dom";
 import SiderLeft from "../Sider/Sider";
 import { Avatar, Space, Dropdown, Menu } from "antd";
-import { localStorageGet, localStorageRemove } from "../../helpers/Utilities";
+import {
+    getColor,
+    localStorageGet,
+    localStorageRemove,
+} from "../../helpers/Utilities";
 import { removeUserFromServer } from "../../helpers/SocketClient";
 import { useNavigate } from "react-router-dom";
 
@@ -43,7 +47,7 @@ const HeaderTop = (props) => {
                         <Space>
                             <Avatar
                                 style={{
-                                    backgroundColor: "#87d068",
+                                    backgroundColor: getColor(),
                                     verticalAlign: "middle",
                                 }}
                                 gap={4}
