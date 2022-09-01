@@ -12,8 +12,24 @@ const onlineUserList = createSlice({
     },
 });
 
+const rooms = createSlice({
+    name: "room",
+    initialState: {
+        roomList: {},
+    },
+    reducers: {
+        setRoomList: (state, action) => {
+            state.roomList = action.payload;
+        },
+    },
+});
+
 export const { setOnlineUserList } = onlineUserList.actions;
+export const { setRoomList } = rooms.actions;
 
 export default configureStore({
-    reducer: { onlineUserList: onlineUserList.reducer },
+    reducer: {
+        onlineUserList: onlineUserList.reducer,
+        rooms: rooms.reducer,
+    },
 });

@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 import { localStorageGet, signalServerUrl } from "./Utilities";
-import { setOnlineUserList } from "../store";
+import { setOnlineUserList, setRoomList } from "../store";
 import store from "../store";
 
 let socket;
@@ -35,3 +35,17 @@ export const getOnlineUsers = () => {
         store.dispatch(setOnlineUserList(userList));
     });
 };
+
+export const getRoomList = () => {
+    socket.emit("get all rooms");
+
+    socket.on("rooms", (rooms) => {
+        store.dispatch(setRoomList(rooms));
+    });
+};
+
+export const createNewRoom = (room) => socket.emit("create_room", room);
+
+export const deleteARoom = (roomId) => socket.emit("delete_room", roomId);
+
+export const joinRoom = (roomId) => socket.emit("join room", roomId);

@@ -10,8 +10,8 @@ import {
 import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import io from "socket.io-client";
-import { localStorageGet, signalServerUrl } from "../../helpers/Utilities";
+import { localStorageGet } from "../../helpers/Utilities";
+import { connectWithServer, createNewRoom } from "../../helpers/SocketClient";
 
 const formItemLayout = {
     labelCol: {
@@ -43,22 +43,21 @@ const tailFormItemLayout = {
     },
 };
 
-const socket = io(signalServerUrl);
-
 const CreateRoom = () => {
     const { Title } = Typography;
     const navigator = useNavigate();
     const [form] = Form.useForm();
     const [roomName, setRoomName] = useState("");
-    const [roomList, setRoomList] = useState([]);
 
     useEffect(() => {
         document.title = "Create Room";
-    });
+
+        connectWithServer();
+    }, []);
 
     const createRoom = () => {
         const roomId = nanoid();
-        const { id } = localStorageGet("user");
+        const { uuid } = localStorageGet("user") || {};
         if (!(roomName === "")) {
             setRoomName(roomName);
             form.resetFields();
@@ -67,18 +66,9 @@ const CreateRoom = () => {
                 name: roomName,
                 usersInRoom: [],
                 chat: [],
-                createdBy: id,
+                createdBy: uuid,
             };
-            socket.emit("create_room", roomObj);
-            socket.on("get_room", (roomObj) => {
-                setRoomList([...roomList, roomObj]);
-                console.log(
-                    "room id is ",
-                    roomObj.id,
-                    " and room name is ",
-                    roomObj.roomName
-                );
-            });
+            createNewRoom(roomObj);
             notification.open({
                 type: "success",
                 message: "Room Creation Success!",

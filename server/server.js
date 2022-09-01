@@ -10,6 +10,7 @@ const io = socket(server, {
             "http://localhost:3000",
             "https://webrtc-laravel.vercel.app",
             "https://webrtc-test-17-aug.netlify.app",
+            "*",
         ],
         methods: ["GET", "POST"],
     },
@@ -66,7 +67,7 @@ io.on("connection", (socket) => {
         } else {
             rooms[room.id] = room;
         }
-        socket.broadcast.emit("updated rooms", rooms);
+        socket.broadcast.emit("rooms", rooms);
         console.log("all rooms : ", rooms);
     });
 
@@ -114,6 +115,7 @@ io.on("connection", (socket) => {
             : [];
         socket.emit("all users in a room", usersInThisRoom);
         socket.emit("room_name", rooms[roomID].name);
+        socket.broadcast.emit("rooms", rooms);
         console.log("When join room : ", rooms[roomID]);
     });
 
@@ -139,6 +141,7 @@ io.on("connection", (socket) => {
             rooms[roomID].usersInRoom = usersInRoom;
         }
         socket.broadcast.emit("user left", socket.id);
+        socket.broadcast.emit("rooms", rooms);
     });
 
     socket.on("change", (payload) => {
