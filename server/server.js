@@ -6,12 +6,13 @@ const socket = require("socket.io");
 require("dotenv").config();
 const io = socket(server, {
     cors: {
-        origin: [
-            "http://localhost:3000",
-            "https://webrtc-laravel.vercel.app",
-            "https://webrtc-test-17-aug.netlify.app",
-            "*",
-        ],
+        // origin: [
+        //     "http://localhost:3000",
+        //     "https://webrtc-laravel.vercel.app",
+        //     "https://webrtc-test-17-aug.netlify.app",
+        //     "*",
+        // ],
+        origin: "*",
         methods: ["GET", "POST"],
     },
 });
