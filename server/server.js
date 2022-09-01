@@ -6,16 +6,20 @@ const socket = require("socket.io");
 require("dotenv").config();
 const io = socket(server, {
     cors: {
-        origin: [
-            "http://localhost:3000",
-            "https://webrtc-test-17-aug.netlify.app",
-        ],
+        // origin: [
+        //     "http://localhost:3000",
+        //     "https://webrtc-laravel.vercel.app",
+        //     "https://webrtc-test-17-aug.netlify.app",
+        //     "*",
+        // ],
+        origin: "*",
         methods: ["GET", "POST"],
     },
 });
 
 const PORT = process.env.PORT || 5000;
 
+const onlineUsers = {};
 const rooms = {};
 const maxParticipantsAllowed = 10;
 const socketToRoom = {};
@@ -25,6 +29,38 @@ io.on("connection", (socket) => {
 
     socket.emit("me", socket.id);
 
+    /*********************************************
+     * Users
+     ********************************************/
+    socket.on("set online user", (user) => {
+        console.log("In Set Online Users");
+        console.log("User set online:", user);
+
+        if (user.uuid && user.socketId) {
+            onlineUsers[user.uuid] = user;
+        }
+        socket.emit("online users", onlineUsers);
+
+        console.log("Online Users :", onlineUsers);
+    });
+
+    socket.on("get online users", () => {
+        socket.emit("online users", onlineUsers);
+    });
+
+    socket.on("logout", (userId) => {
+        console.log("in Logout", userId);
+
+        delete onlineUsers[userId];
+        socket.emit("online users", onlineUsers);
+
+        console.log("in Logout after delete", onlineUsers);
+    });
+
+    /*********************************************
+     * Rooms
+     ********************************************/
+
     socket.on("create_room", (room) => {
         console.log("room :", room);
         if (rooms[room.id]) {
@@ -32,7 +68,7 @@ io.on("connection", (socket) => {
         } else {
             rooms[room.id] = room;
         }
-        socket.broadcast.emit("updated rooms", rooms);
+        socket.broadcast.emit("rooms", rooms);
         console.log("all rooms : ", rooms);
     });
 
@@ -80,6 +116,7 @@ io.on("connection", (socket) => {
             : [];
         socket.emit("all users in a room", usersInThisRoom);
         socket.emit("room_name", rooms[roomID].name);
+        socket.broadcast.emit("rooms", rooms);
         console.log("When join room : ", rooms[roomID]);
     });
 
@@ -105,11 +142,16 @@ io.on("connection", (socket) => {
             rooms[roomID].usersInRoom = usersInRoom;
         }
         socket.broadcast.emit("user left", socket.id);
+        socket.broadcast.emit("rooms", rooms);
     });
 
     socket.on("change", (payload) => {
         socket.broadcast.emit("change", payload);
     });
+
+    /*********************************************
+     * Room Chat
+     ********************************************/
 
     socket.on("message", (payload) => {
         socket.join(payload.room);

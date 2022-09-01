@@ -7,7 +7,6 @@ import {
 import { Layout, Menu } from "antd";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { localStorageRemove } from "../../helpers/Utilities";
 const { Sider } = Layout;
 
 const SiderLeft = (props) => {
@@ -40,8 +39,7 @@ const SiderLeft = (props) => {
         if (key !== "/logout") {
             navigator(key);
         } else {
-            localStorageRemove("user");
-            navigator("/login");
+            props.handleLogout();
         }
     };
 

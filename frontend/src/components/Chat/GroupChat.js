@@ -12,7 +12,7 @@ const socket = io(signalServerUrl);
 const GroupChat = (props) => {
     const [message, setMessage] = useState("");
     const [chat, setChat] = useState([]);
-    const { id, name } = localStorageGet("user");
+    const { uuid, name } = localStorageGet("user");
 
     // scroll
     const chatContainer = useRef(null);
@@ -36,7 +36,7 @@ const GroupChat = (props) => {
         const payload = {
             message,
             room: props.roomId,
-            userId: id,
+            userId: uuid,
             userName: name,
         };
         socket.emit("message", payload);
@@ -64,10 +64,10 @@ const GroupChat = (props) => {
                         <div
                             key={getNanoId()}
                             className={`chat-blk ${
-                                chat.senderId === id ? "chat-me" : ""
+                                chat.senderId === uuid ? "chat-me" : ""
                             }`}
                         >
-                            {chat.senderId === id
+                            {chat.senderId === uuid
                                 ? `${chat.message} : ME`
                                 : `${chat.senderName} : ${chat.message}`}
                         </div>

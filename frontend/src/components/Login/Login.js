@@ -90,6 +90,7 @@ const Login = ({ handleLoading }) => {
                     message: "Login Success!",
                 });
                 navigator("/");
+                navigator(0);
             } else {
                 notification.open({
                     type: "error",
@@ -104,7 +105,7 @@ const Login = ({ handleLoading }) => {
     return (
         <>
             <Row className="login" align="center">
-                <Col >
+                <Col>
                     <Card title="Login" className="card">
                         <Form
                             {...formItemLayout}
