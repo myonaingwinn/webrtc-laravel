@@ -43,7 +43,7 @@ const UserList = () => {
                             )
                     )
                 ) : (
-                    <Empty description="Oops! There is no online users." />
+                    <Empty description="Nobody is Online, Invite your Friends!" />
                 )}
             </Row>
         </Layout>

@@ -2,14 +2,30 @@ import { Button, Layout, Space, Typography } from "antd";
 import { Link } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import RoomComponent from "./RoomComponent";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { connectWithServer, getRoomList } from "../../helpers/SocketClient";
+import { useSelector } from "react-redux";
+import { localStorageGet } from "../../helpers/Utilities";
+import Empty from "../Error/Empty";
 
 const RoomList = () => {
     const { Title } = Typography;
+    const roomList = useSelector((state) => state.rooms.roomList);
+    const { uuid } = localStorageGet("user") || {};
+    const [showEmpty, setShowEmpty] = useState(false);
 
     useEffect(() => {
         document.title = "Room List";
-    });
+
+        connectWithServer();
+    }, []);
+
+    useEffect(() => {
+        getRoomList();
+
+        if (roomList && Object.keys(roomList).length > 0) setShowEmpty(false);
+        else setShowEmpty(true);
+    }, [roomList]);
 
     return (
         <Layout className="room-list common">
@@ -23,7 +39,11 @@ const RoomList = () => {
                         </Button>
                     </p>
                 </Link>
-                <RoomComponent />
+                {!showEmpty ? (
+                    <RoomComponent uuid={uuid} roomList={roomList} />
+                ) : (
+                    <Empty description={"No Active Rooms, Create a New One!"} />
+                )}
             </Space>
         </Layout>
     );
