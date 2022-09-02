@@ -67,6 +67,7 @@ const CreateRoom = () => {
                 usersInRoom: [],
                 chat: [],
                 createdBy: uuid,
+                roomFull: false,
             };
             createNewRoom(roomObj);
             notification.open({

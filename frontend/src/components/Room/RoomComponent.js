@@ -39,6 +39,7 @@ const RoomComponent = ({ roomList, uuid }) => {
                                         htmlType="submit"
                                         onClick={() => handleJoinRoom(key)}
                                         className="btn btn-sm"
+                                        disabled={roomList[key].roomFull}
                                     >
                                         Join Room
                                     </Button>

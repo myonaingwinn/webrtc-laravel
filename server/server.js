@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 5000;
 
 const onlineUsers = {};
 const rooms = {};
-const maxParticipantsAllowed = 10;
+const maxParticipantsAllowed = 1;
 const socketToRoom = {};
 
 io.on("connection", (socket) => {
@@ -94,11 +94,13 @@ io.on("connection", (socket) => {
                 "🚀 ~ file: server.js ~ line 82 ~ socket.on ~ length",
                 length
             );
-            if (length === maxParticipantsAllowed) {
-                socket.emit("room full");
+            rooms[roomID].usersInRoom.push(socket.id);
+            if (rooms[roomID].usersInRoom.length >= maxParticipantsAllowed) {
+                rooms[roomID].roomFull = true;
+                socket.broadcast.emit("rooms", rooms);
+                console.log('in room full...')
                 return;
             }
-            rooms[roomID].usersInRoom.push(socket.id);
             console.log("user count :", rooms[roomID].usersInRoom.length);
             console.log(
                 "🚀 ~ file: server.js ~ line 81 ~ socket.on ~ rooms[roomID]",
@@ -114,6 +116,7 @@ io.on("connection", (socket) => {
         const usersInThisRoom = rooms[roomID]
             ? rooms[roomID].usersInRoom.filter((id) => id !== socket.id)
             : [];
+        rooms[roomID].roomFull = false;
         socket.emit("all users in a room", usersInThisRoom);
         socket.emit("room_name", rooms[roomID].name);
         socket.broadcast.emit("rooms", rooms);
