@@ -1,21 +1,10 @@
 .room-list {
     .card {
         border-radius: 10px;
-        height: 250px;
+        height: 200px;
         margin: 20px;
         width: 330px;
         box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
-    }
-
-    .paragraph {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        width: 295px;
-        height: 90px;
-        word-wrap: break-word;
-        white-space: pre-wrap;
-        padding-right: 10px;
     }
 
     .create-btn-text {

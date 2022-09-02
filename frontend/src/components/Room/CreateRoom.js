@@ -126,12 +126,12 @@ const CreateRoom = () => {
                             onChange={(e) => setRoomDescription(e.target.value)}
                             rules={[
                                 {
-                                    max: 100,
-                                    message: 'Description cannot be longer than 100 characters.',
+                                    max: 80,
+                                    message: 'Description cannot be longer than 80 characters.',
                                 },
                             ]}
                         >
-                            <TextArea rows={4} placeholder="Enter description" />
+                            <TextArea rows={2} placeholder="Enter description" />
                         </Form.Item>
 
                         <Form.Item {...tailFormItemLayout}>
