@@ -2,16 +2,22 @@ import { Layout } from "antd";
 import { Link } from "react-router-dom";
 import SiderLeft from "../Sider/Sider";
 import { Avatar, Space, Dropdown, Menu } from "antd";
-import { localStorageGet, localStorageRemove } from "../../helpers/Utilities";
+import {
+    getColor,
+    localStorageGet,
+    localStorageRemove,
+} from "../../helpers/Utilities";
+import { removeUserFromServer } from "../../helpers/SocketClient";
 import { useNavigate } from "react-router-dom";
 
 const { Header } = Layout;
 
 const HeaderTop = (props) => {
-    const { name } = localStorageGet("user");
+    const { name } = localStorageGet("user") || {};
     const navigator = useNavigate();
 
     const logout = () => {
+        removeUserFromServer();
         localStorageRemove("user");
         navigator("/login");
     };
@@ -41,12 +47,12 @@ const HeaderTop = (props) => {
                         <Space>
                             <Avatar
                                 style={{
-                                    backgroundColor: "#87d068",
+                                    backgroundColor: getColor(),
                                     verticalAlign: "middle",
                                 }}
                                 gap={4}
                             >
-                                {name.charAt(0).toUpperCase()}
+                                {name && name.charAt(0).toUpperCase()}
                             </Avatar>
 
                             {name}
@@ -54,7 +60,7 @@ const HeaderTop = (props) => {
                     </Dropdown>
                 </div>
             </Header>
-            <SiderLeft>{props.children}</SiderLeft>
+            <SiderLeft handleLogout={logout}>{props.children}</SiderLeft>
         </Layout>
     );
 };

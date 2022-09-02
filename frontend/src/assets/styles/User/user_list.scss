@@ -1,6 +1,37 @@
 .user-list {
-    .title {
-        align-self: center;
-        margin-top: 30px;
+    .user {
+        &-container {
+            margin-left: 8px !important;
+            margin-right: 8px !important;
+        }
+
+        &-card {
+            padding: 10px;
+            height: 110px;
+            border-radius: 5px;
+            border: 1px solid #ebebeb;
+            box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+
+            &:hover {
+                border: 1px solid #0091ff57;
+            }
+        }
+
+        &-avatar {
+            transform: translate(6px, 8px);
+        }
+
+        &-controls {
+            margin-top: 0.7rem;
+
+            svg {
+                color: #7f8c8d;
+
+                &:hover {
+                    color: #34495e;
+                    cursor: pointer;
+                }
+            }
+        }
     }
 }
