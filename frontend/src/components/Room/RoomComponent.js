@@ -54,7 +54,7 @@ const RoomComponent = ({ roomList, uuid }) => {
                                         type="primary"
                                         htmlType="submit"
                                         onClick={() => handleJoinRoom(key)}
-                                        className="btn btn-sm"
+                                        className="btn btn-sm join-btn"
                                     >
                                         Join Room
                                     </Button>
@@ -69,12 +69,6 @@ const RoomComponent = ({ roomList, uuid }) => {
                                         </Button>
                                     )}
                                 </Space>
-                                <div className="user-count">
-                                    <UserOutlined />{" "}
-                                    {Object.entries(roomList).length !== 0
-                                        ? roomList[key].usersInRoom.length
-                                        : 0}
-                                </div>
                             </Card>
                         </Col>
                     );
