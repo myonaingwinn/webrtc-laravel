@@ -122,7 +122,6 @@ const CreateRoom = () => {
                         <Form.Item
                             name="description"
                             label="Description :"
-                            id="description"
                             value={roomDescription}
                             onChange={(e) => setRoomDescription(e.target.value)}
                             rules={[
