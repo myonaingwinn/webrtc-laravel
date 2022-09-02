@@ -116,7 +116,6 @@ io.on("connection", (socket) => {
         const usersInThisRoom = rooms[roomID]
             ? rooms[roomID].usersInRoom.filter((id) => id !== socket.id)
             : [];
-        rooms[roomID].roomFull = false;
         socket.emit("all users in a room", usersInThisRoom);
         socket.emit("room_name", rooms[roomID].name);
         socket.broadcast.emit("rooms", rooms);
@@ -143,6 +142,7 @@ io.on("connection", (socket) => {
         if (room) {
             usersInRoom = room.usersInRoom.filter((id) => id !== socket.id);
             rooms[roomID].usersInRoom = usersInRoom;
+            rooms[roomID].roomFull = false;
         }
         socket.broadcast.emit("user left", socket.id);
         socket.broadcast.emit("rooms", rooms);
