@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 5000;
 
 const onlineUsers = {};
 const rooms = {};
-const maxParticipantsAllowed = 1;
+const maxParticipantsAllowed = 10;
 const socketToRoom = {};
 
 io.on("connection", (socket) => {
