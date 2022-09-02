@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 5000;
 
 const onlineUsers = {};
 const rooms = {};
-const maxParticipantsAllowed = 10;
+const maxParticipantsAllowed = 1;
 const socketToRoom = {};
 
 io.on("connection", (socket) => {
@@ -99,7 +99,6 @@ io.on("connection", (socket) => {
                 rooms[roomID].roomFull = true;
                 socket.broadcast.emit("rooms", rooms);
                 console.log('in room full...')
-                return;
             }
             console.log("user count :", rooms[roomID].usersInRoom.length);
             console.log(
