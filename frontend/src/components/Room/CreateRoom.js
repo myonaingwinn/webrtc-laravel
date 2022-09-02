@@ -112,7 +112,7 @@ const CreateRoom = () => {
                             rules={[
                                 {
                                     required: true,
-                                    max: 20,
+                                    message: 'Room name is required.',
                                 },
                             ]}
                         >
@@ -125,7 +125,12 @@ const CreateRoom = () => {
                             id="description"
                             value={roomDescription}
                             onChange={(e) => setRoomDescription(e.target.value)}
-                            rules={[{ max: 100 }]}
+                            rules={[
+                                {
+                                    max: 100,
+                                    message: 'Description cannot be longer than 100 characters.',
+                                },
+                            ]}
                         >
                             <TextArea rows={4} placeholder="Enter description" />
                         </Form.Item>
