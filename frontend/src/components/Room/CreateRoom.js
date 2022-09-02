@@ -74,6 +74,7 @@ const CreateRoom = () => {
                 message: "Room Creation Success!",
             });
             navigator("/rooms");
+            window.location.reload();
         } else {
             notification.open({
                 type: "error",
