@@ -1,7 +1,9 @@
-import { Button, Col, Card, Row, notification, Space } from "antd";
+import { Button, Col, Card, Row, notification, Space, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 import { UserOutlined } from "@ant-design/icons";
 import { deleteARoom } from "../../helpers/SocketClient";
+
+const { Paragraph } = Typography;
 
 const RoomComponent = ({ roomList, uuid }) => {
     const navigator = useNavigate();
@@ -32,7 +34,21 @@ const RoomComponent = ({ roomList, uuid }) => {
                 Object.keys(roomList).map((key) => {
                     return (
                         <Col className="gutter-row" span={5.5} key={key}>
-                            <Card title={roomList[key].name} className="card">
+                            <Card title={roomList[key].name} className="card"
+                                extra={
+                                    <div className="user-count">
+                                        <UserOutlined />{" "}
+                                        {Object.entries(roomList).length !== 0
+                                            ? roomList[key].usersInRoom.length
+                                            : 0}
+                                    </div>
+                                }
+                            >
+                                <Space>
+                                    {roomList[key].description ? <Paragraph className="paragraph">
+                                        {roomList[key].description}
+                                    </Paragraph> : <Paragraph className="paragraph">No description...</Paragraph>}
+                                </Space>
                                 <Space>
                                     <Button
                                         type="primary"
@@ -40,6 +56,7 @@ const RoomComponent = ({ roomList, uuid }) => {
                                         onClick={() => handleJoinRoom(key)}
                                         className="btn btn-sm"
                                         disabled={roomList[key].roomFull}
+                                        className="btn btn-sm join-btn"
                                     >
                                         Join Room
                                     </Button>
@@ -48,18 +65,12 @@ const RoomComponent = ({ roomList, uuid }) => {
                                             type="danger"
                                             htmlType="submit"
                                             onClick={() => deleteRoom(key)}
-                                            className="btn btn-sm"
+                                            className="btn btn-sm delete-btn"
                                         >
                                             Delete Room
                                         </Button>
                                     )}
                                 </Space>
-                                <div className="user-count">
-                                    <UserOutlined />{" "}
-                                    {Object.entries(roomList).length !== 0
-                                        ? roomList[key].usersInRoom.length
-                                        : 0}
-                                </div>
                             </Card>
                         </Col>
                     );
