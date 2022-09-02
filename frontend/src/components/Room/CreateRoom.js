@@ -13,6 +13,8 @@ import { useEffect, useState } from "react";
 import { localStorageGet } from "../../helpers/Utilities";
 import { connectWithServer, createNewRoom } from "../../helpers/SocketClient";
 
+const { TextArea } = Input;
+
 const formItemLayout = {
     labelCol: {
         xs: {
@@ -48,6 +50,7 @@ const CreateRoom = () => {
     const navigator = useNavigate();
     const [form] = Form.useForm();
     const [roomName, setRoomName] = useState("");
+    const [roomDescription, setRoomDescription] = useState("");
 
     useEffect(() => {
         document.title = "Create Room";
@@ -60,6 +63,7 @@ const CreateRoom = () => {
         const { uuid } = localStorageGet("user") || {};
         if (!(roomName === "")) {
             setRoomName(roomName);
+            setRoomDescription(roomDescription);
             form.resetFields();
             var roomObj = {
                 id: roomId,
@@ -67,6 +71,7 @@ const CreateRoom = () => {
                 usersInRoom: [],
                 chat: [],
                 createdBy: uuid,
+                description: roomDescription,
             };
             createNewRoom(roomObj);
             notification.open({
@@ -107,11 +112,22 @@ const CreateRoom = () => {
                             rules={[
                                 {
                                     required: true,
-                                    message: "Please enter room name.",
+                                    max: 20,
                                 },
                             ]}
                         >
                             <Input placeholder="Enter room name" />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="description"
+                            label="Description :"
+                            id="description"
+                            value={roomDescription}
+                            onChange={(e) => setRoomDescription(e.target.value)}
+                            rules={[{ max: 100 }]}
+                        >
+                            <TextArea rows={4} placeholder="Enter description" />
                         </Form.Item>
 
                         <Form.Item {...tailFormItemLayout}>
