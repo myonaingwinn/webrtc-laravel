@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { localStorageGet } from "../../helpers/Utilities";
 import { connectWithServer, createNewRoom } from "../../helpers/SocketClient";
+import { VALID001, VALID002, NOTI001, NOTI002 } from "../../helpers/Messages";
 
 const { TextArea } = Input;
 
@@ -77,13 +78,13 @@ const CreateRoom = () => {
             createNewRoom(roomObj);
             notification.open({
                 type: "success",
-                message: "Room Creation Success!",
+                message: NOTI001,
             });
             navigator("/rooms");
         } else {
             notification.open({
                 type: "error",
-                message: "Room Creation Fail!",
+                message: NOTI002,
                 description: "room name cannot be blank!",
             });
         }
@@ -113,7 +114,7 @@ const CreateRoom = () => {
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Room name is required.',
+                                    message: VALID001,
                                 },
                             ]}
                         >
@@ -128,7 +129,7 @@ const CreateRoom = () => {
                             rules={[
                                 {
                                     max: 80,
-                                    message: 'Description cannot be longer than 80 characters.',
+                                    message: VALID002,
                                 },
                             ]}
                         >

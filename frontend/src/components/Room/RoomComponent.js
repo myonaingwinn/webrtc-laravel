@@ -2,6 +2,7 @@ import { Button, Col, Card, Row, notification, Space, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 import { UserOutlined } from "@ant-design/icons";
 import { deleteARoom } from "../../helpers/SocketClient";
+import { NOTI003, NOTI004 } from "../../helpers/Messages";
 
 const { Paragraph } = Typography;
 
@@ -16,13 +17,13 @@ const RoomComponent = ({ roomList, uuid }) => {
         if (roomList[roomId].usersInRoom.length > 0) {
             notification.open({
                 type: "error",
-                message: "You can delete this room after all users left!",
+                message: NOTI003,
             });
         } else {
             deleteARoom(roomId);
             notification.open({
                 type: "success",
-                message: "Room Delete Success!",
+                message: NOTI004,
             });
         }
         navigator("/rooms");
