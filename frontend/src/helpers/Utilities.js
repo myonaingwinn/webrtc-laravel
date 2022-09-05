@@ -32,8 +32,8 @@ export const localStorageRemove = (key) => {
 
 // authentication
 export const isLoggedIn = () => {
-    const user = localStorageGet("user") || {};
-    return user && user.id ? true : false;
+    const { uuid } = localStorageGet("user") || {};
+    return uuid ? true : false;
 };
 
 export const getNanoId = () => {

@@ -65,7 +65,7 @@ const Login = ({ handleLoading }) => {
     const handleSubmit = async () => {
         if (!(email === "" || password === "")) {
             handleLoading();
-            const data = await fetch(baseUrl + "/login", {
+            const user = await fetch(baseUrl + "/login", {
                 method: "POST",
                 body: JSON.stringify({
                     email: email,
@@ -78,14 +78,14 @@ const Login = ({ handleLoading }) => {
                 .then((res) => res.json())
                 .catch((err) => console.log(err));
 
-            console.log(data);
-            console.log("id is ", data.id);
+            console.log(user);
+            console.log("uuid is ", user.uuid);
 
-            data.id
-                ? localStorageSet("user", data)
+            user.uuid
+                ? localStorageSet("user", user)
                 : localStorageRemove("user");
 
-            if (data.id) {
+            if (user.uuid) {
                 notification.open({
                     type: "success",
                     message: NOTI005,
