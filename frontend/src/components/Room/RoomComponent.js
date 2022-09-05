@@ -47,7 +47,7 @@ const RoomComponent = ({ roomList, uuid }) => {
                                 <Space>
                                     {roomList[key].description ? <Paragraph className="paragraph">
                                         {roomList[key].description}
-                                    </Paragraph> : <Paragraph className="paragraph">No description...</Paragraph>}
+                                    </Paragraph> : <Paragraph className="paragraph no-description">No description ...</Paragraph>}
                                 </Space>
                                 <Space>
                                     <Button
