@@ -79,19 +79,19 @@ const Login = ({ handleLoading }) => {
                 .catch((err) => console.log(err));
 
             console.log(data);
-            console.log("id is ", data.id);
+            console.log("uuid is ", data.uuid);
 
-            data.id
+            data.uuid
                 ? localStorageSet("user", data)
                 : localStorageRemove("user");
 
-            if (data.id) {
+            if (data.uuid) {
                 notification.open({
                     type: "success",
                     message: NOTI005,
                 });
                 navigator("/");
-                navigator(0);
+                // navigator(0);
             } else {
                 notification.open({
                     type: "error",
