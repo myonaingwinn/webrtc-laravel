@@ -8,6 +8,7 @@ import {
 import { useState, useEffect } from "react";
 import { Card } from "antd";
 import { Link, useNavigate } from "react-router-dom";
+import { NOTI005, NOTI006, DES002, VALID003, VALID004, VALID005 } from "../../helpers/Messages";
 
 const formItemLayout = {
     labelCol: {
@@ -87,15 +88,15 @@ const Login = ({ handleLoading }) => {
             if (data.id) {
                 notification.open({
                     type: "success",
-                    message: "Login Success!",
+                    message: NOTI005,
                 });
                 navigator("/");
                 navigator(0);
             } else {
                 notification.open({
                     type: "error",
-                    message: "Login Fail!",
-                    description: "Incorrect mail or password.",
+                    message: NOTI006,
+                    description: DES002,
                 });
             }
             handleLoading();
@@ -124,11 +125,11 @@ const Login = ({ handleLoading }) => {
                                 rules={[
                                     {
                                         type: "email",
-                                        message: "Please enter valid email!",
+                                        message: VALID003,
                                     },
                                     {
                                         required: true,
-                                        message: "Please enter your email!",
+                                        message: VALID004,
                                     },
                                 ]}
                             >
@@ -142,7 +143,7 @@ const Login = ({ handleLoading }) => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: "Please enter your password!",
+                                        message: VALID005,
                                     },
                                 ]}
                             >
