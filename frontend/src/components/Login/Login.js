@@ -91,7 +91,7 @@ const Login = ({ handleLoading }) => {
                     message: NOTI005,
                 });
                 navigator("/");
-                // navigator(0);
+                navigator(0);
             } else {
                 notification.open({
                     type: "error",
