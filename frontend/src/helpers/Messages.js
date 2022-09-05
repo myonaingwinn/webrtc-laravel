@@ -16,5 +16,5 @@ export const NOTI005 = "Login Success";
 export const NOTI006 = "Login Fail";
 export const NOTI007 = "Register Success";
 export const NOTI008 = "Register Fail";
-export const DES001 = "room name cannot be blank.";
-export const DES002 = "Incorrect mail or password.";
+export const DES001 = "Room name cannot be blank.";
+export const DES002 = "Incorrect email or password.";
