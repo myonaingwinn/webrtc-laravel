@@ -13,9 +13,14 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         width: 295px;
-        height: 50px;
+        height: 45px;
         word-wrap: break-word;
         white-space: pre-wrap;
         padding-right: 10px;
+
+        &.no-description {
+            height: 38px;
+            color: rgba(0, 0, 0, 0.25);
+        }
     }
 }

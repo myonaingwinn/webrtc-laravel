@@ -47,14 +47,15 @@ const RoomComponent = ({ roomList, uuid }) => {
                                 <Space>
                                     {roomList[key].description ? <Paragraph className="paragraph">
                                         {roomList[key].description}
-                                    </Paragraph> : <Paragraph className="paragraph">No description...</Paragraph>}
+                                    </Paragraph> : <Paragraph className="paragraph no-description">No description ...</Paragraph>}
                                 </Space>
                                 <Space>
                                     <Button
                                         type="primary"
                                         htmlType="submit"
                                         onClick={() => handleJoinRoom(key)}
-                                        className="btn btn-sm join-btn"
+                                        disabled={roomList[key].roomFull}
+                                        className="join-btn"
                                     >
                                         Join Room
                                     </Button>
@@ -63,7 +64,7 @@ const RoomComponent = ({ roomList, uuid }) => {
                                             type="danger"
                                             htmlType="submit"
                                             onClick={() => deleteRoom(key)}
-                                            className="btn btn-sm delete-btn"
+                                            className="delete-btn"
                                         >
                                             Delete Room
                                         </Button>

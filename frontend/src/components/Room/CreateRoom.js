@@ -71,6 +71,7 @@ const CreateRoom = () => {
                 usersInRoom: [],
                 chat: [],
                 createdBy: uuid,
+                roomFull: false,
                 description: roomDescription,
             };
             createNewRoom(roomObj);
