@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Card } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { baseUrl } from "../../helpers/Utilities";
+import { NOTI007, NOTI008, VALID006, VALID007, VALID008, VALID009, VALID010 } from "../../helpers/Messages";
 const formItemLayout = {
     labelCol: {
         xs: {
@@ -64,13 +65,13 @@ const Register = ({ handleLoading }) => {
                     if (res.ok) {
                         notification.open({
                             type: "success",
-                            message: "Register Success!",
+                            message: NOTI007,
                         });
                         navigator("/login");
                     } else {
                         notification.open({
                             type: "error",
-                            message: "Register Fail!",
+                            message: NOTI008,
                         });
                         navigator("/register");
                     }
@@ -78,7 +79,7 @@ const Register = ({ handleLoading }) => {
                 .catch((err) => {
                     notification.open({
                         type: "error",
-                        message: "Register Fail!",
+                        message: NOTI008,
                     });
                     console.log(err);
                     navigator("/register");
@@ -120,7 +121,7 @@ const Register = ({ handleLoading }) => {
                             rules={[
                                 {
                                     required: true,
-                                    message: "Please enter your name!",
+                                    message: VALID006,
                                 },
                             ]}
                         >
@@ -136,11 +137,11 @@ const Register = ({ handleLoading }) => {
                             rules={[
                                 {
                                     type: "email",
-                                    message: "Please enter valid email!",
+                                    message: VALID007,
                                 },
                                 {
                                     required: true,
-                                    message: "Please enter your email!",
+                                    message: VALID008,
                                 },
                             ]}
                         >
@@ -156,12 +157,11 @@ const Register = ({ handleLoading }) => {
                                 {
                                     type: "string",
                                     min: 8,
-                                    message:
-                                        "Password must have at least 8 characters!",
+                                    message: VALID009,
                                 },
                                 {
                                     required: true,
-                                    message: "Please enter your password!",
+                                    message: VALID010,
                                 },
                             ]}
                             hasFeedback

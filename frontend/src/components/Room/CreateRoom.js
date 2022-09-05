@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { localStorageGet } from "../../helpers/Utilities";
 import { connectWithServer, createNewRoom } from "../../helpers/SocketClient";
-import { VALID001, VALID002, NOTI001, NOTI002 } from "../../helpers/Messages";
+import { VALID001, VALID002, NOTI001, NOTI002, DES001 } from "../../helpers/Messages";
 
 const { TextArea } = Input;
 
@@ -85,7 +85,7 @@ const CreateRoom = () => {
             notification.open({
                 type: "error",
                 message: NOTI002,
-                description: "room name cannot be blank!",
+                description: DES001,
             });
         }
     };
