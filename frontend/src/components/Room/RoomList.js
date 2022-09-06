@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import RoomComponent from "./RoomComponent";
 import { useEffect, useState } from "react";
-import { connectWithServer, getRoomList } from "../../helpers/SocketClient";
+import { getRoomList } from "../../helpers/SocketClient";
 import { useSelector } from "react-redux";
 import { localStorageGet } from "../../helpers/Utilities";
 import Empty from "../Error/Empty";
@@ -16,8 +16,6 @@ const RoomList = () => {
 
     useEffect(() => {
         document.title = "Room List";
-
-        connectWithServer();
     }, []);
 
     useEffect(() => {

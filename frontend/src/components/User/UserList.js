@@ -1,7 +1,7 @@
 import { Layout, Row, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { connectWithServer, getOnlineUsers } from "../../helpers/SocketClient";
+import { getOnlineUsers } from "../../helpers/SocketClient";
 import { localStorageGet } from "../../helpers/Utilities";
 import Empty from "../Error/Empty";
 import User from "./User";
@@ -11,10 +11,6 @@ const UserList = () => {
     const users = useSelector((state) => state.onlineUserList.value);
     const { uuid } = localStorageGet("user") || {};
     const [showEmpty, setShowEmpty] = useState(true);
-
-    useEffect(() => {
-        connectWithServer();
-    }, []);
 
     useEffect(() => {
         document.title = "Online Users";

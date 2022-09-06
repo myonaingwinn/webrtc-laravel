@@ -1,16 +1,17 @@
 import { Col, Layout, Row, Typography } from "antd";
-import React, { useEffect, useRef, useState } from "react";
-import io from "socket.io-client";
+import { useEffect, useRef, useState } from "react";
+// import io from "socket.io-client";
 import Peer from "simple-peer";
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
-import { signalServerUrl } from "../../helpers/Utilities";
+// import { signalServerUrl } from "../../helpers/Utilities";
 import ControlButtons from "./ControlButtons";
 import VideoControl from "./components/VideoControl";
 import AudioControl from "./components/AudioControl";
 import GroupChat from "../Chat/GroupChat";
+import { socket } from "../../helpers/SocketClient";
 
-const socket = io(signalServerUrl);
+// const socket = io(signalServerUrl);
 
 const ControlSmall = styled.div`
     margin: 3px;
@@ -274,7 +275,7 @@ const Room = () => {
                             />
                         </Col>
 
-                        {peers.map((peer, index) => {
+                        {peers.map((peer) => {
                             let audioFlagTemp = true;
                             let videoFlagTemp = true;
                             if (userUpdate) {
