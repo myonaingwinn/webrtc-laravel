@@ -1,26 +1,23 @@
 import { io } from "socket.io-client";
-import { localStorageGet, signalServerUrl } from "./Utilities";
+import { localStorageGet, localStorageSet, signalServerUrl } from "./Utilities";
 import { setOnlineUserList, setRoomList } from "../store";
 import store from "../store";
 
-let socket;
+// let socket;
+export const socket = io(signalServerUrl);
 const { uuid, name } = localStorageGet("user") || {};
 
 export const connectWithServer = () => {
-    socket = io(signalServerUrl);
-
     console.log("In connectWithServer");
-
     socket.on("me", () => {
         console.log("succesfully connected with wss server", socket.id, uuid);
-
         const user = {
             uuid: uuid,
             socketId: socket.id,
             name: name,
         };
-
         if (user.uuid && user.socketId) socket.emit("set online user", user);
+        localStorageSet("socketId", user);
     });
 };
 
