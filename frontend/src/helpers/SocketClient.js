@@ -3,11 +3,12 @@ import { localStorageGet, signalServerUrl } from "./Utilities";
 import { setOnlineUserList, setRoomList } from "../store";
 import store from "../store";
 
-let socket;
 const { uuid, name } = localStorageGet("user") || {};
 
+export const socket = io(signalServerUrl);
+
 export const connectWithServer = () => {
-    socket = io(signalServerUrl);
+    // socket = io(signalServerUrl);
 
     console.log("In connectWithServer");
 
