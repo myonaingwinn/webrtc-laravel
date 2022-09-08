@@ -26,14 +26,14 @@ const socketToRoom = {};
 
 io.on("connection", (socket) => {
     console.log(`User connected: ${socket.id}`);
-
+    socket.emit();
     socket.emit("me", socket.id);
 
     /*********************************************
      * Users
      ********************************************/
     socket.on("set online user", (user) => {
-        console.log("In Set Online Users");
+        // console.log("In Set Online Users");
         console.log("User set online:", user);
 
         if (user.uuid && user.socketId) {
@@ -57,6 +57,33 @@ io.on("connection", (socket) => {
         console.log("in Logout after delete", onlineUsers);
     });
 
+    socket.on("endCall", (data) => {
+        io.to(data.id).emit("endCall");
+    });
+
+    socket.on("callUser", (data) => {
+        io.to(data.userToCall).emit("callUser", {
+            signal: data.signalData,
+            from: data.from,
+            name: data.name,
+        });
+    });
+
+    socket.on("reject", (data) => {
+        io.to(data.id).emit("reject");
+    });
+
+    socket.on("updateMyMedia", ({ type, currentMediaStatus }) => {
+        console.log("updateMyMedia");
+        socket.broadcast.emit("updateUserMedia", {
+            type,
+            currentMediaStatus,
+        });
+    });
+
+    socket.on("answerCall", (data) => {
+        io.to(data.to).emit("callAccepted", data.signal);
+    });
     /*********************************************
      * Rooms
      ********************************************/

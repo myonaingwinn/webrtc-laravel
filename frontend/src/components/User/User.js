@@ -5,13 +5,8 @@ import { getColor } from "../../helpers/Utilities";
 
 const { Title } = Typography;
 
-const User = ({ user }) => {
+const User = ({ user, handleCall }) => {
     const ellipsis = true;
-
-    const handleCall = () => {
-        console.log("handleCall");
-    };
-
     const handleMessage = () => {
         console.log("handleMessage");
     };
@@ -48,7 +43,9 @@ const User = ({ user }) => {
                             path={mdiPhone}
                             title="Video call"
                             size={1.2}
-                            onClick={handleCall}
+                            onClick={() => {
+                                handleCall(user.socketId);
+                            }}
                         />
                         <Icon
                             path={mdiMessageText}
