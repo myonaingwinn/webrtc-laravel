@@ -1,6 +1,6 @@
 import { Layout, Typography } from "antd";
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Moment from "react-moment";
 import { io } from "socket.io-client";
 import { SendOutlined } from "@ant-design/icons";
@@ -12,17 +12,9 @@ const PrivateChat = () => {
     const location = useLocation();
     const [name, setName] = useState("");
     const [data, setData] = useState({});
-    const [media, setMedia] = useState({
-        image: false,
-        content: null,
-        name: "",
-        type: "",
-        size: null,
-    });
     const [msg, setMsg] = useState("");
     const [allmsg, setallMsg] = useState([]);
     const [nmsg, setNmsg] = useState();
-    const [previewclose, setPreviewclose] = useState(false);
     const [socket, setSocket] = useState();
     const [typing, setTyping] = useState(false);
     const [isTyping, setIstyping] = useState(false);
@@ -46,13 +38,15 @@ const PrivateChat = () => {
                 setNewname(name);
             });
         });
-    }, []);
+    }, [location.state.room]);
 
     useEffect(() => {
         data.allmsgg &&
-            data.allmsgg.map((m) => {
+            data.allmsgg.forEach((m) => {
                 if (m.name === data.reciever) allmsg.push(m);
             });
+
+        // eslint-disable-next-line
     }, [data.allmsgg, location]);
 
     useEffect(() => {
@@ -76,36 +70,14 @@ const PrivateChat = () => {
             );
             if (data.name !== data.reciever) setMsg("");
         }
+
+        // eslint-disable-next-line
     }, [nmsg]);
 
     useEffect(() => {
         setData(location.state);
         setName(location.state.name);
     }, [location]);
-
-    const uploadFile = (e) => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function () {
-            if (file.size <= 600000) {
-                setMedia({
-                    ...media,
-                    image: true,
-                    content: reader.result,
-                    name: file.name,
-                    type: file.type,
-                    size: file.size,
-                });
-            } else {
-                alert("File size should be less than 550kb");
-            }
-        };
-        reader.onerror = function (err) {
-            console.log(err);
-        };
-        setPreviewclose(false);
-    };
 
     const inputHandler = (e) => {
         setMsg(e.target.value);
@@ -137,14 +109,8 @@ const PrivateChat = () => {
             };
 
             socket.emit("newmsg", { newmsg, room: data.room });
-            setMedia({ image: false });
 
             socket.emit("stop typing", data.room, data.reciever, name);
-        }
-        if (media.image === true && previewclose === false) {
-            const newmsg = { time: new Date(), msg: media, name: data.name };
-            socket.emit("newmsg", { newmsg, room: data.room });
-            setMedia({ image: false });
         }
     };
 

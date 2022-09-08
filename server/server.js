@@ -120,11 +120,6 @@ io.on("connection", (socket) => {
         console.log("NotiObj", obj, onlineUsers[obj.recieverId].socketId);
     });
 
-    //notification
-    socket.on("notification", (sender, reciever, newmsg, room) => {
-        io.emit("setnotification", sender, reciever, newmsg, room);
-    });
-
     socket.on("seen", (seen, room) => {
         io.in(room).emit("setseen", seen);
     });

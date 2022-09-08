@@ -20,7 +20,7 @@ const User = ({ user, handleCall, socket }) => {
     });
 
     const [gotoprivate, setGotoprivate] = useState(false);
-    const allmsg =[];
+    const allmsg = [];
 
     const orderId = () => {
         if (uuid > user.uuid) {
@@ -35,29 +35,18 @@ const User = ({ user, handleCall, socket }) => {
         setGotoprivate(true);
         const room = orderId();
         setData({
-            ["name"]: name,
-            ["room"]: room,
-            ["reciever"]: user.name,
-            ["recieverId"]: user.uuid,
-            ["allmsgg"]: allmsg,
+            name: name,
+            room: room,
+            reciever: user.name,
+            recieverId: user.uuid,
+            allmsgg: allmsg,
         });
     };
 
     useEffect(() => {
-        if (socket) {
-            socket.on("setnotification", (sender, reciever, newmsg, room) => {
-                if (name === reciever) {
-                    allmsg.push(newmsg);
-
-                    if (gotoprivate === false) {
-                        var count = allmsg.filter((alm) => alm.name === sender);
-                    }
-                }
-            });
-        }
-    }, [socket]);
-    useEffect(() => {
         if (gotoprivate) navigate(`/chat/${data.room}`, { state: data });
+
+        // eslint-disable-next-line
     }, [gotoprivate]);
 
     return (
