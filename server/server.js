@@ -84,6 +84,51 @@ io.on("connection", (socket) => {
     socket.on("answerCall", (data) => {
         io.to(data.to).emit("callAccepted", data.signal);
     });
+
+    /*********************************************
+     * Private Chat
+     ********************************************/
+
+    socket.on("typing", (room, reciever, name) => {
+        socket.in(room).emit("typing", reciever, name);
+    });
+
+    socket.on("stop typing", (room, reciever, name) => {
+        socket.in(room).emit("stop typing", reciever, name);
+    });
+
+    socket.on("typing", (room, reciever, name) => {
+        socket.in(room).emit("typing", reciever, name);
+    });
+
+    socket.on("stop typing", (room, reciever, name) => {
+        socket.in(room).emit("stop typing", reciever, name);
+    });
+
+    //room
+    socket.on("joinroom", (room) => {
+        socket.join(room);
+    });
+
+    //for msg
+    socket.on("newmsg", ({ newmsg, room }) => {
+        io.in(room).emit("getnewmsg", newmsg);
+        console.log("Result", newmsg);
+    });
+
+    socket.on("send noti", (obj) => {
+        console.log("NotiObj", obj, onlineUsers[obj.recieverId].socketId);
+    });
+
+    //notification
+    socket.on("notification", (sender, reciever, newmsg, room) => {
+        io.emit("setnotification", sender, reciever, newmsg, room);
+    });
+
+    socket.on("seen", (seen, room) => {
+        io.in(room).emit("setseen", seen);
+    });
+
     /*********************************************
      * Rooms
      ********************************************/
@@ -125,7 +170,7 @@ io.on("connection", (socket) => {
             if (rooms[roomID].usersInRoom.length >= maxParticipantsAllowed) {
                 rooms[roomID].roomFull = true;
                 socket.broadcast.emit("rooms", rooms);
-                console.log('in room full...')
+                console.log("in room full...");
             }
             console.log("user count :", rooms[roomID].usersInRoom.length);
             console.log(

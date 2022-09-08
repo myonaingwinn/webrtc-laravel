@@ -2,14 +2,63 @@ import { Avatar, Col, Row, Space, Typography } from "antd";
 import { mdiMessageText, mdiPhone } from "@mdi/js";
 import Icon from "@mdi/react";
 import { getColor } from "../../helpers/Utilities";
+import { localStorageGet } from "../../helpers/Utilities";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const { Title } = Typography;
 
-const User = ({ user, handleCall }) => {
+const User = ({ user, handleCall, socket }) => {
     const ellipsis = true;
-    const handleMessage = () => {
-        console.log("handleMessage");
+    const navigate = useNavigate();
+    const { uuid, name } = localStorageGet("user") || {};
+    const [data, setData] = useState({
+        name: "",
+        room: "",
+        reciever: "",
+        allmsgg: [],
+    });
+
+    const [gotoprivate, setGotoprivate] = useState(false);
+    const allmsg =[];
+
+    const orderId = () => {
+        if (uuid > user.uuid) {
+            return uuid + "-" + user.uuid;
+        } else {
+            return user.uuid + "-" + uuid;
+        }
     };
+
+    const privateChat = () => {
+        socket.emit("send noti", { senderName: name, recieverId: user.uuid });
+        setGotoprivate(true);
+        const room = orderId();
+        setData({
+            ["name"]: name,
+            ["room"]: room,
+            ["reciever"]: user.name,
+            ["recieverId"]: user.uuid,
+            ["allmsgg"]: allmsg,
+        });
+    };
+
+    useEffect(() => {
+        if (socket) {
+            socket.on("setnotification", (sender, reciever, newmsg, room) => {
+                if (name === reciever) {
+                    allmsg.push(newmsg);
+
+                    if (gotoprivate === false) {
+                        var count = allmsg.filter((alm) => alm.name === sender);
+                    }
+                }
+            });
+        }
+    }, [socket]);
+    useEffect(() => {
+        if (gotoprivate) navigate(`/chat/${data.room}`, { state: data });
+    }, [gotoprivate]);
 
     return (
         <Col span={5} className="user-card">
@@ -51,7 +100,7 @@ const User = ({ user, handleCall }) => {
                             path={mdiMessageText}
                             title="Send message"
                             size={1.2}
-                            onClick={handleMessage}
+                            onClick={privateChat}
                         />
                     </Space>
                 </Col>
