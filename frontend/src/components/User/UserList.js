@@ -1,4 +1,4 @@
-import { Layout, Row, Typography, Modal, Space, Col } from "antd";
+import { Layout, Row, Typography, Modal, Col } from "antd";
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { connectWithServer, getOnlineUsers } from "../../helpers/SocketClient";
