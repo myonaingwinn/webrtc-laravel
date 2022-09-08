@@ -27,6 +27,7 @@ const UserList = () => {
     const { uuid } = localStorageGet("user") || {};
     const [showEmpty, setShowEmpty] = useState(true);
     const socketId = localStorageGet("socketId") || {};
+    const [clientId, setClientId] = useState("");
     const myVideo = useRef();
     const remoteVideo = useRef();
     const connectionRef = useRef();
@@ -38,16 +39,19 @@ const UserList = () => {
     const [name, setName] = useState("");
     const [callerSignal, setCallerSignal] = useState();
     const [callUI, setCallUI] = useState(false);
-
+    document.title = "Online Users";
+    const endMsg = "Call ended";
+    const rejectMsg = "Rejected your call";
     useEffect(() => {
         connectWithServer();
     }, []);
 
-    const info = () => {
+    const info = (msg) => {
         setReject(false);
         Modal.info({
-            content: "Call ended ",
+            content: msg,
             onOk: () => {
+                document.title = "In a call";
                 Modal.destroyAll();
                 if (myVideo.current.srcObject) {
                     myVideo.current.srcObject
@@ -56,36 +60,63 @@ const UserList = () => {
                             track.stop();
                         });
                 }
+                navigate(0);
             },
         });
-        setCallUI(false);
-        navigate(0);
     };
     useEffect(() => {
-        socket.on("endCall", (name) => {
-            if (reject) {
-                info();
-            }
+        socket.on("reject", () => {
+            info(rejectMsg);
         });
-    });
+        socket.on("endCall", () => {
+            info(endMsg);
+        });
+        // eslint-disable-next-line
+    }, []);
 
     useEffect(() => {
         socket.on("callUser", (data) => {
             setReceivingCall(true);
+
             setCaller(data.from);
             setName(data.name);
             setCallerSignal(data.signal);
         });
-
-        document.title = "Online Users";
-
         getOnlineUsers();
-
         if (users && Object.keys(users).length > 1) setShowEmpty(false);
         else setShowEmpty(true);
     }, [users, reject]);
 
+    const handleCall = async (clientId) => {
+        document.title = "In a call";
+        setClientId(clientId);
+        const str = await navigator.mediaDevices.getUserMedia(control);
+        myVideo.current.srcObject = str;
+        const peer = new Peer({
+            initiator: true,
+            trickle: false,
+            stream: str,
+        });
+        peer.on("signal", (data) => {
+            socket.emit("callUser", {
+                userToCall: clientId,
+                signalData: data,
+                from: socketId.socketId,
+                name: socketId.name,
+            });
+        });
+        peer.on("stream", (stream) => {
+            if (remoteVideo.current) remoteVideo.current.srcObject = stream;
+        });
+        socket.on("callAccepted", (signal) => {
+            peer.signal(signal);
+        });
+        connectionRef.current = peer;
+        setCallUI(true);
+    };
+
     const answerCall = async () => {
+        document.title = "In a call";
         const str = await navigator.mediaDevices.getUserMedia(control);
         myVideo.current.srcObject = str;
         setCallAccepted(true);
@@ -106,7 +137,7 @@ const UserList = () => {
     };
 
     const rejectCall = () => {
-        socket.emit("reject", { name: socketId.name, id: caller });
+        socket.emit("reject", { id: caller });
         setReceivingCall(false);
     };
 
@@ -155,13 +186,14 @@ const UserList = () => {
     };
 
     const leaveCall = () => {
+        let endId = receivingCall ? caller : clientId;
+
         if (myVideo.current.srcObject) {
             myVideo.current.srcObject.getTracks().forEach(function (track) {
                 track.stop();
             });
             socket.emit("endCall", {
-                id: caller,
-                name: socketId.name,
+                id: endId,
             });
             setCallUI(false);
             connectionRef.current.destroy();
@@ -181,7 +213,10 @@ const UserList = () => {
             >
                 <p>{name} is calling ...</p>
             </Modal>
-            <Layout className="user-list common">
+            <Layout
+                className="user-list common"
+                style={{ display: callUI ? "none" : "block" }}
+            >
                 <Title className="title">Online Users</Title>
                 <Row
                     gutter={[16, 32]}
@@ -198,6 +233,7 @@ const UserList = () => {
                                         user={users[userId]}
                                         key={userId}
                                         socket={socket}
+                                        handleCall={handleCall}
                                     />
                                 )
                         )
@@ -206,6 +242,7 @@ const UserList = () => {
                     )}
                 </Row>
             </Layout>
+            {/* For UI Display */}
             <div style={{ display: callUI ? "block" : "none" }}>
                 <Space>
                     <StyledVideo muted ref={myVideo} autoPlay playsInline />

@@ -58,16 +58,10 @@ io.on("connection", (socket) => {
     });
 
     socket.on("endCall", (data) => {
-        io.to(data.id).emit("endCall", {
-            name: data.name,
-        });
+        io.to(data.id).emit("endCall");
     });
 
     socket.on("callUser", (data) => {
-        console.log("Calling to other.....");
-        console.log("Client Id", data.userToCall);
-        console.log("User Name", data.from);
-        console.log("User Id", data.name);
         io.to(data.userToCall).emit("callUser", {
             signal: data.signalData,
             from: data.from,
@@ -76,9 +70,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("reject", (data) => {
-        io.to(data.id).emit("reject", {
-            name: data.name,
-        });
+        io.to(data.id).emit("reject");
     });
 
     socket.on("updateMyMedia", ({ type, currentMediaStatus }) => {
