@@ -1,4 +1,4 @@
-import { Layout, Row, Typography, Modal, Space } from "antd";
+import { Layout, Row, Typography, Modal, Space, Col } from "antd";
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { connectWithServer, getOnlineUsers } from "../../helpers/SocketClient";
@@ -12,11 +12,10 @@ import { useNavigate } from "react-router-dom";
 import ControlButtons from "../Room/ControlButtons";
 
 const StyledVideo = styled.video`
-    width: 80%;
-    position: static;
+    width: 95%;
     border-radius: 10px;
     overflow: hidden;
-    margin: 1px;
+    margin: 2.5%;
     border: 5px solid gray;
 `;
 
@@ -215,7 +214,7 @@ const UserList = () => {
             </Modal>
             <Layout
                 className="user-list common"
-                style={{ display: callUI ? "none" : "block" }}
+                style={{ display: callUI ? "none" : "" }}
             >
                 <Title className="title">Online Users</Title>
                 <Row
@@ -243,19 +242,29 @@ const UserList = () => {
                 </Row>
             </Layout>
             {/* For UI Display */}
-            <div style={{ display: callUI ? "block" : "none" }}>
-                <Space>
-                    <StyledVideo muted ref={myVideo} autoPlay playsInline />
-
-                    <StyledVideo muted ref={remoteVideo} autoPlay playsInline />
-                </Space>
+            <Layout
+                className="common"
+                style={{ display: callUI ? "" : "none" }}
+            >
+                <Row gutter={[16, 16]}>
+                    <Col span="12">
+                        <StyledVideo muted ref={myVideo} autoPlay playsInline />
+                    </Col>
+                    <Col span="12">
+                        <StyledVideo
+                            muted
+                            ref={remoteVideo}
+                            autoPlay
+                            playsInline
+                        />
+                    </Col>
+                </Row>
                 <ControlButtons
-                    style={{ marginBottom: "3px" }}
                     handleVideoControlClick={handleVideoControlClick}
                     handleAudioControlClick={handleAudioControlClick}
                     leaveCall={leaveCall}
                 />
-            </div>
+            </Layout>
         </>
     );
 };
