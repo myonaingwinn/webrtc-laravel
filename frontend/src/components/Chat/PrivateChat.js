@@ -1,9 +1,8 @@
-import { Layout, Typography } from "antd";
-import React, { useEffect, useState } from "react";
+import { Input, Layout, Typography, Button } from "antd";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Moment from "react-moment";
 import { SendOutlined } from "@ant-design/icons";
-import { Button } from "antd";
 import { getNanoId } from "../../helpers/Utilities";
 import { socket } from "../../helpers/SocketClient";
 
@@ -64,7 +63,7 @@ const PrivateChat = () => {
             );
             if (data.name !== data.reciever) setMsg("");
         }
-        
+
         // eslint-disable-next-line
     }, [nmsg]);
 
@@ -109,79 +108,81 @@ const PrivateChat = () => {
     };
 
     return (
-        <Layout className="private-chat">
+        <Layout className="private-chat common">
             <Title className="title">
                 Chat with <em>{data.reciever}</em>
             </Title>
-            <div className="chatdesign ">
-                <div className="chat-container">
-                    <div className="msgarea">
-                        {allmsg &&
-                            allmsg.map((newmsg, index) => {
-                                return data.name === newmsg.name ? (
-                                    <div
-                                        className="row justify-content-end"
-                                        key={getNanoId()}
-                                    >
-                                        <div className="mymsgbox">
+            <div className="chat-container">
+                <div className="msgarea">
+                    {allmsg &&
+                        allmsg.map((newmsg) => {
+                            return data.name === newmsg.name ? (
+                                <div
+                                    className="row justify-content-end msgbox"
+                                    key={getNanoId()}
+                                >
+                                    <div className="mine">
+                                        <strong className="m-1">
+                                            You&nbsp;
+                                        </strong>
+                                        <small className="text-muted">
+                                            <Moment fromNow>
+                                                {newmsg.time}
+                                            </Moment>
+                                        </small>
+
+                                        <h4 className="mymsg">{newmsg.msg}</h4>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div
+                                    className="row justify-content-start msgbox"
+                                    key={getNanoId()}
+                                >
+                                    <div className="other">
+                                        <div>
                                             <strong className="m-1">
-                                                You&nbsp;
+                                                {newmsg.name}&nbsp;
                                             </strong>
                                             <small className="text-muted">
                                                 <Moment fromNow>
                                                     {newmsg.time}
                                                 </Moment>
                                             </small>
-
-                                            <h4 className="mymsg">
-                                                {newmsg.msg}
-                                            </h4>
                                         </div>
-                                    </div>
-                                ) : (
-                                    <div
-                                        className="row justify-content-start"
-                                        key={getNanoId()}
-                                    >
-                                        <div className="othermsgbox">
-                                            <div>
-                                                <strong className="m-1">
-                                                    {newmsg.name}&nbsp;
-                                                </strong>
-                                                <small className="text-muted">
-                                                    <Moment fromNow>
-                                                        {newmsg.time}
-                                                    </Moment>
-                                                </small>
-                                            </div>
 
-                                            <h4 className="othermsg">
-                                                {newmsg.msg}
-                                            </h4>
-                                        </div>
+                                        <h4 className="othermsg">
+                                            {newmsg.msg}
+                                        </h4>
                                     </div>
-                                );
-                            })}
-                        {(isTyping && name === newreciever) ||
-                            (isTyping &&
-                                data.room.length < 15 &&
-                                name !== newname) ? (
-                            <div className="typing">
-                                <strong style={{ textTransform: "capitalize" }}>
-                                    {newname}
-                                </strong>
-                                <div style={{ color: "rgb(120, 2, 255)" }}>
-                                    Typing...
                                 </div>
+                            );
+                        })}
+                    {(isTyping && name === newreciever) ||
+                    (isTyping && data.room.length < 15 && name !== newname) ? (
+                        <div className="typing">
+                            <strong style={{ textTransform: "capitalize" }}>
+                                {newname}
+                            </strong>
+                            <div style={{ color: "rgb(120, 2, 255)" }}>
+                                Typing...
                             </div>
-                        ) : null}
-                    </div>
+                        </div>
+                    ) : null}
+                </div>
 
-                    <div className="typing-area">
-                        <input
-                            type="text"
-                            className="typing-input"
-                            name="message"
+                <div className="typing-area">
+                    <Input.Group
+                        size="large"
+                        style={{ width: "calc(100% + 30px)", height: "30px" }}
+                    >
+                        <Input
+                            style={{
+                                width: "calc(100% - 50px)",
+                                height: "4.5vh",
+                                borderRadius: "12px",
+                                marginRight: "10px",
+                            }}
                             placeholder="Type your message here......"
                             value={msg}
                             onChange={inputHandler}
@@ -189,11 +190,13 @@ const PrivateChat = () => {
                             autoComplete="off"
                         />
                         <Button
-                            onClick={submitHandler}
+                            type="primary"
+                            size="large"
                             icon={<SendOutlined />}
-                            className="send-button"
+                            shape="circle"
+                            onClick={submitHandler}
                         ></Button>
-                    </div>
+                    </Input.Group>
                 </div>
             </div>
         </Layout>
