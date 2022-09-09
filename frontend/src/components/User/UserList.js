@@ -63,6 +63,7 @@ const UserList = () => {
             },
         });
     };
+
     useEffect(() => {
         socket.on("reject", () => {
             info(rejectMsg);

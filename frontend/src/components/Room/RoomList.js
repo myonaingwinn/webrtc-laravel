@@ -1,24 +1,30 @@
 import { Button, Layout, Space, Typography } from "antd";
-import { Link } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import RoomComponent from "./RoomComponent";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { connectWithServer, getRoomList } from "../../helpers/SocketClient";
 import { useSelector } from "react-redux";
 import { localStorageGet } from "../../helpers/Utilities";
 import Empty from "../Error/Empty";
+import { SiderLeftContext } from "../Sider/Sider";
 
 const RoomList = () => {
     const { Title } = Typography;
     const roomList = useSelector((state) => state.rooms.roomList);
     const { uuid } = localStorageGet("user") || {};
     const [showEmpty, setShowEmpty] = useState(false);
+    const handleMenuClick = useContext(SiderLeftContext);
 
     useEffect(() => {
         document.title = "Room List";
 
         connectWithServer();
     }, []);
+
+    const handleRoute = () => {
+        handleMenuClick("/create_room");
+        handleMenuClick(0);
+    };
 
     useEffect(() => {
         getRoomList();
@@ -31,14 +37,14 @@ const RoomList = () => {
         <Layout className="room-list common">
             <Title className="title">Choose Room to Chat</Title>
             <Space direction="vertical">
-                <Link to="/create_room">
-                    <p className="create-btn-text">
-                        Create a Room
-                        <Button type="primary" className="plus-btn">
-                            <PlusOutlined />
-                        </Button>
-                    </p>
-                </Link>
+                <Button
+                    type="primary"
+                    className="plus-btn"
+                    onClick={handleRoute}
+                >
+                    Create a Room
+                    <PlusOutlined />
+                </Button>
                 {!showEmpty ? (
                     <RoomComponent uuid={uuid} roomList={roomList} />
                 ) : (

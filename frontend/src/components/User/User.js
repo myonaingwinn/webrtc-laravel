@@ -30,7 +30,7 @@ const User = ({ user, handleCall, socket }) => {
         }
     };
 
-    const privateChat = () => {
+    const handleMessage = () => {
         socket.emit("send noti", { senderName: name, recieverId: user.uuid });
         setGotoprivate(true);
         const room = orderId();
@@ -89,7 +89,7 @@ const User = ({ user, handleCall, socket }) => {
                             path={mdiMessageText}
                             title="Send message"
                             size={1.2}
-                            onClick={privateChat}
+                            onClick={handleMessage}
                         />
                     </Space>
                 </Col>

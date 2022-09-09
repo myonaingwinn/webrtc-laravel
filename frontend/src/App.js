@@ -11,7 +11,7 @@ import Room from "./components/Room/Room";
 import Loading from "./components/Loading/Loading";
 import { useRef } from "react";
 import Error from "./components/Error/Error";
-import PrivateChat from "./components/PrivateChat/PrivateChat";
+import PrivateChat from "./components/Chat/PrivateChat";
 
 function App() {
     const loadingRef = useRef();
