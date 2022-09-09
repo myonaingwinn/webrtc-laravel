@@ -1,9 +1,8 @@
-import { Input, Layout, Typography } from "antd";
-import React, { useEffect, useState } from "react";
+import { Input, Layout, Typography, Button } from "antd";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Moment from "react-moment";
 import { SendOutlined } from "@ant-design/icons";
-import { Button } from "antd";
 import { getNanoId } from "../../helpers/Utilities";
 import { socket } from "../../helpers/SocketClient";
 
@@ -174,21 +173,6 @@ const PrivateChat = () => {
                 </div>
 
                 <div className="typing-area">
-                    {/* <input
-                            type="text"
-                            className="typing-input"
-                            name="message"
-                            placeholder="Type your message here......"
-                            value={msg}
-                            onChange={inputHandler}
-                            onKeyDown={forentersent}
-                            autoComplete="off"
-                        />
-                        <Button
-                            onClick={submitHandler}
-                            icon={<SendOutlined />}
-                            className="send-button"
-                        ></Button> */}
                     <Input.Group
                         size="large"
                         style={{ width: "calc(100% + 30px)", height: "30px" }}
