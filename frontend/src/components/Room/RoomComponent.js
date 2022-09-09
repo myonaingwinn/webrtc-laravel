@@ -30,12 +30,14 @@ const RoomComponent = ({ roomList, uuid }) => {
     };
 
     return (
-        <Row gutter={16} className="room-component">
+        <Row gutter={16} className="room-component" justify="center">
             {Object.entries(roomList).length > 0 &&
                 Object.keys(roomList).map((key) => {
                     return (
                         <Col className="gutter-row" span={5.5} key={key}>
-                            <Card title={roomList[key].name} className="card"
+                            <Card
+                                title={roomList[key].name}
+                                className="card"
                                 extra={
                                     <div className="user-count">
                                         <UserOutlined />{" "}
@@ -46,9 +48,15 @@ const RoomComponent = ({ roomList, uuid }) => {
                                 }
                             >
                                 <Space>
-                                    {roomList[key].description ? <Paragraph className="paragraph">
-                                        {roomList[key].description}
-                                    </Paragraph> : <Paragraph className="paragraph no-description">No description ...</Paragraph>}
+                                    {roomList[key].description ? (
+                                        <Paragraph className="paragraph">
+                                            {roomList[key].description}
+                                        </Paragraph>
+                                    ) : (
+                                        <Paragraph className="paragraph no-description">
+                                            No description ...
+                                        </Paragraph>
+                                    )}
                                 </Space>
                                 <Space>
                                     <Button
