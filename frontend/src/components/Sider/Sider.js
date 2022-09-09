@@ -5,9 +5,12 @@ import {
     ClusterOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
+import { createContext } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const { Sider } = Layout;
+
+const SiderLeftContext = createContext();
 
 const SiderLeft = (props) => {
     const navigator = useNavigate();
@@ -48,13 +51,17 @@ const SiderLeft = (props) => {
             <Sider className="sider-left" theme="light">
                 <Menu
                     defaultSelectedKeys={[selectedKey]}
+                    defaultOpenKeys={["sub1"]}
                     mode="inline"
                     items={items}
                 />
             </Sider>
-            <Layout className="content">{props.children}</Layout>
+            <SiderLeftContext.Provider value={handleMenuClick}>
+                <Layout className="content">{props.children}</Layout>
+            </SiderLeftContext.Provider>
         </Layout>
     );
 };
 
+export { SiderLeftContext };
 export default SiderLeft;
