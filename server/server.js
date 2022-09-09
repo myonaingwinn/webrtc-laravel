@@ -141,6 +141,7 @@ io.on("connection", (socket) => {
             }
         } else {
             console.log("🚀 ~ this room doesn't exist.");
+            return;
         }
 
         socketToRoom[socket.id] = roomID;
@@ -200,6 +201,7 @@ io.on("connection", (socket) => {
                 room.chat.push(singleChat);
                 payload.chat = room.chat;
             }
+
             console.log(
                 "🚀 ~ file: server.js ~ line 75 ~ socket.on ~ room",
                 room,
