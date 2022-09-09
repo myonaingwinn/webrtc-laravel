@@ -12,7 +12,13 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { localStorageGet } from "../../helpers/Utilities";
 import { connectWithServer, createNewRoom } from "../../helpers/SocketClient";
-import { VALID001, VALID002, NOTI001, NOTI002, DES001 } from "../../helpers/Messages";
+import {
+    VALID001,
+    VALID002,
+    NOTI001,
+    NOTI002,
+    DES001,
+} from "../../helpers/Messages";
 
 const { TextArea } = Input;
 
@@ -81,6 +87,7 @@ const CreateRoom = () => {
                 message: NOTI001,
             });
             navigator("/rooms");
+            navigator(0);
         } else {
             notification.open({
                 type: "error",
@@ -133,7 +140,10 @@ const CreateRoom = () => {
                                 },
                             ]}
                         >
-                            <TextArea rows={2} placeholder="Enter description" />
+                            <TextArea
+                                rows={2}
+                                placeholder="Enter description"
+                            />
                         </Form.Item>
 
                         <Form.Item {...tailFormItemLayout}>

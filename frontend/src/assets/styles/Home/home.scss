@@ -42,17 +42,16 @@
 
     .img {
         float: left;
-        padding-left: 30px;
-        padding-right: 30px;
+        margin-left: 20px;
+        margin-right: 40px;
     }
 
     .text {
-        padding-left: 10%;
+        padding-left: 12%;
     }
 
     .img1 {
-        float: right;
-        padding-right: 10%;
+        padding-left: 5%;
     }
 
     .column {
@@ -64,6 +63,7 @@
     }
 
     .last-row {
+        margin-top: 3%;
         padding-left: 13%;
         margin-bottom: 3.5rem;
     }

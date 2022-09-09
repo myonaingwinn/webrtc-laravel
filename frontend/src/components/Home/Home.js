@@ -24,14 +24,14 @@ const Home = () => {
                 </span>
             </div>
             <Row className="first-row">
-                <Col flex={3} offset={1} className="text">
-                    WebRTC, you can add real-time communication <br />
-                    capabilities to your application that works on top of an
-                    open standard. It supports video, voice, and generic data to
-                    be sent between peers, allowing developers to build powerful
-                    voice- and video-communication solutions.
+                <Col xs={16} sm={16} md={16} lg={16} xl={16} className="text">
+                    WebRTC, you can add real-time communication capabilities to
+                    your application that works on top of an open standard. It
+                    supports video, voice, and generic data to be sent between
+                    peers, allowing developers to build powerful voice and
+                    video-communication solutions.
                 </Col>
-                <Col flex={2} className="img1">
+                <Col xs={8} sm={8} md={8} lg={8} xl={8} className="img1">
                     <img
                         src={Video}
                         alt="React Logo"
@@ -41,13 +41,13 @@ const Home = () => {
                 </Col>
             </Row>
             <Row className="middle-row">
-                <Col className="column">
+                <Col className="column" xs={8} sm={8} md={8} lg={8} xl={8}>
                     <img src={Chat} width="400px" height="400px" alt="chat" />
                 </Col>
-                <Col className="column">
+                <Col className="column" xs={8} sm={8} md={8} lg={8} xl={8}>
                     <img src={VC} width="400px" height="400px" alt="video" />
                 </Col>
-                <Col className="column">
+                <Col className="column" xs={8} sm={8} md={8} lg={8} xl={8}>
                     <img src={Robot} width="400px" height="400px" alt="robot" />
                 </Col>
             </Row>
@@ -55,12 +55,13 @@ const Home = () => {
                 <img
                     src={WebRTC}
                     alt="React Logo"
-                    width="300px"
-                    height="300px"
+                    width="350px"
+                    height="350px"
                     className="img"
                 />
                 <p className="devtext">
-                    What can WebRTC do? <br />
+                    <b>What can WebRTC do?</b>
+                    <br />
                     There are many different use-cases for WebRTC, from basic
                     web apps that uses the camera or microphone, to more
                     advanced video-calling applications and screen sharing. We
