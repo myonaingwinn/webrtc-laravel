@@ -47,7 +47,6 @@ const PrivateChat = () => {
         if (socket) {
             socket.on("getnewmsg", (newmsg) => {
                 setallMsg([...allmsg, newmsg]);
-
                 setNmsg(newmsg);
             });
         }

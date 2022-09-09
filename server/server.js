@@ -25,7 +25,6 @@ const maxParticipantsAllowed = 10;
 const socketToRoom = {};
 
 io.on("connection", (socket) => {
-    console.log(`User connected: ${socket.id}`);
     socket.emit();
     socket.emit("me", socket.id);
 
@@ -33,15 +32,10 @@ io.on("connection", (socket) => {
      * Users
      ********************************************/
     socket.on("set online user", (user) => {
-        // console.log("In Set Online Users");
-        console.log("User set online:", user);
-
         if (user.uuid && user.socketId) {
             onlineUsers[user.uuid] = user;
         }
         socket.emit("online users", onlineUsers);
-
-        console.log("Online Users :", onlineUsers);
     });
 
     socket.on("get online users", () => {
@@ -49,12 +43,8 @@ io.on("connection", (socket) => {
     });
 
     socket.on("logout", (userId) => {
-        console.log("in Logout", userId);
-
         delete onlineUsers[userId];
         socket.emit("online users", onlineUsers);
-
-        console.log("in Logout after delete", onlineUsers);
     });
 
     socket.on("endCall", (data) => {
@@ -74,7 +64,6 @@ io.on("connection", (socket) => {
     });
 
     socket.on("updateMyMedia", ({ type, currentMediaStatus }) => {
-        console.log("updateMyMedia");
         socket.broadcast.emit("updateUserMedia", {
             type,
             currentMediaStatus,
@@ -113,11 +102,9 @@ io.on("connection", (socket) => {
     //for msg
     socket.on("newmsg", ({ newmsg, room }) => {
         io.in(room).emit("getnewmsg", newmsg);
-        console.log("Result", newmsg);
     });
 
     socket.on("send noti", (obj) => {
-        console.log("NotiObj", obj, onlineUsers[obj.recieverId].socketId);
     });
 
     socket.on("seen", (seen, room) => {
@@ -129,14 +116,10 @@ io.on("connection", (socket) => {
      ********************************************/
 
     socket.on("create_room", (room) => {
-        console.log("room :", room);
-        if (rooms[room.id]) {
-            console.log("room exit", rooms[room.id]);
-        } else {
+        if (!rooms[room.id]) {
             rooms[room.id] = room;
         }
         socket.broadcast.emit("rooms", rooms);
-        console.log("all rooms : ", rooms);
     });
 
     socket.on("get all rooms", () => {
@@ -144,36 +127,19 @@ io.on("connection", (socket) => {
     });
 
     socket.on("delete_room", (room) => {
-        console.log("org rooms: ", rooms);
         delete rooms[room];
-        console.log("remain rooms: ", rooms);
         socket.emit("rooms", rooms);
     });
 
     socket.on("join room", (roomID) => {
-        console.log(
-            "🚀 ~ file: server.js ~ line 79 ~ socket.on ~ roomID",
-            roomID
-        );
         if (rooms[roomID]) {
             const length = rooms[roomID].usersInRoom.length;
-            console.log(
-                "🚀 ~ file: server.js ~ line 82 ~ socket.on ~ length",
-                length
-            );
             rooms[roomID].usersInRoom.push(socket.id);
             if (rooms[roomID].usersInRoom.length >= maxParticipantsAllowed) {
                 rooms[roomID].roomFull = true;
                 socket.broadcast.emit("rooms", rooms);
-                console.log("in room full...");
             }
-            console.log("user count :", rooms[roomID].usersInRoom.length);
-            console.log(
-                "🚀 ~ file: server.js ~ line 81 ~ socket.on ~ rooms[roomID]",
-                rooms[roomID].usersInRoom
-            );
         } else {
-            // rooms[roomID].usersInRoom = [socket.id];
             console.log("🚀 ~ this room doesn't exist.");
             return;
         }
@@ -185,7 +151,6 @@ io.on("connection", (socket) => {
         socket.emit("all users in a room", usersInThisRoom);
         socket.emit("room_name", rooms[roomID].name);
         socket.broadcast.emit("rooms", rooms);
-        console.log("When join room : ", rooms[roomID]);
     });
 
     socket.on("sending signal", (payload) => {
@@ -224,7 +189,6 @@ io.on("connection", (socket) => {
 
     socket.on("message", (payload) => {
         socket.join(payload.room);
-        console.log(`Message from ${socket.id} : ${payload.message}`);
 
         const room = rooms[payload.room];
         if (room !== undefined) {
