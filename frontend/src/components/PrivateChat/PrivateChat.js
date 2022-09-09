@@ -2,10 +2,9 @@ import { Layout, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Moment from "react-moment";
-import { io } from "socket.io-client";
 import { SendOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import { getNanoId, signalServerUrl } from "../../helpers/Utilities";
+import { getNanoId } from "../../helpers/Utilities";
 import { socket } from "../../helpers/SocketClient";
 
 const PrivateChat = () => {
@@ -53,7 +52,7 @@ const PrivateChat = () => {
                 setNmsg(newmsg);
             });
         }
-    }, [socket, allmsg]);
+    }, [allmsg]);
 
     useEffect(() => {
         if (socket) {
