@@ -42,13 +42,13 @@ const Home = () => {
             </Row>
             <Row className="middle-row">
                 <Col className="column">
-                    <img src={Chat} width="400px" height="400px" alt="chat" />
+                    <img src={Chat} width="300px" height="400px" alt="chat" />
                 </Col>
                 <Col className="column">
-                    <img src={VC} width="400px" height="400px" alt="video" />
+                    <img src={VC} width="300px" height="400px" alt="video" />
                 </Col>
                 <Col className="column">
-                    <img src={Robot} width="400px" height="400px" alt="robot" />
+                    <img src={Robot} width="300px" height="400px" alt="robot" />
                 </Col>
             </Row>
             <div className="last-row">
