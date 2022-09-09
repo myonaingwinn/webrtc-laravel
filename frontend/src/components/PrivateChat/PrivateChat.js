@@ -45,6 +45,8 @@ const PrivateChat = () => {
             data.allmsgg.forEach((m) => {
                 if (m.name === data.reciever) allmsg.push(m);
             });
+
+        // eslint-disable-next-line
     }, [data.allmsgg, location]);
 
     useEffect(() => {
@@ -67,6 +69,7 @@ const PrivateChat = () => {
             );
             if (data.name !== data.reciever) setMsg("");
         }
+        // eslint-disable-next-line
     }, [nmsg]);
 
     useEffect(() => {

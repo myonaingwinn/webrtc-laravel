@@ -18,9 +18,6 @@ const GroupChat = (props) => {
     const chatContainer = useRef(null);
 
     useEffect(() => {
-        socket.on("me", (id) => {
-        });
-
         socket.on("disconnect", () => {
             socket.disconnect();
         });

@@ -70,6 +70,7 @@ const UserList = () => {
         socket.on("endCall", () => {
             info(endMsg);
         });
+        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {

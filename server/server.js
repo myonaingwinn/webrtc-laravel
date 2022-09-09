@@ -6,6 +6,12 @@ const socket = require("socket.io");
 require("dotenv").config();
 const io = socket(server, {
     cors: {
+        // origin: [
+        //     "http://localhost:3000",
+        //     "https://webrtc-laravel.vercel.app",
+        //     "https://webrtc-test-17-aug.netlify.app",
+        //     "*",
+        // ],
         origin: "*",
         methods: ["GET", "POST"],
     },
@@ -126,13 +132,27 @@ io.on("connection", (socket) => {
     });
 
     socket.on("join room", (roomID) => {
+        console.log(
+            "🚀 ~ file: server.js ~ line 79 ~ socket.on ~ roomID",
+            roomID
+        );
         if (rooms[roomID]) {
             const length = rooms[roomID].usersInRoom.length;
+            console.log(
+                "🚀 ~ file: server.js ~ line 82 ~ socket.on ~ length",
+                length
+            );
             rooms[roomID].usersInRoom.push(socket.id);
             if (rooms[roomID].usersInRoom.length >= maxParticipantsAllowed) {
                 rooms[roomID].roomFull = true;
                 socket.broadcast.emit("rooms", rooms);
             }
+            console.log(
+                "🚀 ~ file: server.js ~ line 81 ~ socket.on ~ rooms[roomID]",
+                rooms[roomID].usersInRoom
+            );
+        } else {
+            console.log("🚀 ~ this room doesn't exist.");
         }
 
         socketToRoom[socket.id] = roomID;
@@ -192,6 +212,13 @@ io.on("connection", (socket) => {
                 room.chat.push(singleChat);
                 payload.chat = room.chat;
             }
+            console.log(
+                "🚀 ~ file: server.js ~ line 75 ~ socket.on ~ room",
+                room,
+                payload.room
+            );
+        } else {
+            console.log("🚀 ~ file: server.js ~ line 82 ~ socket.on ~ else");
         }
         io.to(payload.room).emit("chat", payload);
     });
@@ -202,4 +229,6 @@ app.get("/", (req, res) => {
 });
 
 server.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`);
+    console.log(`http://localhost:${PORT}`);
 });
