@@ -5,7 +5,8 @@ import Moment from "react-moment";
 import { io } from "socket.io-client";
 import { SendOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import { getNanoId } from "../../helpers/Utilities";
+import { getNanoId, signalServerUrl } from "../../helpers/Utilities";
+import { socket } from "../../helpers/SocketClient";
 
 const PrivateChat = () => {
     const { Title } = Typography;
@@ -15,28 +16,23 @@ const PrivateChat = () => {
     const [msg, setMsg] = useState("");
     const [allmsg, setallMsg] = useState([]);
     const [nmsg, setNmsg] = useState();
-    const [socket, setSocket] = useState();
     const [typing, setTyping] = useState(false);
     const [isTyping, setIstyping] = useState(false);
     const [newreciever, setNewreciever] = useState("");
     const [newname, setNewname] = useState("");
+
     useEffect(() => {
-        const socket = io("http://localhost:5000");
+        socket.emit("joinroom", location.state.room);
+        socket.on("typing", (reciever, name) => {
+            setIstyping(true);
+            setNewreciever(reciever);
+            setNewname(name);
+        });
 
-        setSocket(socket);
-
-        socket.on("connect", () => {
-            socket.emit("joinroom", location.state.room);
-            socket.on("typing", (reciever, name) => {
-                setIstyping(true);
-                setNewreciever(reciever);
-                setNewname(name);
-            });
-            socket.on("stop typing", (reciever, name) => {
-                setIstyping(false);
-                setNewreciever(reciever);
-                setNewname(name);
-            });
+        socket.on("stop typing", (reciever, name) => {
+            setIstyping(false);
+            setNewreciever(reciever);
+            setNewname(name);
         });
     }, [location.state.room]);
 
