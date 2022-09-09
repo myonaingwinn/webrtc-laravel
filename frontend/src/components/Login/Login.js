@@ -78,9 +78,6 @@ const Login = ({ handleLoading }) => {
                 .then((res) => res.json())
                 .catch((err) => console.log(err));
 
-            console.log(user);
-            console.log("uuid is ", user.uuid);
-
             user.uuid
                 ? localStorageSet("user", user)
                 : localStorageRemove("user");

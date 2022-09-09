@@ -3,7 +3,6 @@ import { localStorageGet, localStorageSet, signalServerUrl } from "./Utilities";
 import { setOnlineUserList, setRoomList } from "../store";
 import store from "../store";
 
-// let socket;
 export const socket = io(signalServerUrl);
 const { uuid, name } = localStorageGet("user") || {};
 

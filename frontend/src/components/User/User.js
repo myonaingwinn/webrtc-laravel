@@ -45,8 +45,6 @@ const User = ({ user, handleCall, socket }) => {
 
     useEffect(() => {
         if (gotoprivate) navigate(`/chat/${data.room}`, { state: data });
-
-        // eslint-disable-next-line
     }, [gotoprivate]);
 
     return (

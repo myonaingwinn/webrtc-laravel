@@ -74,8 +74,6 @@ const Room = () => {
             setRoomName(room_name);
             document.title = `Room : ${room_name}`;
         });
-
-        // eslint-disable-next-line
     }, []);
 
     const calcVideoConstraints = (arr) => {
@@ -112,7 +110,6 @@ const Room = () => {
                 });
 
                 socket.on("user joined", (payload) => {
-                    console.log("==", payload);
                     const peer = addPeer(
                         payload.signal,
                         payload.callerID,

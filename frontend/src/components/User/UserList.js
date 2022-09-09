@@ -70,13 +70,11 @@ const UserList = () => {
         socket.on("endCall", () => {
             info(endMsg);
         });
-        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
         socket.on("callUser", (data) => {
             setReceivingCall(true);
-
             setCaller(data.from);
             setName(data.name);
             setCallerSignal(data.signal);

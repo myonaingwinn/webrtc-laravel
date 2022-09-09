@@ -19,7 +19,6 @@ const GroupChat = (props) => {
 
     useEffect(() => {
         socket.on("me", (id) => {
-            // setSocketId(id);
         });
 
         socket.on("disconnect", () => {
@@ -43,8 +42,6 @@ const GroupChat = (props) => {
         setMessage("");
         socket.on("chat", (payloadd) => {
             setChat(payloadd.chat);
-            console.log(payloadd.chat);
-            console.log(payloadd);
         });
         chatContainer.current.scrollIntoView({
             behavior: "smooth",
@@ -63,9 +60,8 @@ const GroupChat = (props) => {
                     {chat.map((chat, idx) => (
                         <div
                             key={getNanoId()}
-                            className={`chat-blk ${
-                                chat.senderId === uuid ? "chat-me" : ""
-                            }`}
+                            className={`chat-blk ${chat.senderId === uuid ? "chat-me" : ""
+                                }`}
                         >
                             {chat.senderId === uuid
                                 ? `${chat.message} : ME`

@@ -45,15 +45,12 @@ const PrivateChat = () => {
             data.allmsgg.forEach((m) => {
                 if (m.name === data.reciever) allmsg.push(m);
             });
-
-        // eslint-disable-next-line
     }, [data.allmsgg, location]);
 
     useEffect(() => {
         if (socket) {
             socket.on("getnewmsg", (newmsg) => {
                 setallMsg([...allmsg, newmsg]);
-
                 setNmsg(newmsg);
             });
         }
@@ -70,8 +67,6 @@ const PrivateChat = () => {
             );
             if (data.name !== data.reciever) setMsg("");
         }
-
-        // eslint-disable-next-line
     }, [nmsg]);
 
     useEffect(() => {
@@ -169,9 +164,9 @@ const PrivateChat = () => {
                                 );
                             })}
                         {(isTyping && name === newreciever) ||
-                        (isTyping &&
-                            data.room.length < 15 &&
-                            name !== newname) ? (
+                            (isTyping &&
+                                data.room.length < 15 &&
+                                name !== newname) ? (
                             <div className="typing">
                                 <strong style={{ textTransform: "capitalize" }}>
                                     {newname}
