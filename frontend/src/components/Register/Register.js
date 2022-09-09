@@ -61,7 +61,6 @@ const Register = ({ handleLoading }) => {
                 },
             })
                 .then((res) => {
-                    console.log(res);
                     if (res.ok) {
                         notification.open({
                             type: "success",
@@ -81,7 +80,6 @@ const Register = ({ handleLoading }) => {
                         type: "error",
                         message: NOTI008,
                     });
-                    console.log(err);
                     navigator("/register");
                 });
             handleLoading();

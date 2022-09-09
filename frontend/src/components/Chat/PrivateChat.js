@@ -48,7 +48,6 @@ const PrivateChat = () => {
         if (socket) {
             socket.on("getnewmsg", (newmsg) => {
                 setallMsg([...allmsg, newmsg]);
-
                 setNmsg(newmsg);
             });
         }
@@ -65,7 +64,7 @@ const PrivateChat = () => {
             );
             if (data.name !== data.reciever) setMsg("");
         }
-
+        
         // eslint-disable-next-line
     }, [nmsg]);
 
@@ -164,9 +163,9 @@ const PrivateChat = () => {
                                 );
                             })}
                         {(isTyping && name === newreciever) ||
-                        (isTyping &&
-                            data.room.length < 15 &&
-                            name !== newname) ? (
+                            (isTyping &&
+                                data.room.length < 15 &&
+                                name !== newname) ? (
                             <div className="typing">
                                 <strong style={{ textTransform: "capitalize" }}>
                                     {newname}
