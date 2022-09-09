@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import io from "socket.io-client";
 import {
     getNanoId,
@@ -16,17 +16,6 @@ const GroupChat = (props) => {
 
     // scroll
     const chatContainer = useRef(null);
-
-    useEffect(() => {
-        socket.on("disconnect", () => {
-            socket.disconnect();
-        });
-
-        // Rooms
-        socket.on("chat", (payload) => {
-            setChat(payload.chat);
-        });
-    }, [chat]);
 
     const sendMessage = async (e) => {
         const payload = {

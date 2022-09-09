@@ -132,25 +132,13 @@ io.on("connection", (socket) => {
     });
 
     socket.on("join room", (roomID) => {
-        console.log(
-            "🚀 ~ file: server.js ~ line 79 ~ socket.on ~ roomID",
-            roomID
-        );
         if (rooms[roomID]) {
             const length = rooms[roomID].usersInRoom.length;
-            console.log(
-                "🚀 ~ file: server.js ~ line 82 ~ socket.on ~ length",
-                length
-            );
             rooms[roomID].usersInRoom.push(socket.id);
             if (rooms[roomID].usersInRoom.length >= maxParticipantsAllowed) {
                 rooms[roomID].roomFull = true;
                 socket.broadcast.emit("rooms", rooms);
             }
-            console.log(
-                "🚀 ~ file: server.js ~ line 81 ~ socket.on ~ rooms[roomID]",
-                rooms[roomID].usersInRoom
-            );
         } else {
             console.log("🚀 ~ this room doesn't exist.");
         }

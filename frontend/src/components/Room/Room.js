@@ -74,6 +74,7 @@ const Room = () => {
             setRoomName(room_name);
             document.title = `Room : ${room_name}`;
         });
+        
         // eslint-disable-next-line
     }, []);
 

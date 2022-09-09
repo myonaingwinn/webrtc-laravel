@@ -69,6 +69,7 @@ const PrivateChat = () => {
             );
             if (data.name !== data.reciever) setMsg("");
         }
+        
         // eslint-disable-next-line
     }, [nmsg]);
 
